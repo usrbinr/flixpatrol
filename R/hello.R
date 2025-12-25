@@ -1,23 +1,14 @@
-# Hello, world!
-#
-# This is an example function named 'hello'
-# which prints 'Hello, world!'.
-#
-# You can learn more about package authoring with RStudio at:
-#
-#   https://r-pkgs.org
-#
-# Some useful keyboard shortcuts for package authoring:
-#
-#   Install Package:           'Ctrl + Shift + B'
-#   Check Package:             'Ctrl + Shift + E'
-#   Test Package:              'Ctrl + Shift + T'
-
-hello <- function() {
-  print("Hello, world!")
-}
 
 
+#' Title
+#'
+#' @param site
+#' @param token
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 authenticate <- function(site="https://api.flixpatrol.com/v2/top10s",token="FLIX_PATROL"){
 
 
@@ -256,4 +247,32 @@ create_daily_top_ten_tbl <- function(token="FLIX_PATROL",platform_name,country_n
 
 
 }
+
+
+
+#' Title
+#'
+#' @param torrent_site
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+lookup_torrent_site_and_return_id <- function(torrent_site){
+
+  # torrent_site <- "torlock"
+  torrent_site_lower <- tolower(torrent_site)
+
+  if(all(torrent_site=="*")){
+
+    torrent_site <- tolower(flixpatrol::torrent_sites_tbl$torrent_site_name)
+  }
+
+  out <- flixpatrol::torrent_sites_tbl$torrent_site_id[tolower(flixpatrol::torrent_sites_tbl$torrent_site_name) %in% c(torrent_site_lower)]
+
+
+  return(out)
+}
+
+
 

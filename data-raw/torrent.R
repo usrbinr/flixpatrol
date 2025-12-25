@@ -1,16 +1,17 @@
 ## code to prepare `torrent` dataset goes here
-library(tibble)
 
-torrent_sites_tbl <- tribble(
-    ~type,          ~data.id,                         ~torrent_site_name,          ~torrent_site_id,
-    "torrentsites", "trs_IMeETdMqwf6kuyQvxo9bJ4nK",     "TorrentGalaxy",      17024,
-    "torrentsites", "trs_V5I7c7OphiUds0Hgjbz5MESn",    "TorrentDownloads",   17025,
-    "torrentsites", "trs_gKwnRaeXpyz2U9Q5tEMYDwri",    "Torlock",            17026,
-    "torrentsites", "trs_Pt7MruDVbWTRq7LrfwOyYgjX",    "LimeTorrents",       17027,
-    "torrentsites", "trs_bpfhGTvopBHPVtIKhR2CF68W",    "RARbg",              17028,
-    "torrentsites", "trs_nl9xV46scBZ5bMKzLHDR3P2m",    "1337x",              17029,
-    "torrentsites", "trs_oU3OgdpOrjIu3XzTEnWPt87Y",    "PirateBay",          17030,
-    "torrentsites", "trs_Uc0WK0k2lQEVcb5uWXZtGhTg",    "eztv",               17036
-) |> janitor::clean_names()
+name <- ""
+
+body_lst <-
+    authenticate(site="https://api.flixpatrol.com/v2/torrentsites",token="FLIX_PATROL") |>
+    httr2::req_url_query(`name[like]` = name) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json(simplifyVector = TRUE)
+
+
+torrent_sites_tbl <- tibble::tibble(
+    torrent_site_name=body_lst$data$data$name
+    ,torrsent_site_id=body_lst$data$legacy$id
+)
 
 usethis::use_data(torrent_sites_tbl, overwrite = TRUE)
