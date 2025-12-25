@@ -3,27 +3,63 @@ library(httr2)
 library(tidyverse)
 library(devtools)
 
+load_all()
 # get weekly winner query
 # get daily top ten
 # get weekly winners
 # build prediction model
 
-nws::create_daily_temp_tbl("mia") |> view()
-document()
 
-create_daily_top_ten_tbl(token="FLIX_PATROL",platform_name = "netflix",country_name = "United States",date = "2025-12-25",flix_type = "movies")
+create_daily_top_ten_tbl(token="FLIX_PATROL",platform_name = "netflix",country_name = "Mexico",start_date="2025-12-01",end_date = "2025-12-25",flix_type = "movies")
 
-top10_usa_netflix
 
-usethis::use_data_raw("torrent")
-map(
-    .x=date_list
-    ,.f=\(x) create_daily_top_ten_tbl(token="FLIX_PATROL",platform_name = "netflix",country_name = "United States",date = x,flix_type = "movies") |>
-        filter(
-            row_number()==1
-        )
-) |>
-    purrr::list_rbind()
+devtools::document()
+
+create_daily_top_ten_tbl <- function(token="FLIX_PATROL",platform_name,country_name,start_date,end_date,flix_type){
+
+
+    # test variables
+    start_date="2025-12-01"
+    end_date="2025-12-21"
+
+    date_vec <- seq.Date(from = start_date,to=end_date)
+
+
+   out <-  purrr::map(.x=date_vec,.f = \(x) create_single_daily_top_ten_tbl(token=token,platform_name=platform_name,country_name=country_name,date=x,flix_type=flix_type) ) |>
+        purrr::list_rbind()
+
+   return(out)
+
+
+
+
+}
+
+
+
+create_top_n_tbl <- function(token="FLIX_PATROL",platform_name,country_name,date,flix_type,n){
+
+
+    if(!is.numeric(n)){
+
+        cli::cli::cli_abort("{n} must be numeric")
+    }
+
+
+    purrr::map(
+        .x=date_list
+        ,.f=\(x) create_daily_top_ten_tbl(token=token,platform_name = platform_name,country_name = country_name,date = date,flix_type = flix_type) |>
+            dplyr::filter(
+                dplyr::row_number()==n
+            )
+    ) |>
+        purrr::list_rbind()
+
+
+
+}
+
+
 date_list <- seq.Date(from="2025-12-22",to = "2025-12-24")
 usethis::use_data_raw("type")
 

@@ -178,11 +178,9 @@ lookup_flix_type_and_return_id <- function(flix_type){
 #' @param date
 #' @param flix_type
 #'
-#' @returns
-#' @export
-#'
-#' @examples
-create_daily_top_ten_tbl <- function(token="FLIX_PATROL",platform_name,country_name,date,flix_type){
+#' @returns tibble
+#' @keywords internal
+create_single_daily_top_ten_tbl <- function(token="FLIX_PATROL",platform_name,country_name,date,flix_type){
 
 
     company_string        <- lookup_platform_and_return_id(platform_name = platform_name,token=token,silent=TRUE)
@@ -191,7 +189,7 @@ create_daily_top_ten_tbl <- function(token="FLIX_PATROL",platform_name,country_n
 
 
     x <- authenticate(token = token) |>
-        req_url_query(
+        httr2::req_url_query(
             `company[eq]` = company_string,
             `country[eq]` = country_string,
             `type[eq]`=flix_type_string,
@@ -199,26 +197,63 @@ create_daily_top_ten_tbl <- function(token="FLIX_PATROL",platform_name,country_n
             `date[from][eq]` = date,
             `date[to][eq]` = date
         ) |>
-        req_perform() |>
-        resp_body_json()
+        httr2::req_perform() |>
+      httr2::resp_body_json()
 
     out <-
         x$data |>
-        map_df(function(item) {
+        purrr::map_df(function(item) {
             # Extracting the inner 'data' block
             d <- item$data
 
-            tibble(
-                rank        = pluck(d, "ranking", .default = NA_integer_),
-                title       = pluck(d, "movie", "data", "title", .default = pluck(d, "note")),
-                type_id     = pluck(d, "type", .default = NA_integer_),
-                days_total  = pluck(d, "daysTotal", .default = NA_integer_),
-                rank_last   = pluck(d, "rankingLast", .default = NA_integer_),
-                date        = pluck(d, "date", "from", .default = NA_character_),
-                imdb_id     = pluck(d, "movie", "data", "imdbId", .default = NA_integer_)
+            tibble::tibble(
+                rank        = purrr::pluck(d, "ranking", .default = NA_integer_),
+                title       = purrr::pluck(d, "movie", "data", "title", .default = purrr::pluck(d, "note")),
+                type_id     = purrr::pluck(d, "type", .default = NA_integer_),
+                days_total  = purrr::pluck(d, "daysTotal", .default = NA_integer_),
+                rank_last   = purrr::pluck(d, "rankingLast", .default = NA_integer_),
+                date        = purrr::pluck(d, "date", "from", .default = NA_character_),
+                imdb_id     = purrr::pluck(d, "movie", "data", "imdbId", .default = NA_integer_)
             )
         })
+
 
     return(out)
 
 }
+
+
+
+#' Title
+#'
+#' @param token
+#' @param platform_name
+#' @param country_name
+#' @param start_date
+#' @param end_date
+#' @param flix_type
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+create_daily_top_ten_tbl <- function(token="FLIX_PATROL",platform_name,country_name,start_date,end_date,flix_type){
+
+
+    # test variables
+    # start_date="2025-12-01"
+    # end_date="2025-12-21"
+
+    date_vec <- seq.Date(from = start_date,to=end_date)
+
+
+   out <-  purrr::map(.x=date_vec,.f = \(x) create_single_daily_top_ten_tbl(token=token,platform_name=platform_name,country_name=country_name,date=x,flix_type=flix_type) ) |>
+        purrr::list_rbind()
+
+   return(out)
+
+
+
+
+}
+
