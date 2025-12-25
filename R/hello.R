@@ -141,3 +141,84 @@ lookup_platform_and_return_id <- function(platform_name,token="FLIX_PATROL",sile
     return(ids)
 
 }
+
+
+
+#' Title
+#'
+#' @param flix_type
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+lookup_flix_type_and_return_id <- function(flix_type){
+
+    flix_type_lower <- tolower(flix_type)
+
+    validate_flix_types <- flixpatrol::flix_type_tbl$type_label
+
+    if(!any(flix_type_lower %in% validate_flix_types)){
+
+        cli::cli_abort("Please ensure {.val {flix_type}} is one of {.val {validate_flix_types}}")
+    }
+
+
+    flixpatrol::flix_type$type_id[flixpatrol::flix_type$type_label %in% flix_type_lower]
+
+}
+
+
+
+#' Title
+#'
+#' @param token
+#' @param platform_name
+#' @param country_name
+#' @param date
+#' @param flix_type
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+create_daily_top_ten_tbl <- function(token="FLIX_PATROL",platform_name,country_name,date,flix_type){
+
+
+    company_string        <- lookup_platform_and_return_id(platform_name = platform_name,token=token,silent=TRUE)
+    country_string        <- lookup_country_and_return_id(country_name = country_name,token=token,silent=TRUE)
+    flix_type_string      <- lookup_flix_type_and_return_id(flix_type = flix_type)
+
+
+    x <- authenticate(token = token) |>
+        req_url_query(
+            `company[eq]` = company_string,
+            `country[eq]` = country_string,
+            `type[eq]`=flix_type_string,
+            `date[type][eq]` = 1,           # 1 = Daily Chart
+            `date[from][eq]` = date,
+            `date[to][eq]` = date
+        ) |>
+        req_perform() |>
+        resp_body_json()
+
+    out <-
+        x$data |>
+        map_df(function(item) {
+            # Extracting the inner 'data' block
+            d <- item$data
+
+            tibble(
+                rank        = pluck(d, "ranking", .default = NA_integer_),
+                title       = pluck(d, "movie", "data", "title", .default = pluck(d, "note")),
+                type_id     = pluck(d, "type", .default = NA_integer_),
+                days_total  = pluck(d, "daysTotal", .default = NA_integer_),
+                rank_last   = pluck(d, "rankingLast", .default = NA_integer_),
+                date        = pluck(d, "date", "from", .default = NA_character_),
+                imdb_id     = pluck(d, "movie", "data", "imdbId", .default = NA_integer_)
+            )
+        })
+
+    return(out)
+
+}
