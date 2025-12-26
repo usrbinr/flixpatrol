@@ -4,10 +4,15 @@ library(tidyverse)
 library(devtools)
 
 load_all()
-# get weekly winner query
-# get daily top ten
+
+# top fan sites
+# franchise look up
+# company look up
+# movie look up
+
 # get weekly winners
 # build prediction model
+# get franchise name
 
 
 
@@ -22,23 +27,97 @@ load_all()
 ##
 
 
-company_string <- lookup_platform_and_return_id(platform_name = c("netflix"))
-flix_type_string <- lookup_flix_type_and_return_id("movies")
-country_string <- lookup_country_and_return_id(country_name= c("United States"))
-from_date <- "2025-12-15"
-to_date <- "2025-12-21"
-flix_type <- "Movies"
+
+##franchise
+
+authenticate("https://api.flixpatrol.com/v2/franchises") |>
+    httr2::req_url_query(
+        `title[like]`=''
+        # `country[eq]`=country_id
+        # `company[eq]`="cmp_JeAe7ZCyHJKz3fYOrtq6En4s"
+        # `movie[eq]`="frn_97nIMYOCvD6zprSPoHgTJauB"
+        # ,`language[eq]`=language_id
+        # ,`number[eq]`=media_type_id
+        # `date[type][eq]`=1
+        # ,`date[to][eq]`=start_date
+        # ,`date[to][eq]`=start_date
+    ) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json(simplifyVector = TRUE) |>
+    as.data.frame() |>
+    as_tibble() |>
+    view()
 
 
 
 
 
-## offical ranking
+
+create_fans_site_ranking_tbl <- function(token,platform_name="netflix",country_name,start_date,end_date,media_type,date_type="week",language_id){
+
+    platform_valid_name <- "netflix"
+
+    if(!all(tolower(platform_name) %in% platform_valid_name)){
+
+        cli::cli_abort("Currently flixpatrol only supports Netflix for the official top ten list, you spplied {platform_name}")
+
+    }
 
 
-authenticate(site="https://api.flixpatrol.com/v2/rankingsofficial")
+    platform_id <- lookup_platform_and_return_id(platform_name = platform_name)
+    media_type_id <- lookup_media_type_name_and_return_id(media_type=media_type)
+    country_id <- lookup_country_and_return_id(country_name= c("United States"))
+    date_type_id <- lookup_date_type_name_and_return_id("day")
+    language_id <- lookup_language_name_and_return_id("english")
+    start_date <- "2025-12-24"
 
 
+
+    validate_date_range(start_date = start_date,end_date = end_date,start_date_wday_abb = "mon",range_length = 7)
+    ## offical ranking
+
+
+    # body_lst <-
+        authenticate(site="https://api.flixpatrol.com/v2/fans") |>
+        httr2::req_url_query(
+            # `country[eq]`=country_id
+            # `company[eq]`="cmp_JeAe7ZCyHJKz3fYOrtq6En4s"
+            # `movie[eq]`="frn_97nIMYOCvD6zprSPoHgTJauB"
+            # ,`language[eq]`=language_id
+            # ,`number[eq]`=media_type_id
+            `date[type][eq]`=1
+            ,`date[to][eq]`=start_date
+            ,`date[to][eq]`=start_date
+        ) |>
+        httr2::req_perform() |>
+        httr2::resp_body_json(simplifyVector = TRUE) |>
+            as.data.frame() |>
+        tibble::as_tibble() |> view()
+
+
+        body_lst |> view()
+        purrr::pluck("data")
+
+
+
+    out <- body_lst |>
+        tibble(raw=_) |>
+        tidyr::unnest_wider("raw") |>
+        tidyr::unnest_wider("data") |>
+        tidyr::unnest_wider("movie",names_sep = "_") |>
+        tidyr::unnest_wider("movie_data") |>
+        tidyr::unnest_wider("company",names_sep = "_") |>
+        tidyr::unnest_wider("company_data",names_sep="_") |>
+        tidyr::unnest_wider("company_legacy",names_sep="_") |>
+        tidyr::unnest_wider("country",names_sep="_") |>
+        tidyr::unnest_wider("country_data",names_sep="_") |>
+        tidyr::unnest_wider("country_legacy",names_sep="_") |>
+        tidyr::unnest_wider("date",names_sep = "_")
+
+
+    return(out)
+
+}
 
 
 ## hours vieews
@@ -76,6 +155,7 @@ body_lst |> glimpse()
 devtools::document()
 torrent_id_vec <- lookup_torrent_site_and_return_id(x = "*")
 ###
+
 
 authenticate(site="https://api.flixpatrol.com/v2/torrents") |>
         httr2::req_url_query(

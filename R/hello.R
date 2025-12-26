@@ -492,3 +492,76 @@ create_hours_viewed_tbl <- function(token="FLIX_PATROL",platform_name="netflix",
 
 }
 
+
+
+
+#' Title
+#'
+#' @param token
+#' @param platform_name
+#' @param country_name
+#' @param start_date
+#' @param end_date
+#' @param media_type
+#' @param date_type
+#' @param language_id
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+create_official_ranking_tbl <- function(token,platform_name="netflix",country_name,start_date,end_date,media_type,date_type="week",language_id){
+
+  platform_valid_name <- "netflix"
+
+  if(!all(tolower(platform_name) %in% platform_valid_name)){
+
+    cli::cli_abort("Currently flixpatrol only supports Netflix for the official top ten list, you spplied {platform_name}")
+
+  }
+
+  platform_id <- lookup_platform_and_return_id(platform_name = platform_name)
+  media_type_id <- lookup_media_type_name_and_return_id(media_type=media_type)
+  country_id <- lookup_country_and_return_id(country_name= c("United States"))
+  date_type_id <- lookup_date_type_name_and_return_id("week")
+  language_id <- lookup_language_name_and_return_id("english")
+
+
+
+  validate_date_range(start_date = start_date,end_date = end_date,start_date_wday_abb = "mon",range_length = 7)
+  ## offical ranking
+
+  body_lst <- authenticate(site="https://api.flixpatrol.com/v2/rankingsofficial") |>
+    httr2::req_url_query(
+      `country[eq]`    =country_id
+      ,`company[eq]`   =platform_id
+      ,`language[eq]`  =language_id
+      ,`number[eq]`    =media_type_id
+      ,`date[type][eq]`=date_type_id
+      ,`date[to][eq]`  =start_date
+      ,`date[to][eq]`  =end_date
+    ) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json() |>
+    purrr::pluck("data")
+
+
+  out <- body_lst |>
+    tibble::tibble(raw=_) |>
+    tidyr::unnest_wider("raw") |>
+    tidyr::unnest_wider("data") |>
+    tidyr::unnest_wider("movie",names_sep = "_") |>
+    tidyr::unnest_wider("movie_data") |>
+    tidyr::unnest_wider("company",names_sep = "_") |>
+    tidyr::unnest_wider("company_data",names_sep="_") |>
+    tidyr::unnest_wider("company_legacy",names_sep="_") |>
+    tidyr::unnest_wider("country",names_sep="_") |>
+    tidyr::unnest_wider("country_data",names_sep="_") |>
+    tidyr::unnest_wider("country_legacy",names_sep="_") |>
+    tidyr::unnest_wider("date",names_sep = "_")
+
+
+
+  return(out)
+
+}
