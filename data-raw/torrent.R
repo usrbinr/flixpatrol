@@ -9,9 +9,9 @@ body_lst <-
     httr2::resp_body_json(simplifyVector = TRUE)
 
 
-torrent_sites_tbl <- tibble::tibble(
+torrent_sites <- tibble::tibble(
     torrent_site_name=body_lst$data$data$name
-    ,torrsent_site_id=body_lst$data$legacy$id
+    ,torrent_site_id=body_lst$data$data$id
 )
 
-usethis::use_data(torrent_sites_tbl, overwrite = TRUE)
+usethis::use_data(torrent_sites, overwrite = TRUE)

@@ -11,6 +11,17 @@ load_all()
 
 
 
+# official
+# social fans
+# franchise
+# permieres
+
+# daily views
+# social fans?
+## torrant isn't updated until end of the year or something
+##
+
+
 company_string <- lookup_platform_and_return_id(platform_name = c("netflix"))
 flix_type_string <- lookup_flix_type_and_return_id("movies")
 country_string <- lookup_country_and_return_id(country_name= c("United States"))
@@ -19,50 +30,65 @@ to_date <- "2025-12-21"
 flix_type <- "Movies"
 
 
+
+
+
+## offical ranking
+
+
+authenticate(site="https://api.flixpatrol.com/v2/rankingsofficial")
+
+
+
+
 ## hours vieews
 
-
-create_hours_viewed_tbl <- function()
-
-
-body_lst <- authenticate(site="https://api.flixpatrol.com/v2/hoursviewed") |>
-    req_url_query(
-        `company[eq]` = company_string,
-        `language[eq]`=1,
-        # `country[eq]` = country_string,
-        `number[eq]`  = 1,
-        # `ranking[eq]`=1,
-        # `type[eq]`=flix_type_string,
-        `date[type][eq]` = 3,           # 1 = Daily Chart
-        `date[from][eq]` = from_date,
-        `date[to][eq]` = to_date
-    ) |>
-    req_perform()
+create_hours_viewed_tbl(language=1,start_date="2025-12-15",end_date="2025-12-21")
 
 
-body_lst |>
-    resp_body_json(simplifyVector = TRUE) |>
+body_lst |> glimpse()
+
     pluck("data") |>
-    as_tibble() |>
-    arrange(-data$views) |>
-        head(100) |> view()
+    as_tibble()
+    rename(language = `$language`)
+    rename(
+        report_type=type
+        ,languge="\$language"
+    )
+
+  hours_view_lst <-   body_lst |>
+        resp_body_json() |>
+        pluck("data") |>
+        pluck(1)
+
+
+  hours_view_lst
+        glimpse()
+
+    # arrange(-data$views) |>
+        # head(100)
 
 
 ### get torrent sites
 
 
 
-
-
+devtools::document()
+torrent_id_vec <- lookup_torrent_site_and_return_id(x = "*")
 ###
 
-Show items 	GET
-https://api.flixpatrol.com/v2/torrents
-
 authenticate(site="https://api.flixpatrol.com/v2/torrents") |>
-    httr2::req_url_query(
+        httr2::req_url_query(
+            # `id[eq]`="trt_CfX89vcTOtjqMu0ng6w2QIfD",
+            # `company[eq]` = company_string,
+            # `country[eq]` = country_string,
+            `site[eq]`    = torrent_id_vec[1],
+            # `type[eq]`=media_type_vec,
+            `date[type][eq]` = 1,           # 1 = Daily Chart
+            `date[from][eq]`= "2023-12-01",
+            `date[to][eq]` = "2023-12-01"
+        ) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json(simplifyVector = TRUE) |>
+    as_tibble()
 
-
-
-
-    )

@@ -4,7 +4,7 @@
 \alias{lookup_torrent_site_and_return_id}
 \title{Title}
 \usage{
-lookup_torrent_site_and_return_id(torrent_site)
+lookup_torrent_site_and_return_id(x)
 }
 \arguments{
 \item{torrent_site}{}
