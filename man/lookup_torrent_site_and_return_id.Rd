@@ -2,13 +2,16 @@
 % Please edit documentation in R/hello.R
 \name{lookup_torrent_site_and_return_id}
 \alias{lookup_torrent_site_and_return_id}
-\title{Title}
+\title{Lookup Torrent Site IDs}
 \usage{
 lookup_torrent_site_and_return_id(x)
 }
 \arguments{
-\item{torrent_site}{}
+\item{x}{Character vector. Torrent site names or "*" for all.}
+}
+\value{
+An integer vector of IDs.
 }
 \description{
-Title
+Resolves torrent site names to internal FlixPatrol IDs.
 }

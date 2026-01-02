@@ -2,13 +2,20 @@
 % Please edit documentation in R/hello.R
 \name{lookup_flix_type_and_return_id}
 \alias{lookup_flix_type_and_return_id}
-\title{Title}
+\title{Lookup Flix Type IDs}
 \usage{
 lookup_flix_type_and_return_id(flix_type)
 }
 \arguments{
-\item{flix_type}{}
+\item{flix_type}{Character. The type of content, typically "movie" or "tv".}
+}
+\value{
+An integer representing the internal type ID.
 }
 \description{
-Title
+Validates and returns the internal ID for a Flix type (e.g., "movie" vs "tv").
+}
+\details{
+This function compares the input against a pre-defined table `flixpatrol::flix_type_tbl`.
+It ensures that only valid API types are requested, preventing unnecessary API errors.
 }

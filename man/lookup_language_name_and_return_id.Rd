@@ -2,13 +2,16 @@
 % Please edit documentation in R/hello.R
 \name{lookup_language_name_and_return_id}
 \alias{lookup_language_name_and_return_id}
-\title{Title}
+\title{Lookup Language IDs}
 \usage{
 lookup_language_name_and_return_id(language_name)
 }
 \arguments{
-\item{language_name}{}
+\item{language_name}{Character vector. Language names or "*" for all.}
+}
+\value{
+An integer vector of IDs.
 }
 \description{
-Title
+Resolves language names to internal FlixPatrol IDs.
 }

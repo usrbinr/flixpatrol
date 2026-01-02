@@ -2,13 +2,16 @@
 % Please edit documentation in R/hello.R
 \name{lookup_media_type_name_and_return_id}
 \alias{lookup_media_type_name_and_return_id}
-\title{Title}
+\title{Lookup Media Type IDs}
 \usage{
 lookup_media_type_name_and_return_id(media_type_name)
 }
 \arguments{
-\item{media_type_name}{}
+\item{media_type_name}{Character vector. Media types or "*" for all.}
+}
+\value{
+An integer vector of IDs.
 }
 \description{
-Title
+Resolves media type labels to internal FlixPatrol IDs.
 }

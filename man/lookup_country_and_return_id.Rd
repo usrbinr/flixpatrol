@@ -2,7 +2,7 @@
 % Please edit documentation in R/hello.R
 \name{lookup_country_and_return_id}
 \alias{lookup_country_and_return_id}
-\title{Title}
+\title{Lookup Country IDs}
 \usage{
 lookup_country_and_return_id(
   country_name,
@@ -11,8 +11,20 @@ lookup_country_and_return_id(
 )
 }
 \arguments{
-\item{silent}{}
+\item{country_name}{Character vector. The name(s) of countries to lookup (e.g., "USA", "France").}
+
+\item{token}{Character. The environment variable name for the API key.}
+
+\item{silent}{Logical. If `FALSE` (default), prints success messages using `cli`.}
+}
+\value{
+A named character vector of country IDs.
 }
 \description{
-Title
+Translates country names into FlixPatrol internal country IDs.
+}
+\details{
+This function queries the `/countries` endpoint using a "like" search. It is
+vectorized via `purrr::map_chr`, meaning you can pass a single country name
+or a vector of names. It will return the first matching ID for each name provided.
 }

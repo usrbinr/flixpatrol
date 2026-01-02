@@ -2,7 +2,7 @@
 % Please edit documentation in R/hello.R
 \name{validate_date_range}
 \alias{validate_date_range}
-\title{Title}
+\title{Validate Date Ranges for API Compatibility}
 \usage{
 validate_date_range(
   start_date,
@@ -12,11 +12,18 @@ validate_date_range(
 )
 }
 \arguments{
-\item{range_length}{}
+\item{start_date}{Date/Character.}
+
+\item{end_date}{Date/Character.}
+
+\item{start_date_wday_abb}{Character. Three-letter weekday abbreviation (e.g., "mon").}
+
+\item{range_length}{Integer. Expected number of days in the range. Default is 7.}
 }
 \value{
-logical
+Logical `TRUE` if valid, otherwise aborts with a `cli` error.
 }
 \description{
-Title
+Ensures that the provided start and end dates meet specific API requirements
+(e.g., starting on a Monday for weekly views).
 }

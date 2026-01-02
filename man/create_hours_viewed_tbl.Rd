@@ -2,7 +2,7 @@
 % Please edit documentation in R/hello.R
 \name{create_hours_viewed_tbl}
 \alias{create_hours_viewed_tbl}
-\title{Title}
+\title{Create Hours Viewed Table}
 \usage{
 create_hours_viewed_tbl(
   token = "FLIX_PATROL",
@@ -14,11 +14,26 @@ create_hours_viewed_tbl(
 )
 }
 \arguments{
-\item{language_name}{}
+\item{token}{Character. API environment variable name.}
+
+\item{platform_name}{Character. Platform name (defaults to "netflix").}
+
+\item{media_type_name}{Character. Media type (e.g., "Movie").}
+
+\item{language_name}{Character. Language (e.g., "English").}
+
+\item{start_date}{Date/Character. Must be a Monday.}
+
+\item{end_date}{Date/Character. Must be 7 days from start.}
 }
 \value{
-tibble
+A wide tibble containing viewing hours and metadata.
 }
 \description{
-Title
+Retrieves the "Hours Viewed" metric for a platform, language, and content type.
+}
+\details{
+This function specifically handles the `/hoursviewed` endpoint. It defaults
+to "week" views (API type 3) and requires a 7-day range starting on a Monday.
+The resulting JSON is heavily unnested to provide a wide, analysis-ready tibble.
 }

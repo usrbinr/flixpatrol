@@ -2,7 +2,7 @@
 % Please edit documentation in R/hello.R
 \name{authenticate}
 \alias{authenticate}
-\title{Title}
+\title{Authenticate and Create Base Request}
 \usage{
 authenticate(
   site = "https://api.flixpatrol.com/v2/top10s",
@@ -10,8 +10,21 @@ authenticate(
 )
 }
 \arguments{
-\item{token}{}
+\item{site}{Character. The specific API endpoint URL. Defaults to the Top 10s endpoint.}
+
+\item{token}{Character. The name of the environment variable containing the API key.
+Default is "FLIX_PATROL".}
+}
+\value{
+A `httr2_request` object with basic authentication headers.
 }
 \description{
-Title
+Initializes an authenticated `httr2` request object for the FlixPatrol API using
+basic authentication.
+}
+\details{
+This function serves as the foundation for all API calls in the package. It
+checks for a valid access token stored in the user's system environment.
+If the token is missing or invalid, it provides instructions on how to set it
+using `usethis::edit_r_environ()`.
 }

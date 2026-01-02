@@ -2,7 +2,7 @@
 % Please edit documentation in R/hello.R
 \name{create_daily_top_ten_tbl}
 \alias{create_daily_top_ten_tbl}
-\title{Title}
+\title{Create a Daily Top 10 Table for a Date Range}
 \usage{
 create_daily_top_ten_tbl(
   token = "FLIX_PATROL",
@@ -14,8 +14,26 @@ create_daily_top_ten_tbl(
 )
 }
 \arguments{
-\item{flix_type}{}
+\item{token}{Character. API environment variable name.}
+
+\item{platform_name}{Character. Name of the platform.}
+
+\item{country_name}{Character. Name of the country.}
+
+\item{start_date}{Date/Character. Start of the range.}
+
+\item{end_date}{Date/Character. End of the range.}
+
+\item{flix_type}{Character. Content type.}
+}
+\value{
+A combined tibble for the specified date range.
 }
 \description{
-Title
+Iterates over a sequence of dates to build a historical Top 10 dataset.
+}
+\details{
+This function generates a date vector between `start_date` and `end_date`
+and maps `create_single_daily_top_ten_tbl` over each date. The results
+are bound together into a single master tibble.
 }

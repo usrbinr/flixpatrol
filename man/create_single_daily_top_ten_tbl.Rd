@@ -2,7 +2,7 @@
 % Please edit documentation in R/hello.R
 \name{create_single_daily_top_ten_tbl}
 \alias{create_single_daily_top_ten_tbl}
-\title{Title}
+\title{Create a Single Day Top 10 Table}
 \usage{
 create_single_daily_top_ten_tbl(
   token = "FLIX_PATROL",
@@ -13,12 +13,25 @@ create_single_daily_top_ten_tbl(
 )
 }
 \arguments{
-\item{flix_type}{}
+\item{token}{Character. API environment variable name.}
+
+\item{platform_name}{Character. Single platform name.}
+
+\item{country_name}{Character. Single country name.}
+
+\item{date}{Date or Character (YYYY-MM-DD). The date for the chart.}
+
+\item{flix_type}{Character. "movie" or "tv".}
 }
 \value{
-tibble
+A tibble containing rank, title, type_id, and IMDB ID.
 }
 \description{
-Title
+Fetches the Top 10 rankings for a specific platform, country, and date.
+}
+\details{
+This is an internal helper function that resolves all name-to-ID mappings
+before performing the API request. It parses the resulting JSON into a
+clean, flat tibble.
 }
 \keyword{internal}

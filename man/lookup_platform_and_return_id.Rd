@@ -2,7 +2,7 @@
 % Please edit documentation in R/hello.R
 \name{lookup_platform_and_return_id}
 \alias{lookup_platform_and_return_id}
-\title{Title}
+\title{Lookup Platform (Company) IDs}
 \usage{
 lookup_platform_and_return_id(
   platform_name,
@@ -11,8 +11,20 @@ lookup_platform_and_return_id(
 )
 }
 \arguments{
-\item{silent}{}
+\item{platform_name}{Character vector. The name(s) of platforms to lookup.}
+
+\item{token}{Character. The environment variable name for the API key.}
+
+\item{silent}{Logical. If `FALSE`, prints success messages.}
+}
+\value{
+A named character vector of company IDs.
 }
 \description{
-Title
+Translates platform names (e.g., "Netflix", "HBO Max") into internal company IDs.
+}
+\details{
+Similar to the country lookup, this function queries the `/companies` endpoint.
+It supports fuzzy matching via the API's `name[like]` parameter and is
+fully vectorized.
 }

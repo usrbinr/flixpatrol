@@ -2,13 +2,16 @@
 % Please edit documentation in R/hello.R
 \name{lookup_date_type_name_and_return_id}
 \alias{lookup_date_type_name_and_return_id}
-\title{Title}
+\title{Lookup Date Type IDs}
 \usage{
 lookup_date_type_name_and_return_id(x)
 }
 \arguments{
-\item{media_type_name}{}
+\item{x}{Character vector. Date types (e.g., "week").}
+}
+\value{
+An integer vector of IDs.
 }
 \description{
-Title
+Resolves date types (Day, Week, Month) to internal API IDs.
 }

@@ -38,3 +38,19 @@ date_type_name <- tribble(
 )
 
 usethis::use_data(date_type_name, overwrite = TRUE)
+
+
+
+
+library(tibble)
+
+# Creating the platform mapping table
+social_media_name <- tibble::tribble(
+    ~social_media_name,  ~social_media_id,
+    "Instagram", "cmp_Di2u9cvFOpmwE3Zhn1SozXJN",
+    "Facebook",  "cmp_JeAe7ZCyHJKz3fYOrtq6En4s",
+    "Twitter",   "cmp_bBrpGTvopBHPVtIKhR2CF68W"
+)
+
+usethis::use_data(social_media_name, overwrite = TRUE)
+

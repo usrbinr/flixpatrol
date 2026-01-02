@@ -2,9 +2,29 @@
 library(httr2)
 library(tidyverse)
 library(devtools)
-
+devtools::document()
 load_all()
 
+franchise_tbl <- body_lst$data.data$franchise$data |> as_tibble() |> count(id)
+get_company_name("cmp_bBrpGTvopBHPVtIKhR2CF68W")
+get_franchise_name("frn_KGBes9dtvkV710raDBpXoKRc")
+get_franchise_name_safe <- purrr::possibly(get_franchise_name,otherwise = NA)
+get_company_name("ttl_yPCJU2UzROTNVv5JZ7Hu4m8M")
+
+
+out <- franchise_tbl |>
+  rowwise() |>
+  mutate(
+    name=list(get_franchise_name_safe(id))
+  )
+
+# test <-
+  out |>
+  unnest(name) |> view()
+
+
+test$name
+lookup_franchise_and_return_id()
 # top fan sites
 # franchise look up
 # company look up
@@ -52,8 +72,20 @@ authenticate("https://api.flixpatrol.com/v2/franchises") |>
 
 
 
+usethis::edit_r_environ()
+create_fans_site_ranking_tbl <- function(token="FLIX_PATROL",platform_name="netflix",country_name="USA",start_date,end_date,media_type,date_type="week",language){
 
-create_fans_site_ranking_tbl <- function(token,platform_name="netflix",country_name,start_date,end_date,media_type,date_type="week",language_id){
+
+  #test
+
+  country_name="United States"
+  start_date="2025-12-15"
+  end_date="2025-12-21"
+  media_type="Movie"
+  date_type="week"
+  language="English"
+
+
 
     platform_valid_name <- "netflix"
 
@@ -69,7 +101,6 @@ create_fans_site_ranking_tbl <- function(token,platform_name="netflix",country_n
     country_id <- lookup_country_and_return_id(country_name= c("United States"))
     date_type_id <- lookup_date_type_name_and_return_id("day")
     language_id <- lookup_language_name_and_return_id("english")
-    start_date <- "2025-12-24"
 
 
 
@@ -77,7 +108,7 @@ create_fans_site_ranking_tbl <- function(token,platform_name="netflix",country_n
     ## offical ranking
 
 
-    # body_lst <-
+    body_lst <-
         authenticate(site="https://api.flixpatrol.com/v2/fans") |>
         httr2::req_url_query(
             # `country[eq]`=country_id
@@ -92,13 +123,16 @@ create_fans_site_ranking_tbl <- function(token,platform_name="netflix",country_n
         httr2::req_perform() |>
         httr2::resp_body_json(simplifyVector = TRUE) |>
             as.data.frame() |>
-        tibble::as_tibble() |> view()
+        tibble::as_tibble()
+          view()
 
 
         body_lst |> view()
         purrr::pluck("data")
 
 
+
+  usethis::use_r("utils-api")
 
     out <- body_lst |>
         tibble(raw=_) |>
