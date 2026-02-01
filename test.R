@@ -1,208 +1,148 @@
+# flixpatrol — interactive testing & examples
+# Run devtools::document() and load_all() before using these.
 
-library(httr2)
-library(tidyverse)
 library(devtools)
 devtools::document()
 load_all()
 
-franchise_tbl <- body_lst$data.data$franchise$data |> as_tibble() |> count(id)
-get_company_name("cmp_bBrpGTvopBHPVtIKhR2CF68W")
+# --- Lookup Examples ---
+lookup_country_and_return_id("United States")
+lookup_platform_and_return_id("netflix")
+lookup_franchise_and_return_id("Indiana Jones")
+lookup_title_id("Squid Game")
+
+# --- Reverse Lookups ---
+get_company_name("cmp_IA6TdMqwf6kuyQvxo9bJ4nKX")
 get_franchise_name("frn_KGBes9dtvkV710raDBpXoKRc")
-get_franchise_name_safe <- purrr::possibly(get_franchise_name,otherwise = NA)
-get_company_name("ttl_yPCJU2UzROTNVv5JZ7Hu4m8M")
+get_title_name("ttl_yPCJU2UzROTNVv5JZ7Hu4m8M")
 
+# --- Search Titles (returns all matches) ---
+search_titles("Squid Game")
 
-out <- franchise_tbl |>
-  rowwise() |>
-  mutate(
-    name=list(get_franchise_name_safe(id))
-  )
+# --- Resolve IDs in bulk (vectorized, NA-safe) ---
+resolve_id(c("cmp_IA6TdMqwf6kuyQvxo9bJ4nKX", "frn_KGBes9dtvkV710raDBpXoKRc"))
 
-# test <-
-  out |>
-  unnest(name) |> view()
+# --- Daily Top 10 ---
+create_single_daily_top_ten_tbl(
+  platform_name = "netflix",
+  country_name  = "United States",
+  date          = as.Date("2025-12-15"),
+  flix_type     = "movies"
+)
 
+create_daily_top_ten_tbl(
+  platform_name = "netflix",
+  country_name  = "United States",
+  start_date    = "2025-12-01",
+  end_date      = "2025-12-07",
+  flix_type     = "movies"
+)
 
-test$name
-lookup_franchise_and_return_id()
-# top fan sites
-# franchise look up
-# company look up
-# movie look up
+# --- Hours Viewed ---
+create_hours_viewed_tbl(
+  language_name   = "english",
+  media_type_name = "movie",
+  start_date      = "2025-12-15",
+  end_date        = "2025-12-21"
+)
 
-# get weekly winners
-# build prediction model
-# get franchise name
+# --- Official Rankings (Netflix only) ---
+create_official_ranking_tbl(
+  country_name = "United States",
+  start_date   = "2025-12-15",
+  end_date     = "2025-12-21",
+  media_type   = "movie"
+)
 
+# --- Fans Rankings ---
+fetch_fans_ranking_tbl(
+  country_name = "United States",
+  start_date   = "2025-12-15",
+  end_date     = "2025-12-21"
+)
 
+# --- Social Fans ---
+create_social_fans_tbl(
+  social_platform = "Instagram",
+  start_date      = "2025-12-15",
+  end_date        = "2025-12-21"
+)
 
-# official
-# social fans
-# franchise
-# permieres
+# --- Torrent Rankings ---
+torrent_id_vec <- lookup_torrent_site_and_return_id("*")
 
-# daily views
-# social fans?
-## torrant isn't updated until end of the year or something
-##
+create_torrent_ranking_tbl(
+  torrent_site = "1337x",
+  start_date   = "2025-12-01",
+  end_date     = "2025-12-01"
+)
 
+# --- Premieres ---
+create_premiere_tbl(
+  start_date = "2025-12-15",
+  end_date   = "2025-12-31"
+)
 
+# --- Title Details ---
+get_title_details("ttl_yPCJU2UzROTNVv5JZ7Hu4m8M")
 
-##franchise
+# --- Franchise Lookup & Batch Resolution ---
+franchise_tbl <- search_titles("Star Wars")
+franchise_tbl
 
-authenticate("https://api.flixpatrol.com/v2/franchises") |>
-    httr2::req_url_query(
-        `title[like]`=''
-        # `country[eq]`=country_id
-        # `company[eq]`="cmp_JeAe7ZCyHJKz3fYOrtq6En4s"
-        # `movie[eq]`="frn_97nIMYOCvD6zprSPoHgTJauB"
-        # ,`language[eq]`=language_id
-        # ,`number[eq]`=media_type_id
-        # `date[type][eq]`=1
-        # ,`date[to][eq]`=start_date
-        # ,`date[to][eq]`=start_date
-    ) |>
-    httr2::req_perform() |>
-    httr2::resp_body_json(simplifyVector = TRUE) |>
-    as.data.frame() |>
-    as_tibble() |>
-    view()
+# --- Compare Platforms ---
+# How does "Squid Game" rank across Netflix, Disney+, etc. on the same day?
+compare_platforms_tbl(
+  title    = "Squid Game",
+  date     = "2025-12-15"
+)
 
+# --- Title History ---
+# Track a single title's rank over time
+create_title_history_tbl(
+  title      = "Squid Game",
+  start_date = "2025-12-01",
+  end_date   = "2025-12-14"
+)
 
+# --- Weekly Movers ---
+# Who gained, lost, entered, or exited the chart?
+create_weekly_movers_tbl(
+  date_before = "2025-12-14",
+  date_after  = "2025-12-15"
+)
 
+# --- Top Titles Summary ---
+# Most frequent Top 10 titles over a date range
+create_top_titles_summary_tbl(
+  start_date = "2025-12-01",
+  end_date   = "2025-12-14",
+  n          = 10
+)
 
+# --- Global Ranking ---
+# Where does a title rank across 15 countries?
+create_global_ranking_tbl(
+  title = "Squid Game",
+  date  = "2025-12-15"
+)
 
-usethis::edit_r_environ()
-create_fans_site_ranking_tbl <- function(token="FLIX_PATROL",platform_name="netflix",country_name="USA",start_date,end_date,media_type,date_type="week",language){
+# --- Franchise Performance ---
+# Aggregate all Marvel titles on Netflix over a date range
+create_franchise_performance_tbl(
+  franchise_title = "Marvel",
+  start_date      = "2025-12-01",
+  end_date        = "2025-12-14"
+)
 
+# --- Enrich a tibble with resolved names ---
+# tibble with FlixPatrol IDs gets a "name" column automatically
+my_tbl <- tibble::tibble(fp_id = c("cmp_IA6TdMqwf6kuyQvxo9bJ4nKX", "frn_KGBes9dtvkV710raDBpXoKRc"))
+my_tbl |> fp_enrich()
 
-  #test
-
-  country_name="United States"
-  start_date="2025-12-15"
-  end_date="2025-12-21"
-  media_type="Movie"
-  date_type="week"
-  language="English"
-
-
-
-    platform_valid_name <- "netflix"
-
-    if(!all(tolower(platform_name) %in% platform_valid_name)){
-
-        cli::cli_abort("Currently flixpatrol only supports Netflix for the official top ten list, you spplied {platform_name}")
-
-    }
-
-
-    platform_id <- lookup_platform_and_return_id(platform_name = platform_name)
-    media_type_id <- lookup_media_type_name_and_return_id(media_type=media_type)
-    country_id <- lookup_country_and_return_id(country_name= c("United States"))
-    date_type_id <- lookup_date_type_name_and_return_id("day")
-    language_id <- lookup_language_name_and_return_id("english")
-
-
-
-    validate_date_range(start_date = start_date,end_date = end_date,start_date_wday_abb = "mon",range_length = 7)
-    ## offical ranking
-
-
-    body_lst <-
-        authenticate(site="https://api.flixpatrol.com/v2/fans") |>
-        httr2::req_url_query(
-            # `country[eq]`=country_id
-            # `company[eq]`="cmp_JeAe7ZCyHJKz3fYOrtq6En4s"
-            # `movie[eq]`="frn_97nIMYOCvD6zprSPoHgTJauB"
-            # ,`language[eq]`=language_id
-            # ,`number[eq]`=media_type_id
-            `date[type][eq]`=1
-            ,`date[to][eq]`=start_date
-            ,`date[to][eq]`=start_date
-        ) |>
-        httr2::req_perform() |>
-        httr2::resp_body_json(simplifyVector = TRUE) |>
-            as.data.frame() |>
-        tibble::as_tibble()
-          view()
-
-
-        body_lst |> view()
-        purrr::pluck("data")
-
-
-
-  usethis::use_r("utils-api")
-
-    out <- body_lst |>
-        tibble(raw=_) |>
-        tidyr::unnest_wider("raw") |>
-        tidyr::unnest_wider("data") |>
-        tidyr::unnest_wider("movie",names_sep = "_") |>
-        tidyr::unnest_wider("movie_data") |>
-        tidyr::unnest_wider("company",names_sep = "_") |>
-        tidyr::unnest_wider("company_data",names_sep="_") |>
-        tidyr::unnest_wider("company_legacy",names_sep="_") |>
-        tidyr::unnest_wider("country",names_sep="_") |>
-        tidyr::unnest_wider("country_data",names_sep="_") |>
-        tidyr::unnest_wider("country_legacy",names_sep="_") |>
-        tidyr::unnest_wider("date",names_sep = "_")
-
-
-    return(out)
-
-}
-
-
-## hours vieews
-
-create_hours_viewed_tbl(language=1,start_date="2025-12-15",end_date="2025-12-21")
-
-
-body_lst |> glimpse()
-
-    pluck("data") |>
-    as_tibble()
-    rename(language = `$language`)
-    rename(
-        report_type=type
-        ,languge="\$language"
-    )
-
-  hours_view_lst <-   body_lst |>
-        resp_body_json() |>
-        pluck("data") |>
-        pluck(1)
-
-
-  hours_view_lst
-        glimpse()
-
-    # arrange(-data$views) |>
-        # head(100)
-
-
-### get torrent sites
-
-
-
-devtools::document()
-torrent_id_vec <- lookup_torrent_site_and_return_id(x = "*")
-###
-
-
-authenticate(site="https://api.flixpatrol.com/v2/torrents") |>
-        httr2::req_url_query(
-            # `id[eq]`="trt_CfX89vcTOtjqMu0ng6w2QIfD",
-            # `company[eq]` = company_string,
-            # `country[eq]` = country_string,
-            `site[eq]`    = torrent_id_vec[1],
-            # `type[eq]`=media_type_vec,
-            `date[type][eq]` = 1,           # 1 = Daily Chart
-            `date[from][eq]`= "2023-12-01",
-            `date[to][eq]` = "2023-12-01"
-        ) |>
-    httr2::req_perform() |>
-    httr2::resp_body_json(simplifyVector = TRUE) |>
-    as_tibble()
-
+# --- Cache IDs for fast lookups ---
+# Hit the API once and save results to data/
+fp_cache_ids(
+  country_names  = c("United States", "United Kingdom", "Germany", "France", "Brazil"),
+  platform_names = c("Netflix", "Disney+", "HBO Max", "Amazon Prime", "Apple TV+")
+)

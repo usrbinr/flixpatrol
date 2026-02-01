@@ -20,28 +20,23 @@ authenticate <- function(site="https://api.flixpatrol.com/v2/top10s",token="FLIX
 
 
     if(!is.character(token)){
-
-        cli::cli_abort("{token} must be character")
-
+        cli::cli_abort("{.arg token} must be a character string.")
     }
 
-
     if(!is.character(site)){
-
-        cli::cli_abort("{site} must be character")
-
+        cli::cli_abort("{.arg site} must be a character string.")
     }
 
     access_token <- Sys.getenv(token)
 
-    if(!nchar(access_token)>1){
-
-        cli::cli_abort("{token} must be set in your enviorment. Use {.fn usethis::edit_r_environ()} to set your environment varibable to {.val FLIX_PATROL}")
-
+    if(!nchar(access_token) > 1){
+        cli::cli_abort("{.val {token}} must be set in your environment. Use {.fn usethis::edit_r_environ} to set your environment variable to {.val FLIX_PATROL}.")
     }
 
     req <- httr2::request(site) |>
-        httr2::req_auth_basic(username = access_token, password = "")
+        httr2::req_auth_basic(username = access_token, password = "") |>
+        httr2::req_throttle(rate = 10 / 60) |>
+        httr2::req_retry(max_tries = 3)
 
     return(req)
 
@@ -118,8 +113,6 @@ lookup_country_and_return_id <- function(country_name, token = "FLIX_PATROL", si
 #' @export
 lookup_platform_and_return_id <- function(platform_name,token="FLIX_PATROL",silent=FALSE){
 
-    # platform_name <- "Netflix"
-
     # Internal helper to find a single ID
     find_single_id <- function(name) {
 
@@ -133,7 +126,7 @@ lookup_platform_and_return_id <- function(platform_name,token="FLIX_PATROL",sile
 
         if (length(body_lst$data) == 0) {
 
-            cli::cli_abort("No platform found matching: {.val {platform_name[1]*}}")
+            cli::cli_abort("No platform found matching: {.val {name}}")
         }
 
         id <- body_lst$data[[1]]$data$id
@@ -179,7 +172,7 @@ lookup_flix_type_and_return_id <- function(flix_type){
     }
 
 
-    flixpatrol::flix_type$type_id[flixpatrol::flix_type$type_label %in% flix_type_lower]
+    flixpatrol::flix_type_tbl$type_id[flixpatrol::flix_type_tbl$type_label %in% flix_type_lower]
 
 }
 
@@ -273,7 +266,9 @@ create_daily_top_ten_tbl <- function(token="FLIX_PATROL",platform_name,country_n
     # start_date="2025-12-01"
     # end_date="2025-12-21"
 
-    date_vec <- seq.Date(from = start_date,to=end_date)
+    start_date <- as.Date(start_date)
+    end_date   <- as.Date(end_date)
+    date_vec   <- seq.Date(from = start_date, to = end_date, by = "day")
 
 
    out <-  purrr::map(.x=date_vec,.f = \(x) create_single_daily_top_ten_tbl(token=token,platform_name=platform_name,country_name=country_name,date=x,flix_type=flix_type) ) |>
@@ -288,29 +283,53 @@ create_daily_top_ten_tbl <- function(token="FLIX_PATROL",platform_name,country_n
 
 
 
+#' Lookup Values from a Reference Table
+#'
+#' @description
+#' Generic helper that resolves human-readable names to internal FlixPatrol IDs
+#' using a pre-built lookup table. Supports `"*"` wildcard to return all IDs.
+#'
+#' @param input Character vector. Values to look up, or `"*"` for all.
+#' @param tbl Data frame. The reference table to search.
+#' @param name_col Character. Column name containing the human-readable names.
+#' @param id_col Character. Column name containing the IDs.
+#' @param label Character. Label used in error messages.
+#'
+#' @return A vector of IDs matching the input.
+#' @keywords internal
+lookup_from_table <- function(input, tbl, name_col, id_col, label) {
+  if (all(input == "*")) {
+    return(tbl[[id_col]])
+  }
+
+  name_lower <- tolower(input)
+  valid_names <- unique(tbl[[name_col]])
+
+  if (!all(name_lower %in% valid_names)) {
+    cli::cli_abort("{.arg {label}} must be one of {.val {valid_names}}, not {.val {input}}.")
+  }
+
+  tbl[[id_col]][tolower(tbl[[name_col]]) %in% name_lower]
+}
+
+
 #' Lookup Torrent Site IDs
 #'
 #' @description
 #' Resolves torrent site names to internal FlixPatrol IDs.
 #'
-#' @param x Character vector. Torrent site names or "*" for all.
+#' @param x Character vector. Torrent site names or `"*"` for all.
 #'
-#' @return An integer vector of IDs.
+#' @return A character vector of IDs.
 #' @export
-lookup_torrent_site_and_return_id <- function(x){
-
-  # torrent_site <- "torlock"
-  name_lower <- tolower(x)
-
-  if(all(x=="*")){
-
-    name_lower <- tolower(flixpatrol::torrent_sites$torrent_site_name)
-  }
-
-  out <- flixpatrol::torrent_sites$torrent_site_id[tolower(flixpatrol::torrent_sites$torrent_site_name) %in% c(name_lower)]
-
-
-  return(out)
+lookup_torrent_site_and_return_id <- function(x) {
+  lookup_from_table(
+    input    = x,
+    tbl      = flixpatrol::torrent_sites,
+    name_col = "torrent_site_name",
+    id_col   = "torrent_site_id",
+    label    = "torrent_site"
+  )
 }
 
 
@@ -319,36 +338,19 @@ lookup_torrent_site_and_return_id <- function(x){
 #' @description
 #' Resolves language names to internal FlixPatrol IDs.
 #'
-#' @param language_name Character vector. Language names or "*" for all.
+#' @param language_name Character vector. Language names or `"*"` for all.
 #'
 #' @return An integer vector of IDs.
 #' @export
-lookup_language_name_and_return_id <- function(language_name){
-
-  # torrent_site <- "torlock"
-  language_name_lower <- tolower(language_name)
-
-  valid_names <- unique(flixpatrol::language_name$language_name)
-
-  if(!all(language_name_lower %in% valid_names)){
-
-    cli::cli_abort("language name must be one of {.val {valid_names}} not {.val {language_name}}")
-
-
-  }
-
-  if(all(language_name=="*")){
-
-    language_name_lower <- tolower(flixpatrol::language_name$language_name)
-  }
-
-  out <- flixpatrol::language_name$language_id[tolower(flixpatrol::language_name$language_name) %in% c(language_name_lower)]
-
-
-  return(out)
+lookup_language_name_and_return_id <- function(language_name) {
+  lookup_from_table(
+    input    = language_name,
+    tbl      = flixpatrol::language_name,
+    name_col = "language_name",
+    id_col   = "language_id",
+    label    = "language_name"
+  )
 }
-
-
 
 
 #' Lookup Media Type IDs
@@ -356,68 +358,38 @@ lookup_language_name_and_return_id <- function(language_name){
 #' @description
 #' Resolves media type labels to internal FlixPatrol IDs.
 #'
-#' @param media_type_name Character vector. Media types or "*" for all.
+#' @param media_type_name Character vector. Media types or `"*"` for all.
 #'
 #' @return An integer vector of IDs.
 #' @export
-lookup_media_type_name_and_return_id <- function(media_type_name){
-
-  # torrent_site <- "torlock"
-  media_type_name_lower <- tolower(media_type_name)
-
-  valid_names <- unique(flixpatrol::media_type_name$media_type_name)
-
-  if(!all(media_type_name_lower %in% valid_names)){
-
-    cli::cli_abort("language name must be one of {.val {valid_names}} not {.val {media_type_name}}")
-
-
-  }
-
-  if(all(media_type_name=="*")){
-
-    media_type_name_lower <- tolower(flixpatrol::media_type_name$media_type_name)
-  }
-
-  out <- flixpatrol::media_type_name$media_type_id[tolower(flixpatrol::media_type_name$media_type_name) %in% c(media_type_name_lower)]
-
-
-  return(out)
+lookup_media_type_name_and_return_id <- function(media_type_name) {
+  lookup_from_table(
+    input    = media_type_name,
+    tbl      = flixpatrol::media_type_name,
+    name_col = "media_type_name",
+    id_col   = "media_type_id",
+    label    = "media_type_name"
+  )
 }
+
 
 #' Lookup Date Type IDs
 #'
 #' @description
 #' Resolves date types (Day, Week, Month) to internal API IDs.
 #'
-#' @param x Character vector. Date types (e.g., "week").
+#' @param x Character vector. Date types (e.g., "week") or `"*"` for all.
 #'
 #' @return An integer vector of IDs.
 #' @export
-lookup_date_type_name_and_return_id <- function(x){
-
-  # torrent_site <- "torlock"
-  name_lower <- tolower(x)
-
-  valid_names <- unique(flixpatrol::date_type_name$date_type_name)
-
-  if(!all(name_lower %in% valid_names)){
-
-    cli::cli_abort("date_type_name must be one of {.val {valid_names}} not {.val {x}}")
-
-
-  }
-
-  if(all(x=="*")){
-
-    name_lower <- tolower(flixpatrol::date_type_name$date_type_name)
-  }
-
-  out <- flixpatrol::date_type_name$date_type_id[tolower(flixpatrol::date_type_name$date_type_name) %in% c(name_lower)]
-
-
-  return(out)
-
+lookup_date_type_name_and_return_id <- function(x) {
+  lookup_from_table(
+    input    = x,
+    tbl      = flixpatrol::date_type_name,
+    name_col = "date_type_name",
+    id_col   = "date_type_id",
+    label    = "date_type_name"
+  )
 }
 
 
@@ -434,33 +406,28 @@ lookup_date_type_name_and_return_id <- function(x){
 #'
 #' @return Logical `TRUE` if valid, otherwise aborts with a `cli` error.
 #' @export
-validate_date_range <- function(start_date,end_date,start_date_wday_abb,range_length=7){
+validate_date_range <- function(start_date, end_date, start_date_wday_abb, range_length = 7){
+
+  start_date <- as.Date(start_date)
+  end_date   <- as.Date(end_date)
 
   valid_wday_abb <- c("mon","tue","wed","thu","fri","sat","sun")
 
   if(!any(tolower(start_date_wday_abb) %in% valid_wday_abb)){
-
-    cli::cli_abort("start_date_wday_abb must be one of {.val {valid_wday_abb}} not {.val {start_date_wday_abb}}")
+    cli::cli_abort("{.arg start_date_wday_abb} must be one of {.val {valid_wday_abb}}, not {.val {start_date_wday_abb}}.")
   }
 
-  if(!all(tolower(wday(start_date,label = TRUE))==start_date_wday_abb)){
-
-    cli::cli_abort("{start_date} must start on {start_date_wday_abb} not {lubridate::wday(start_date,label=TRUE)}")
-
+  if(!all(tolower(lubridate::wday(start_date, label = TRUE)) == start_date_wday_abb)){
+    cli::cli_abort("{.val {start_date}} must start on {.val {start_date_wday_abb}}, not {.val {tolower(lubridate::wday(start_date, label = TRUE))}}.")
   }
 
-  date_vec <- seq.Date(from=start_date,to=end_date)
+  date_vec <- seq.Date(from = start_date, to = end_date, by = "day")
 
-  if(!all(length(date_vec)==range_length)){
-
-    cli::cli_abort("{start_date} and {end_date} must be {.val {range_length}} days apart")
-
-
+  if(length(date_vec) != range_length){
+    cli::cli_abort("{.val {start_date}} and {.val {end_date}} must be {.val {range_length}} days apart.")
   }
 
   return(TRUE)
-
-
 }
 
 
@@ -469,6 +436,34 @@ validate_date_range <- function(start_date,end_date,start_date_wday_abb,range_le
 
 
 
+
+
+#' Unnest a FlixPatrol API Response
+#'
+#' @description
+#' Shared helper that flattens the nested JSON structure returned by most
+#' FlixPatrol list endpoints into a wide, analysis-ready tibble.
+#'
+#' @param data_lst List. The `data` element from a parsed API response.
+#'
+#' @return A wide tibble with all nested columns expanded.
+#' @keywords internal
+unnest_flixpatrol_response <- function(data_lst) {
+  data_lst |>
+    tibble::tibble(raw = _) |>
+    tidyr::unnest_wider("raw") |>
+    tidyr::unnest_wider("data") |>
+    tidyr::unnest_wider("movie", names_sep = "_") |>
+    tidyr::unnest_wider("movie_data", names_sep = "_") |>
+    tidyr::unnest_wider("company", names_sep = "_") |>
+    tidyr::unnest_wider("company_data", names_sep = "_") |>
+    tidyr::unnest_wider("company_legacy", names_sep = "_") |>
+    tidyr::unnest_wider("country", names_sep = "_") |>
+    tidyr::unnest_wider("country_data", names_sep = "_") |>
+    tidyr::unnest_wider("country_legacy", names_sep = "_") |>
+    tidyr::unnest_wider("date", names_sep = "_") |>
+    janitor::clean_names()
+}
 
 
 #' Create Hours Viewed Table
@@ -490,59 +485,41 @@ validate_date_range <- function(start_date,end_date,start_date_wday_abb,range_le
 #'
 #' @return A wide tibble containing viewing hours and metadata.
 #' @export
-create_hours_viewed_tbl <- function(token="FLIX_PATROL",platform_name="netflix",media_type_name,language_name,start_date,end_date){
+create_hours_viewed_tbl <- function(token = "FLIX_PATROL",
+                                    platform_name = "netflix",
+                                    media_type_name = "movie",
+                                    language_name = "english",
+                                    start_date,
+                                    end_date) {
 
-  # test
-#
-#   platform_name="netflix"
-#   media_type_name="Movie"
-#   language_name="English"
-#   start_date="2025-12-15"
-#   date_type_name <- "Week"
-#   end_date="2025-12-21"
+  platform_name_vec <- lookup_platform_and_return_id(platform_name = platform_name, token = token, silent = TRUE)
+  language_name_vec <- lookup_language_name_and_return_id(language_name = language_name)
+  media_type_vec    <- lookup_media_type_name_and_return_id(media_type_name = media_type_name)
 
-  platform_name_vec <-  lookup_platform_and_return_id(platform_name = platform_name,token=token,silent=TRUE)
-  language_name_vec <-  lookup_language_name_and_return_id(language_name = language_name)
-  media_type_vec    <-  lookup_media_type_name_and_return_id(media_type_name = media_type_name)
-  # date_type_vec    <-  lookup_date_type_name_and_return_id(x = date_type_name)
-  validate_date_range(start_date = start_date,end_date = end_date,start_date_wday_abb = "mon",range_length = 7)
-
-
+  validate_date_range(start_date = start_date, end_date = end_date, start_date_wday_abb = "mon", range_length = 7)
 
   body_lst <-
-    authenticate(token=token,site="https://api.flixpatrol.com/v2/hoursviewed") |>
+    authenticate(token = token, site = "https://api.flixpatrol.com/v2/hoursviewed") |>
     httr2::req_url_query(
-      `company[eq]` = platform_name_vec,
-      `language[eq]`=language_name_vec,
-      `number[eq]`=media_type_vec,
+      `company[eq]`    = platform_name_vec,
+      `language[eq]`   = language_name_vec,
+      `number[eq]`     = media_type_vec,
       `date[type][eq]` = 3,
-      `date[from][eq]` = start_date,
-      `date[to][eq]` = end_date
+      `date[from][eq]` = as.character(start_date),
+      `date[to][eq]`   = as.character(end_date)
     ) |>
     httr2::req_perform() |>
     httr2::resp_body_json() |>
     purrr::pluck("data")
 
+  if (length(body_lst) == 0) {
+    cli::cli_alert_warning("No hours viewed data returned for these parameters.")
+    return(tibble::tibble())
+  }
 
-
-  out <-
-    body_lst |>
-    tibble::tibble(raw=_) |>
-    tidyr::unnest_wider(raw) |>
-    tidyr::unnest_wider(data) |>
-    tidyr::unnest_wider(movie, names_sep = "_") |>
-    tidyr::unnest_wider(company, names_sep = "_") |>
-    tidyr::unnest_wider(date, names_sep = "_") |>
-    tidyr::unnest_wider(movie_data) |>
-    tidyr::unnest_wider(movie_legacy,names_sep="_") |>
-    tidyr::unnest_wider(company_data,names_sep="_") |>
-    tidyr::unnest_wider(company_legacy,names_sep="_") |>
-    dplyr::rename(
-      hours_view=value
-    )
+  out <- unnest_flixpatrol_response(body_lst)
 
   return(out)
-
 }
 
 
@@ -569,60 +546,46 @@ create_hours_viewed_tbl <- function(token="FLIX_PATROL",platform_name="netflix",
 #'
 #' @return A tibble of official rankings.
 #' @export
-create_official_ranking_tbl <- function(token,platform_name="netflix",country_name,start_date,end_date,media_type,date_type="week",language_id){
+create_official_ranking_tbl <- function(token = "FLIX_PATROL",
+                                        platform_name = "netflix",
+                                        country_name,
+                                        start_date,
+                                        end_date,
+                                        media_type,
+                                        date_type = "week",
+                                        language = "english") {
 
   platform_valid_name <- "netflix"
 
-  if(!all(tolower(platform_name) %in% platform_valid_name)){
-
-    cli::cli_abort("Currently flixpatrol only supports Netflix for the official top ten list, you spplied {platform_name}")
-
+  if (!all(tolower(platform_name) %in% platform_valid_name)) {
+    cli::cli_abort("Currently flixpatrol only supports Netflix for the official top ten list, you supplied {.val {platform_name}}.")
   }
 
-  platform_id <- lookup_platform_and_return_id(platform_name = platform_name)
-  media_type_id <- lookup_media_type_name_and_return_id(media_type=media_type)
-  country_id <- lookup_country_and_return_id(country_name= c("United States"))
-  date_type_id <- lookup_date_type_name_and_return_id("week")
-  language_id <- lookup_language_name_and_return_id("english")
+  platform_id  <- lookup_platform_and_return_id(platform_name = platform_name, token = token, silent = TRUE)
+  media_type_id <- lookup_media_type_name_and_return_id(media_type = media_type)
+  country_id   <- lookup_country_and_return_id(country_name = country_name, token = token, silent = TRUE)
+  date_type_id <- lookup_date_type_name_and_return_id(date_type)
+  language_id  <- lookup_language_name_and_return_id(language)
 
+  validate_date_range(start_date = start_date, end_date = end_date, start_date_wday_abb = "mon", range_length = 7)
 
-
-  validate_date_range(start_date = start_date,end_date = end_date,start_date_wday_abb = "mon",range_length = 7)
-  ## offical ranking
-
-  body_lst <- authenticate(site="https://api.flixpatrol.com/v2/rankingsofficial") |>
+  body_lst <- authenticate(site = "https://api.flixpatrol.com/v2/rankingsofficial", token = token) |>
     httr2::req_url_query(
-      `country[eq]`    =country_id
-      ,`company[eq]`   =platform_id
-      ,`language[eq]`  =language_id
-      ,`number[eq]`    =media_type_id
-      ,`date[type][eq]`=date_type_id
-      ,`date[to][eq]`  =start_date
-      ,`date[to][eq]`  =end_date
+      `country[eq]`     = country_id,
+      `company[eq]`     = platform_id,
+      `language[eq]`    = language_id,
+      `number[eq]`      = media_type_id,
+      `date[type][eq]`  = date_type_id,
+      `date[from][eq]`  = as.character(start_date),
+      `date[to][eq]`    = as.character(end_date)
     ) |>
     httr2::req_perform() |>
     httr2::resp_body_json() |>
     purrr::pluck("data")
 
-
-  out <- body_lst |>
-    tibble::tibble(raw=_) |>
-    tidyr::unnest_wider("raw") |>
-    tidyr::unnest_wider("data") |>
-    tidyr::unnest_wider("movie",names_sep = "_") |>
-    tidyr::unnest_wider("movie_data") |>
-    tidyr::unnest_wider("company",names_sep = "_") |>
-    tidyr::unnest_wider("company_data",names_sep="_") |>
-    tidyr::unnest_wider("company_legacy",names_sep="_") |>
-    tidyr::unnest_wider("country",names_sep="_") |>
-    tidyr::unnest_wider("country_data",names_sep="_") |>
-    tidyr::unnest_wider("country_legacy",names_sep="_") |>
-    tidyr::unnest_wider("date",names_sep = "_")
-
-
+  out <- unnest_flixpatrol_response(body_lst)
 
   return(out)
-
 }
 
 
@@ -688,18 +651,7 @@ fetch_fans_ranking_tbl <- function(token = "FLIX_PATROL",
   }
 
   # 4. Tidy Unnesting
-  # We use tidyr::unnest_wider to flatten the complex JSON tree
-  out <- tibble::tibble(raw = body$data) |>
-    tidyr::unnest_wider(raw) |>
-    tidyr::unnest_wider(data) |>
-    tidyr::unnest_wider(movie, names_sep = "_") |>
-    tidyr::unnest_wider(movie_data, names_sep = "val_") |>
-    tidyr::unnest_wider(company, names_sep = "_") |>
-    tidyr::unnest_wider(company_data, names_sep = "val_") |>
-    tidyr::unnest_wider(country, names_sep = "_") |>
-    tidyr::unnest_wider(country_data, names_sep = "val_") |>
-    tidyr::unnest_wider(date, names_sep = "_") |>
-    janitor::clean_names()
+  out <- unnest_flixpatrol_response(body$data)
 
   return(out)
 }
