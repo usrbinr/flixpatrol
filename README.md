@@ -21,7 +21,7 @@ The `flixpatrol` package is an R interface for the [FlixPatrol API V2](https://f
 
 ## Installation
 
-You can install the development version of `flixpatrol` from GitHub:
+You can install the development version of `flixpatrol` from Codeberg:
 
 ```r
 # install.packages("pak")
