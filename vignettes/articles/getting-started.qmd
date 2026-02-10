@@ -1,0 +1,336 @@
+---
+title: "Getting Started with flixpatrol"
+---
+
+This article demonstrates how to use the flixpatrol package to retrieve streaming platform rankings and analytics from the FlixPatrol API.
+
+## Setup
+
+First, load the package and set your API key:
+
+```{r}
+#| label: setup-library
+#| eval: false
+library(flixpatrol)
+
+# Set your API key (do this once in your .Renviron)
+usethis::edit_r_environ()
+# Add: FLIX_PATROL=your_api_key_here
+```
+
+To suppress lookup messages globally:
+
+```{r}
+#| label: setup-options
+#| eval: false
+options(flixpatrol.silent = TRUE)
+```
+
+## Looking Up IDs
+
+Before fetching data, you often need to translate human-readable names to FlixPatrol IDs.
+
+### Countries and Platforms
+
+```{r}
+#| label: lookup-country-platform
+#| eval: false
+# Single lookup
+lookup_country("United States")
+#> [1] "cnt_iMUHNbZvnNHK5YdhgwtOoP4u"
+
+lookup_platform("Netflix")
+#> [1] "cmp_IA6TdMqwf6kuyQvxo9bJ4nKX"
+
+# Multiple at once (vectorized)
+lookup_country(c("United States", "Germany", "Japan"))
+lookup_platform(c("Netflix", "Disney+", "HBO Max"))
+```
+
+### Titles and Franchises
+
+```{r}
+#| label: lookup-title-franchise
+#| eval: false
+lookup_title("Squid Game")
+#> [1] "ttl_yPCJU2UzROTNVv5JZ7Hu4m8M"
+
+lookup_franchise("Marvel")
+#> [1] "frn_KGBes9dtvkV710raDBpXoKRc"
+```
+
+### Reverse Lookup (ID to Name)
+
+```{r}
+#| label: reverse-lookup
+#| eval: false
+# Works with any ID type (cmp_, ttl_, frn_)
+get_title_name("cmp_IA6TdMqwf6kuyQvxo9bJ4nKX")
+#> [1] "Netflix"
+
+# Vectorized - returns NA for failures
+get_title_name(c("cmp_IA6TdMqwf6kuyQvxo9bJ4nKX", "ttl_invalid"))
+#> [1] "Netflix" NA
+```
+
+## Fetching Top 10 Rankings
+
+### Daily Top 10
+
+```{r}
+#| label: get-top-ten
+#| eval: false
+# Get a week of Top 10 data
+top10 <- get_top_ten(
+  platform_name = "netflix",
+  country_name  = "United States",
+  start_date    = "2025-12-01",
+  end_date      = "2025-12-07",
+  flix_type     = "movies"
+)
+
+top10
+#> # A tibble: 70 x 7
+#>     rank title                  type_id days_total rank_last date       imdb_id
+#>    <int> <chr>                    <int>      <int>     <int> <chr>        <int>
+#>  1     1 Carry-On                     1         15         1 2025-12-01  123456
+#>  2     2 The Six Triple Eight         1          8         2 2025-12-01  234567
+#>  3     3 Our Little Secret            1         21         3 2025-12-01  345678
+#> # i 67 more rows
+```
+
+### Filtering Results
+
+```{r}
+#| label: filter-top-ten
+#| eval: false
+library(dplyr)
+
+# Find #1 movies each day
+top10 |>
+  filter(rank == 1) |>
+  select(date, title, days_total)
+
+# Titles that appeared multiple days
+top10 |>
+  count(title, sort = TRUE) |>
+  filter(n > 3)
+```
+
+## Viewing Hours Data
+
+Netflix publishes weekly viewing hours. This requires a Monday-Sunday date range:
+
+```{r}
+#| label: get-hours-viewed
+#| eval: false
+hours <- get_hours_viewed(
+  platform_name   = "netflix",
+  language_name   = "english",
+  media_type_name = "movie",
+  start_date      = "2025-12-16",
+  end_date        = "2025-12-22"
+)
+
+hours |>
+  select(title, hours_viewed = data_value) |>
+  arrange(desc(hours_viewed)) |>
+  head(10)
+```
+
+## Premieres
+
+Get upcoming releases for a platform:
+
+```{r}
+#| label: get-premieres
+#| eval: false
+premieres <- get_premieres(
+  platform_name = "netflix",
+  start_date    = "2025-12-01",
+  end_date      = "2025-12-31"
+)
+
+premieres |>
+  select(title = movie_data_title, premiere_date = data_premiere, type = data_type) |>
+  arrange(premiere_date)
+```
+
+## Analytics Functions
+
+### Compare Across Platforms
+
+See how a title performs on different streaming services:
+
+```{r}
+#| label: compare-platforms
+#| eval: false
+compare_platforms_tbl(
+  title     = "Stranger Things",
+  date      = "2025-12-01",
+  platforms = c("netflix", "disney+", "hbo max", "amazon prime"),
+  flix_type = "tv_shows"
+)
+#> # A tibble: 4 x 4
+#>   platform      rank title           date
+#>   <chr>        <int> <chr>           <chr>
+#> 1 netflix          1 Stranger Things 2025-12-01
+#> 2 disney+         NA Stranger Things 2025-12-01
+#> 3 hbo max         NA Stranger Things 2025-12-01
+#> 4 amazon prime    NA Stranger Things 2025-12-01
+```
+
+### Track a Title Over Time
+
+```{r}
+#| label: title-history
+#| eval: false
+history <- get_title_history(
+  title         = "Stranger Things",
+  platform_name = "netflix",
+  country_name  = "United States",
+  start_date    = "2025-12-01",
+  end_date      = "2025-12-07",
+  flix_type     = "tv_shows"
+)
+
+```
+
+### Weekly Movers
+
+Identify which titles gained or lost positions:
+
+```{r}
+#| label: weekly-movers
+#| eval: false
+movers <- get_weekly_movers(
+  platform_name = "netflix",
+  country_name  = "United States",
+  date_before   = "2025-12-14",
+  date_after    = "2025-12-15",
+  flix_type     = "movies"
+)
+
+movers |>
+  filter(status %in% c("gainer", "new_entry")) |>
+  arrange(desc(change))
+#> # A tibble: 5 x 5
+#>   title              rank_before rank_after change status
+#>   <chr>                    <int>      <int>  <int> <chr>
+#> 1 New Holiday Movie           NA          2     NA new_entry
+#> 2 Rising Star                  8          3      5 gainer
+#> 3 Comeback Film               10          7      3 gainer
+```
+
+### Top Titles Summary
+
+Summarize which titles dominated over a period:
+
+```{r}
+#| label: top-titles-summary
+#| eval: false
+summary_tbl <- get_top_titles_summary(
+  platform_name = "netflix",
+  country_name  = "United States",
+  start_date    = "2025-12-01",
+  end_date      = "2025-12-31",
+  flix_type     = "movies",
+  n             = 10
+)
+
+summary_tbl
+#> # A tibble: 10 x 6
+#>    title                days_on_chart best_rank avg_rank first_seen last_seen
+#>    <chr>                        <int>     <int>    <dbl> <chr>      <chr>
+#>  1 Carry-On                        31         1      1.5 2025-12-01 2025-12-31
+#>  2 Our Little Secret               28         1      2.3 2025-12-01 2025-12-28
+#>  3 The Six Triple Eight            25         1      3.1 2025-12-01 2025-12-25
+```
+
+### Global Ranking
+
+See how a title ranks in different countries:
+
+```{r}
+#| label: global-ranking
+#| eval: false
+global <- get_global_ranking(
+  title         = "Stranger Things",
+  platform_name = "netflix",
+  date          = "2025-12-01",
+  flix_type     = "tv_shows"
+)
+
+global |>
+  filter(!is.na(rank)) |>
+  arrange(rank)
+#> # A tibble: 12 x 4
+#>    country        rank title           date
+#>    <chr>         <int> <chr>           <chr>
+#>  1 United States     1 Stranger Things 2025-12-01
+#>  2 Canada            2 Stranger Things 2025-12-01
+#>  3 United Kingdom    3 Stranger Things 2025-12-01
+#>  4 Germany           4 Stranger Things 2025-12-01
+```
+
+### Franchise Performance
+
+Aggregate all titles in a franchise:
+
+```{r}
+#| label: franchise-performance
+#| eval: false
+marvel <- get_franchise_performance(
+  franchise_title = "Marvel",
+  platform_name   = "netflix",
+  country_name    = "United States",
+  start_date      = "2025-12-01",
+  end_date        = "2025-12-31",
+  flix_type       = "movies"
+)
+
+marvel
+#> # A tibble: 4 x 7
+#>   title              days_on_chart best_rank avg_rank first_seen last_seen franchise
+#>   <chr>                      <int>     <int>    <dbl> <chr>      <chr>     <chr>
+#> 1 Black Panther                 12         3      5.2 2025-12-05 2025-12-16 Marvel
+#> 2 Spider-Man: NWH                8         5      7.1 2025-12-10 2025-12-17 Marvel
+```
+
+## Lookup Tables
+
+The package includes pre-built reference tables to avoid API calls:
+
+```{r}
+#| label: lookup-tables
+#| eval: false
+# View available content types
+flixpatrol::flix_type_tbl
+#> # A tibble: 13 x 2
+#>    type_id type_label
+#>      <int> <chr>
+#>  1       1 movies
+#>  2       2 tv
+#>  3       3 anime
+#>  4       4 kids
+#>  ...
+
+# View date granularities
+flixpatrol::date_type_name
+#> # A tibble: 7 x 2
+#>   date_type_id date_type_name
+#>          <int> <chr>
+#>  1            1 day
+#>  2            2 week
+#>  3            3 month
+#>  ...
+
+# View torrent sites
+flixpatrol::torrent_sites
+```
+
+## Next Steps
+
+- Explore the [Function Reference](../../reference.qmd) for complete documentation
+- Check the [FlixPatrol API docs](https://flixpatrol.com/api2/) for endpoint details
+- Report issues at [Codeberg](https://codeberg.org/usrbinr/flixpatrol/issues)
