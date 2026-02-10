@@ -1,0 +1,48 @@
+---
+title: "get_franchise_name"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `get_franchise_name()`
+
+Get Franchise Name from ID
+
+## Usage
+
+```r
+get_franchise_name(franchise_id, token = "FLIX_PATROL")
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `franchise_id` | Character. The FlixPatrol franchise ID (e.g., "frn_STNa2GEw54ahWxJsXNgBMmt0"). |
+| `token` | Character. The name of the environment variable containing the API key. |
+
+## Value
+
+A character string containing the franchise title.
+
+## Description
+
+Retrieves the human-readable franchise title associated with a specific
+FlixPatrol franchise ID.
+
+## Details
+
+This function hits the '/franchises/:id' endpoint. It is used to resolve
+IDs found in data tables back into readable titles for reporting or
+visualization.
+
+## Examples
+
+```r
+## Not run: 
+get_franchise_name("frn_STNa2GEw54ahWxJsXNgBMmt0")
+# [1] "Indiana Jones"
+
+## End(Not run)
+```
+

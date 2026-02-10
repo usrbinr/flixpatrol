@@ -1,7 +1,7 @@
-describe("create_weekly_movers_tbl()", {
+describe("get_weekly_movers()", {
 
   # We can't call the real API, so test the classification logic directly
-  # by simulating the join + mutate that create_weekly_movers_tbl performs
+  # by simulating the join + mutate that get_weekly_movers performs
 
   it("classifies new entries correctly", {
     before <- tibble::tibble(title = "Old Movie", rank_before = 1L)

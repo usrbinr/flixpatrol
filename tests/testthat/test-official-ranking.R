@@ -1,8 +1,8 @@
-describe("create_official_ranking_tbl()", {
+describe("get_official_ranking()", {
 
   it("errors when platform is not netflix", {
     expect_error(
-      create_official_ranking_tbl(
+      get_official_ranking(
         platform_name = "disney+",
         country_name  = "United States",
         start_date    = "2025-12-15",
@@ -15,7 +15,7 @@ describe("create_official_ranking_tbl()", {
 
   it("errors when platform is not netflix (mixed case)", {
     expect_error(
-      create_official_ranking_tbl(
+      get_official_ranking(
         platform_name = "HBO Max",
         country_name  = "United States",
         start_date    = "2025-12-15",
@@ -31,7 +31,7 @@ describe("create_official_ranking_tbl()", {
     # but should NOT error on the platform validation
     withr::local_envvar(FLIX_PATROL = "fake_key")
     expect_error(
-      create_official_ranking_tbl(
+      get_official_ranking(
         platform_name = "Netflix",
         country_name  = "United States",
         start_date    = "2025-12-15",

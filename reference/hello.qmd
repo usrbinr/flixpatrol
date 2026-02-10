@@ -1,0 +1,26 @@
+---
+title: "hello"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `hello()`
+
+Hello, World!
+
+## Usage
+
+```r
+hello()
+```
+
+## Description
+
+Prints 'Hello, world!'.
+
+## Examples
+
+```r
+hello()
+```
+

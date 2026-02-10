@@ -4,15 +4,15 @@ Title: R Client for the FlixPatrol Streaming Rankings API
 Version: 0.2.0
 Authors@R: c(
     person(
-      "Jane", "Doe",
-      email = "jane@example.com",
+      "Alejandro", "Hagan",
+      email = "alejandro.hagan@outlook.com",
       role = c("aut", "cre")
     )
   )
 Description: Provides a programmatic interface to the FlixPatrol API (V2) for
     accessing streaming platform rankings, viewing hours, official charts,
     torrent data, and social media fan metrics. Includes lookup helpers for
-    countries, platforms, franchises, and titles with fuzzy matching support.
+    countries, platforms, franchises, and titles.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

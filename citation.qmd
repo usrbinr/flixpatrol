@@ -1,0 +1,23 @@
+---
+title: Citation
+---
+
+# Citing flixpatrol
+
+To cite this package in publications, use:
+
+> 
+> Doe J (2026). _flixpatrol: R Client for the FlixPatrol Streaming
+Rankings API_. R package version 0.2.0.
+
+## BibTeX entry
+
+```bibtex
+@Manual{,
+  title = {flixpatrol: R Client for the FlixPatrol Streaming Rankings API},
+  author = {Jane Doe},
+  year = {2026},
+  note = {R package version 0.2.0},
+}
+```
+

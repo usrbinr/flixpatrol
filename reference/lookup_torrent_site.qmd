@@ -1,0 +1,30 @@
+---
+title: "lookup_torrent_site"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `lookup_torrent_site()`
+
+Lookup Torrent Site IDs
+
+## Usage
+
+```r
+lookup_torrent_site(x)
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `x` | Character vector. Torrent site names or '"*"' for all. |
+
+## Value
+
+A character vector of IDs.
+
+## Description
+
+Resolves torrent site names to internal FlixPatrol IDs.
+

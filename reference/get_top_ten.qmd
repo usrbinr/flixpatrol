@@ -1,0 +1,48 @@
+---
+title: "get_top_ten"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `get_top_ten()`
+
+Create a Daily Top 10 Table for a Date Range
+
+## Usage
+
+```r
+get_top_ten(
+  token = "FLIX_PATROL",
+  platform_name,
+  country_name,
+  start_date,
+  end_date,
+  flix_type
+)
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `token` | Character. API environment variable name. |
+| `platform_name` | Character. Name of the platform. |
+| `country_name` | Character. Name of the country. |
+| `start_date` | Date/Character. Start of the range. |
+| `end_date` | Date/Character. End of the range. |
+| `flix_type` | Character. Content type. |
+
+## Value
+
+A combined tibble for the specified date range.
+
+## Description
+
+Iterates over a sequence of dates to build a historical Top 10 dataset.
+
+## Details
+
+This function generates a date vector between 'start_date' and 'end_date'
+and maps 'get_single_top_ten' over each date. The results
+are bound together into a single master tibble.
+

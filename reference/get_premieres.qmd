@@ -1,0 +1,38 @@
+---
+title: "get_premieres"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `get_premieres()`
+
+Create Premiere Table
+
+## Usage
+
+```r
+get_premieres(
+  platform_name = "netflix",
+  start_date,
+  end_date,
+  media_type = NULL
+)
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `platform_name` | Character. Platform name (e.g., "netflix"). |
+| `start_date` | Date/Character. Start of the date range. |
+| `end_date` | Date/Character. End of the date range. |
+| `media_type` | Character. "movie" or "tv" (optional). |
+
+## Value
+
+A tibble of upcoming premieres.
+
+## Description
+
+Fetches upcoming premiere dates from the FlixPatrol API.
+

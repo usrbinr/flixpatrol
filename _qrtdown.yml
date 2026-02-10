@@ -1,0 +1,16 @@
+url: https://codeberg.org/usrbinr/flixpatrol
+template:
+  theme: cosmo
+  code_overflow: wrap
+navbar:
+  title: flixpatrol 0.2.0
+  left:
+  - text: Reference
+    href: reference.qmd
+  - text: Articles
+  right:
+  - icon: code-square
+    href: https://codeberg.org/usrbinr/flixpatrol
+    aria-label: Source code
+reference: []
+articles: []

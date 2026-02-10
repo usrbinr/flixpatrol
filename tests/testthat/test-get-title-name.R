@@ -1,40 +1,37 @@
 describe("get_title_name()", {
 
-  it("errors for an unknown ID prefix", {
-    expect_error(
-      get_title_name("zzz_abc123"),
-      "Unknown ID prefix"
-    )
+  it("returns NA for an unknown ID prefix", {
+    result <- get_title_name("zzz_abc123")
+    expect_true(is.na(result))
   })
 
-  it("recognises the cmp_ prefix and routes to companies", {
+  it("returns NA for non-existent cmp_ ID", {
     withr::local_envvar(FLIX_PATROL = "fake_key")
-    expect_error(
-      get_title_name("cmp_nonexistent"),
-      "404 Not Found|companies"
-    )
+    result <- get_title_name("cmp_nonexistent")
+    expect_true(is.na(result))
   })
 
-  it("recognises the ttl_ prefix and routes to titles", {
+  it("returns NA for non-existent ttl_ ID", {
     withr::local_envvar(FLIX_PATROL = "fake_key")
-    expect_error(
-      get_title_name("ttl_nonexistent"),
-      "404 Not Found|titles"
-    )
+    result <- get_title_name("ttl_nonexistent")
+    expect_true(is.na(result))
   })
 
-  it("recognises the frn_ prefix and routes to franchises", {
+  it("returns NA for non-existent frn_ ID", {
     withr::local_envvar(FLIX_PATROL = "fake_key")
-    expect_error(
-      get_title_name("frn_nonexistent"),
-      "404 Not Found|franchises"
-    )
+    result <- get_title_name("frn_nonexistent")
+    expect_true(is.na(result))
   })
 
-  it("trims whitespace from the input", {
-    expect_error(
-      get_title_name("zzz_abc"),
-      "Unknown ID prefix"
-    )
+  it("is vectorized", {
+    withr::local_envvar(FLIX_PATROL = "fake_key")
+    result <- get_title_name(c("cmp_fake", "ttl_fake"))
+    expect_length(result, 2)
+    expect_type(result, "character")
+  })
+
+  it("handles empty input", {
+    result <- get_title_name(character(0))
+    expect_length(result, 0)
   })
 })

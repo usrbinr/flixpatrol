@@ -1,0 +1,30 @@
+---
+title: "lookup_media_type"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `lookup_media_type()`
+
+Lookup Media Type IDs
+
+## Usage
+
+```r
+lookup_media_type(media_type_name)
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `media_type_name` | Character vector. Media types or '"*"' for all. |
+
+## Value
+
+An integer vector of IDs.
+
+## Description
+
+Resolves media type labels to internal FlixPatrol IDs.
+

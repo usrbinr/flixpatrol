@@ -1,0 +1,40 @@
+---
+title: "get_social_fans"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `get_social_fans()`
+
+Create Social Fans Table
+
+## Usage
+
+```r
+get_social_fans(
+  token = "FLIX_PATROL",
+  social_platform,
+  start_date,
+  end_date,
+  date_type = "day"
+)
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `token` | Character. API environment variable name. |
+| `social_platform` | Character. Social media platform name (e.g., "Instagram", "Facebook", "Twitter"). |
+| `start_date` | Date/Character. Start date. |
+| `end_date` | Date/Character. End date. |
+| `date_type` | Character. Date granularity (default '"day"'). |
+
+## Value
+
+A tibble of social fan rankings.
+
+## Description
+
+Fetches social media fan count data using the social media platform lookup table.
+

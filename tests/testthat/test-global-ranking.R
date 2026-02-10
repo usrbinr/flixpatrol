@@ -1,8 +1,8 @@
-describe("create_global_ranking_tbl()", {
+describe("get_global_ranking()", {
 
   it("returns a tibble with expected columns even when API fails", {
     withr::local_envvar(FLIX_PATROL = "fake_key")
-    result <- create_global_ranking_tbl(
+    result <- get_global_ranking(
       title     = "Test Movie",
       date      = "2025-12-15",
       countries = c("United States", "United Kingdom")
@@ -17,7 +17,7 @@ describe("create_global_ranking_tbl()", {
   it("returns one row per country", {
     withr::local_envvar(FLIX_PATROL = "fake_key")
     countries <- c("United States", "France", "Germany")
-    result <- create_global_ranking_tbl(
+    result <- get_global_ranking(
       title     = "Test",
       date      = "2025-12-15",
       countries = countries
@@ -27,7 +27,7 @@ describe("create_global_ranking_tbl()", {
 
   it("defaults to 15 countries when none specified", {
     withr::local_envvar(FLIX_PATROL = "fake_key")
-    result <- create_global_ranking_tbl(
+    result <- get_global_ranking(
       title = "Test",
       date  = "2025-12-15"
     )

@@ -1,0 +1,48 @@
+---
+title: "get_hours_viewed"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `get_hours_viewed()`
+
+Create Hours Viewed Table
+
+## Usage
+
+```r
+get_hours_viewed(
+  token = "FLIX_PATROL",
+  platform_name = "netflix",
+  media_type_name = "movie",
+  language_name = "english",
+  start_date,
+  end_date
+)
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `token` | Character. API environment variable name. |
+| `platform_name` | Character. Platform name (defaults to "netflix"). |
+| `media_type_name` | Character. Media type (e.g., "Movie"). |
+| `language_name` | Character. Language (e.g., "English"). |
+| `start_date` | Date/Character. Must be a Monday. |
+| `end_date` | Date/Character. Must be 7 days from start. |
+
+## Value
+
+A wide tibble containing viewing hours and metadata.
+
+## Description
+
+Retrieves the "Hours Viewed" metric for a platform, language, and content type.
+
+## Details
+
+This function specifically handles the '/hoursviewed' endpoint. It defaults
+to "week" views (API type 3) and requires a 7-day range starting on a Monday.
+The resulting JSON is heavily unnested to provide a wide, analysis-ready tibble.
+

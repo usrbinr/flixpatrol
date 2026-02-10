@@ -1,3 +1,18 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
+
+# qrtdown
+^docs$
+^\.quarto$
+^_quarto\.yml$
+^_qrtdown\.yml$
+^reference\.qmd$
+^articles\.qmd$
+^citation\.qmd$
+^index\.qmd$
+^vignettes/articles$
+^llms\.txt$
+
+# qrtdown
+^reference$

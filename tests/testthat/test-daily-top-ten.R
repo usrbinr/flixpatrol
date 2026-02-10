@@ -1,10 +1,10 @@
-describe("create_daily_top_ten_tbl()", {
+describe("get_top_ten()", {
 
   it("coerces character dates to Date objects without error", {
     # Will fail on API call, but should not fail on date coercion
     withr::local_envvar(FLIX_PATROL = "fake_key")
     expect_error(
-      create_daily_top_ten_tbl(
+      get_top_ten(
         platform_name = "netflix",
         country_name  = "United States",
         start_date    = "2025-12-01",

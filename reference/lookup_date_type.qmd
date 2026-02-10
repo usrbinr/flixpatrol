@@ -1,0 +1,30 @@
+---
+title: "lookup_date_type"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `lookup_date_type()`
+
+Lookup Date Type IDs
+
+## Usage
+
+```r
+lookup_date_type(x)
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `x` | Character vector. Date types (e.g., "week") or '"*"' for all. |
+
+## Value
+
+An integer vector of IDs.
+
+## Description
+
+Resolves date types (Day, Week, Month) to internal API IDs.
+

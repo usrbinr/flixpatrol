@@ -1,0 +1,51 @@
+---
+title: "lookup_franchise"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `lookup_franchise()`
+
+Lookup Franchise IDs
+
+## Usage
+
+```r
+lookup_franchise(
+  franchise_title,
+  silent = getOption("flixpatrol.silent", FALSE)
+)
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `franchise_title` | Character vector. The title(s) of the franchises to lookup. |
+| `silent` | Logical. If 'FALSE' (default), prints success messages using 'cli'. |
+
+## Value
+
+A named character vector of franchise IDs.
+
+## Description
+
+Translates human-readable franchise titles (e.g., "Indiana Jones", "Marvel")
+into FlixPatrol internal franchise IDs.
+
+## Details
+
+This function queries the '/franchises' endpoint using exact matching. It is
+vectorized via 'purrr::map_chr', allowing you to search for multiple franchises
+at once.
+
+## Examples
+
+```r
+## Not run: 
+lookup_franchise("Indiana Jones")
+# [1] "frn_STNa2GEw54ahWxJsXNgBMmt0"
+
+## End(Not run)
+```
+

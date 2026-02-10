@@ -1,8 +1,8 @@
-describe("create_social_fans_tbl()", {
+describe("get_social_fans()", {
 
   it("errors for an invalid social platform name", {
     expect_error(
-      create_social_fans_tbl(social_platform = "TikTok", start_date = "2025-12-15", end_date = "2025-12-21"),
+      get_social_fans(social_platform = "TikTok", start_date = "2025-12-15", end_date = "2025-12-21"),
       "must be one of"
     )
   })
@@ -11,7 +11,7 @@ describe("create_social_fans_tbl()", {
     # Should not error on validation — will error on API call
     withr::local_envvar(FLIX_PATROL = "fake_key")
     expect_error(
-      create_social_fans_tbl(social_platform = "instagram", start_date = "2025-12-15", end_date = "2025-12-21"),
+      get_social_fans(social_platform = "instagram", start_date = "2025-12-15", end_date = "2025-12-21"),
       class = "httr2_http"
     )
   })
@@ -21,7 +21,7 @@ describe("create_social_fans_tbl()", {
     for (plat in c("Instagram", "Facebook", "Twitter")) {
       # Should error on API, not validation
       expect_error(
-        create_social_fans_tbl(social_platform = plat, start_date = "2025-12-15", end_date = "2025-12-15"),
+        get_social_fans(social_platform = plat, start_date = "2025-12-15", end_date = "2025-12-15"),
         class = "httr2_http"
       )
     }

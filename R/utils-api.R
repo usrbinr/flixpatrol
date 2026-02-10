@@ -58,12 +58,11 @@ get_company_name <- function(company_id, token = "FLIX_PATROL") {
 #' into FlixPatrol internal franchise IDs.
 #'
 #' @details
-#' This function queries the `/franchises` endpoint. It supports fuzzy matching
-#' via the API's `title[like]` parameter. It is vectorized via `purrr::map_chr`,
-#' allowing you to search for multiple franchises at once.
+#' This function queries the `/franchises` endpoint using exact matching. It is
+#' vectorized via `purrr::map_chr`, allowing you to search for multiple franchises
+#' at once.
 #'
 #' @param franchise_title Character vector. The title(s) of the franchises to lookup.
-#' @param token Character. The name of the environment variable containing the API key.
 #' @param silent Logical. If `FALSE` (default), prints success messages using `cli`.
 #'
 #' @return A named character vector of franchise IDs.
@@ -71,16 +70,18 @@ get_company_name <- function(company_id, token = "FLIX_PATROL") {
 #'
 #' @examples
 #' \dontrun{
-#' lookup_franchise_and_return_id("Indiana Jones")
+#' lookup_franchise("Indiana Jones")
 #' # [1] "frn_STNa2GEw54ahWxJsXNgBMmt0"
 #' }
-lookup_franchise_and_return_id <- function(franchise_title, token = "FLIX_PATROL", silent = FALSE) {
+lookup_franchise <- function(franchise_title, silent = getOption("flixpatrol.silent", FALSE)) {
+
+    token <- Sys.getenv("FLIX_PATROL")
 
     # Internal helper to find a single ID via API
     find_single_id <- function(name) {
 
-        resp <- authenticate(site = "https://api.flixpatrol.com/v2/franchises", token = token) |>
-            httr2::req_url_query(`title[like]` = name) |>
+        resp <- authenticate(site = "https://api.flixpatrol.com/v2/franchises") |>
+            httr2::req_url_query(`title[in]` = name) |>
             httr2::req_perform()
 
         body_lst <- httr2::resp_body_json(resp)
@@ -91,7 +92,6 @@ lookup_franchise_and_return_id <- function(franchise_title, token = "FLIX_PATROL
         }
 
         # Extract ID from the first match
-        # Structure based on docs: body_lst$data[[1]]$data$id
         id <- purrr::pluck(body_lst, "data", 1, "data", "id", .default = NULL)
 
         if (is.null(id)) {
@@ -172,20 +172,21 @@ get_franchise_name <- function(franchise_id, token = "FLIX_PATROL") {
 #' Translates movie or TV show titles into FlixPatrol internal title IDs.
 #'
 #' @details
-#' Queries the `/titles` endpoint using fuzzy matching (`title[like]`).
-#' This is vectorized, allowing for multiple title lookups at once.
+#' Queries the `/titles` endpoint using exact matching. This is vectorized,
+#' allowing for multiple title lookups at once.
 #'
 #' @param title Character vector. The name of the movie or TV show.
-#' @param token Character. The API token environment variable name.
 #' @param silent Logical. If FALSE, prints success messages.
 #'
 #' @return A named character vector of title IDs.
 #' @export
-lookup_title_id <- function(title, token = "FLIX_PATROL", silent = FALSE) {
+lookup_title <- function(title, silent = getOption("flixpatrol.silent", FALSE)) {
+
+    token <- Sys.getenv("FLIX_PATROL")
 
     find_single_id <- function(name) {
-        resp <- authenticate(site = "https://api.flixpatrol.com/v2/titles", token = token) |>
-            httr2::req_url_query(`title[like]` = name) |>
+        resp <- authenticate(site = "https://api.flixpatrol.com/v2/titles") |>
+            httr2::req_url_query(`title[in]` = name) |>
             httr2::req_perform()
 
         body <- httr2::resp_body_json(resp)
@@ -209,72 +210,61 @@ lookup_title_id <- function(title, token = "FLIX_PATROL", silent = FALSE) {
 }
 
 
-#' Get Title Name from ID
+#' Get Name from FlixPatrol ID
 #'
 #' @description
-#' Retrieves the official movie or TV show title associated with a FlixPatrol ID.
+#' Retrieves human-readable names for FlixPatrol IDs. Vectorized and works
+#' inside `dplyr::mutate()`.
 #'
 #' @details
-#' Accesses the specific resource path `/titles/:id`. Useful for cleaning
-#' up datasets where only IDs are present.
+#' Automatically detects the ID type from prefix (`cmp_`, `ttl_`, `frn_`) and
+#' queries the appropriate endpoint. Returns `NA` for IDs that cannot be resolved.
 #'
-#' @param id_prefix Character. The FlixPatrol title ID (e.g., "ttl_bHyGTvopBHPVtIKhR2CF68WD").
-#' @param token Character. API environment variable name.
+#' @param fp_id Character vector. FlixPatrol IDs (e.g., "ttl_xxx", "cmp_xxx", "frn_xxx").
 #'
-#' @return A character string containing the title name.
+#' @return A character vector of names, with `NA` for failures.
 #' @export
-get_title_name <- function(fp_id, token = "FLIX_PATROL") {
+#'
+#' @examples
+#' \dontrun{
+#' get_title_name("cmp_IA6TdMqwf6kuyQvxo9bJ4nKX")
+#' get_title_name(c("cmp_xxx", "ttl_yyy", "frn_zzz"))
+#' }
+get_title_name <- function(fp_id) {
 
-    # 1. Clean the input and detect prefix
-    fp_id <- trimws(fp_id)
-    id_prefix <- substr(fp_id, 1, 3)
+    token <- Sys.getenv("FLIX_PATROL")
 
-    # 2. Configuration mapping
     lookup_config <- list(
         "cmp" = list(path = "companies",  field = "name"),
         "ttl" = list(path = "titles",     field = "title"),
         "frn" = list(path = "franchises", field = "title")
     )
 
-    config <- lookup_config[[id_prefix]]
+    get_single_name <- function(id) {
+        id <- trimws(id)
+        id_prefix <- substr(id, 1, 3)
+        config <- lookup_config[[id_prefix]]
 
-    if (is.null(config)) {
-        cli::cli_abort("Unknown ID prefix: {.val {id_prefix}}. Must be cmp_, ttl_, or frn_.")
+        if (is.null(config)) {
+            return(NA_character_)
+        }
+
+        req <- httr2::request("https://api.flixpatrol.com/v2") |>
+            httr2::req_url_path_append(config$path) |>
+            httr2::req_url_path_append(id) |>
+            httr2::req_auth_basic(username = token, password = "") |>
+            httr2::req_retry(max_tries = 3) |>
+            httr2::req_error(is_error = \(resp) FALSE)
+
+        resp <- httr2::req_perform(req)
+
+        if (httr2::resp_status(resp) != 200) {
+            return(NA_character_)
+        }
+
+        body <- httr2::resp_body_json(resp)
+        purrr::pluck(body, "data", config$field, .default = NA_character_)
     }
 
-    # 3. Use httr2 to build the request safely
-    # Start with the base API URL
-    req <- httr2::request("https://api.flixpatrol.com/v2") |>
-        # Append the path segments correctly: /v2/{path}/{id}
-        httr2::req_url_path_append(config$path) |>
-        httr2::req_url_path_append(fp_id) |>
-        # Apply your existing authentication logic
-        httr2::req_auth_basic(username = Sys.getenv(token), password = "") |>
-        # Add a retry mechanism in case of temporary 404s/network blips
-        httr2::req_retry(max_tries = 3)
-
-    # 4. Perform Request with Error Handling
-    resp <- req |>
-        httr2::req_error(is_error = \(resp) FALSE) |> # Catch the error manually to debug
-        httr2::req_perform()
-
-    # Debugging: If it's still a 404, let's see exactly which URL was called
-    if (httr2::resp_status(resp) == 404) {
-        cli::cli_abort(c(
-            "x" = "API returned 404 Not Found.",
-            "i" = "Requested URL: {.url {resp$url}}",
-            "!" = "Double-check that ID {.val {fp_id}} exists in the {.val {config$path}} database."
-        ))
-    }
-
-    body <- httr2::resp_body_json(resp)
-
-    # 5. Extract the result
-    result_name <- purrr::pluck(body, "data", config$field, .default = NULL)
-
-    if (is.null(result_name)) {
-        cli::cli_abort("ID found, but field {.val {config$field}} is missing in the API response.")
-    }
-
-    return(result_name)
+    purrr::map_chr(fp_id, get_single_name)
 }

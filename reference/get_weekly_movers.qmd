@@ -1,0 +1,44 @@
+---
+title: "get_weekly_movers"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `get_weekly_movers()`
+
+Weekly Movers: Gainers, Losers, New Entries, and Exits
+
+## Usage
+
+```r
+get_weekly_movers(
+  platform_name = "netflix",
+  country_name = "United States",
+  date_before,
+  date_after,
+  flix_type = "movies",
+  token = "FLIX_PATROL"
+)
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `platform_name` | Character. Platform name. |
+| `country_name` | Character. Country name. |
+| `date_before` | Date/Character. The earlier chart date. |
+| `date_after` | Date/Character. The later chart date. |
+| `flix_type` | Character. Content type (default '"movies"'). |
+| `token` | Character. API environment variable name. |
+
+## Value
+
+A tibble with columns 'title', 'rank_before', 'rank_after', 'change',
+and 'status' (one of "new_entry", "exit", "gainer", "loser", "unchanged").
+
+## Description
+
+Compares two dates (e.g., consecutive days or weeks) and classifies each
+title as a gainer, loser, new entry, or exit.
+

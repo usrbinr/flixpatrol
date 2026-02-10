@@ -1,0 +1,38 @@
+---
+title: "flixpatrol_options"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `flixpatrol_options()`
+
+FlixPatrol Package Options
+
+## Usage
+
+```r
+flixpatrol_options()
+```
+
+## Value
+
+A tibble of available options (invisibly). Prints a formatted list.
+
+## Description
+
+Lists all available package options, their descriptions, and current values.
+
+## Details
+
+Set options using 'options(flixpatrol.option_name = value)'.
+Add to your '~/.Rprofile' to make permanent.
+
+## Examples
+
+```r
+flixpatrol_options()
+
+# Set an option
+options(flixpatrol.silent = TRUE)
+```
+

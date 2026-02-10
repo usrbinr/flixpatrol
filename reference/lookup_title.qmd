@@ -1,0 +1,36 @@
+---
+title: "lookup_title"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `lookup_title()`
+
+Lookup Title ID
+
+## Usage
+
+```r
+lookup_title(title, silent = getOption("flixpatrol.silent", FALSE))
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `title` | Character vector. The name of the movie or TV show. |
+| `silent` | Logical. If FALSE, prints success messages. |
+
+## Value
+
+A named character vector of title IDs.
+
+## Description
+
+Translates movie or TV show titles into FlixPatrol internal title IDs.
+
+## Details
+
+Queries the '/titles' endpoint using exact matching. This is vectorized,
+allowing for multiple title lookups at once.
+

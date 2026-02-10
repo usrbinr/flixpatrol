@@ -18,13 +18,3 @@ describe("get_title_details()", {
 })
 
 
-describe("search_titles()", {
-
-  it("hits the API with a query parameter", {
-    withr::local_envvar(FLIX_PATROL = "fake_key")
-    expect_error(
-      search_titles("Squid Game"),
-      class = "httr2_http"
-    )
-  })
-})

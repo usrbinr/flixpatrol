@@ -1,0 +1,32 @@
+---
+title: "get_title_details"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `get_title_details()`
+
+Get Title Details
+
+## Usage
+
+```r
+get_title_details(title_id, token = "FLIX_PATROL")
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `title_id` | Character. The FlixPatrol title ID (e.g., '"ttl_..."'). |
+| `token` | Character. API environment variable name. |
+
+## Value
+
+A named list of title metadata.
+
+## Description
+
+Retrieves full metadata for a single title by its FlixPatrol ID, including
+runtime, genre, release date, IMDB rating, and other details.
+

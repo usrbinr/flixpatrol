@@ -1,4 +1,4 @@
-describe("create_top_titles_summary_tbl() — aggregation logic", {
+describe("get_top_titles_summary() — aggregation logic", {
 
   # Test the summary aggregation logic in isolation using a mock chart
   mock_chart <- tibble::tibble(

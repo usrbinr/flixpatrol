@@ -1,0 +1,46 @@
+---
+title: "fetch_fans_ranking_tbl"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `fetch_fans_ranking_tbl()`
+
+Fetch Fans Site Rankings
+
+## Usage
+
+```r
+fetch_fans_ranking_tbl(
+  token = "FLIX_PATROL",
+  platform_name = "netflix",
+  country_name = "United States",
+  start_date,
+  end_date,
+  media_type = "Movie",
+  date_type = "day",
+  language = "English"
+)
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `token` | Character. API environment variable name. |
+| `platform_name` | Character. The platform (e.g., "Netflix"). |
+| `country_name` | Character. The country name. |
+| `start_date` | Date/Character. Start date of the ranking. |
+| `end_date` | Date/Character. End date of the ranking. |
+| `media_type` | Character. "Movie" or "TvShow". |
+| `date_type` | Character. Defaults to "day". |
+| `language` | Character. Language name for filtering. |
+
+## Value
+
+A tidy tibble of fan rankings.
+
+## Description
+
+Retrieves the "Fans" ranking data for titles based on platform, country, and date range.
+

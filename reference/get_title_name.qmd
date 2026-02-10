@@ -1,0 +1,46 @@
+---
+title: "get_title_name"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `get_title_name()`
+
+Get Name from FlixPatrol ID
+
+## Usage
+
+```r
+get_title_name(fp_id)
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `fp_id` | Character vector. FlixPatrol IDs (e.g., "ttl_xxx", "cmp_xxx", "frn_xxx"). |
+
+## Value
+
+A character vector of names, with 'NA' for failures.
+
+## Description
+
+Retrieves human-readable names for FlixPatrol IDs. Vectorized and works
+inside 'dplyr::mutate()'.
+
+## Details
+
+Automatically detects the ID type from prefix ('cmp_', 'ttl_', 'frn_') and
+queries the appropriate endpoint. Returns 'NA' for IDs that cannot be resolved.
+
+## Examples
+
+```r
+## Not run: 
+get_title_name("cmp_IA6TdMqwf6kuyQvxo9bJ4nKX")
+get_title_name(c("cmp_xxx", "ttl_yyy", "frn_zzz"))
+
+## End(Not run)
+```
+

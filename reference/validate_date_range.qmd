@@ -1,0 +1,39 @@
+---
+title: "validate_date_range"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `validate_date_range()`
+
+Validate Date Ranges for API Compatibility
+
+## Usage
+
+```r
+validate_date_range(
+  start_date,
+  end_date,
+  start_date_wday_abb,
+  range_length = 7
+)
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `start_date` | Date/Character. |
+| `end_date` | Date/Character. |
+| `start_date_wday_abb` | Character. Three-letter weekday abbreviation (e.g., "mon"). |
+| `range_length` | Integer. Expected number of days in the range. Default is 7. |
+
+## Value
+
+Logical 'TRUE' if valid, otherwise aborts with a 'cli' error.
+
+## Description
+
+Ensures that the provided start and end dates meet specific API requirements
+(e.g., starting on a Monday for weekly views).
+

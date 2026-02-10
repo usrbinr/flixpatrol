@@ -1,0 +1,47 @@
+---
+title: "get_top_titles_summary"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `get_top_titles_summary()`
+
+Summarize Top Titles Over a Date Range
+
+## Usage
+
+```r
+get_top_titles_summary(
+  platform_name = "netflix",
+  country_name = "United States",
+  start_date,
+  end_date,
+  flix_type = "movies",
+  n = 20,
+  token = "FLIX_PATROL"
+)
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `platform_name` | Character. Platform name. |
+| `country_name` | Character. Country name. |
+| `start_date` | Date/Character. Start of the range. |
+| `end_date` | Date/Character. End of the range. |
+| `flix_type` | Character. Content type (default '"movies"'). |
+| `n` | Integer. Number of top titles to return (default 20). |
+| `token` | Character. API environment variable name. |
+
+## Value
+
+A tibble with columns 'title', 'days_on_chart', 'best_rank',
+'avg_rank', 'first_seen', 'last_seen'.
+
+## Description
+
+Aggregates daily Top 10 data over a date range and returns a summary of
+which titles appeared most frequently, along with their best rank and
+average rank.
+

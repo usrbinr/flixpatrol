@@ -1,0 +1,46 @@
+---
+title: "get_title_history"
+---
+
+[< Back to Reference](../reference.qmd)
+
+# `get_title_history()`
+
+Track a Single Title's Rank Over Time
+
+## Usage
+
+```r
+get_title_history(
+  title,
+  platform_name = "netflix",
+  country_name = "United States",
+  start_date,
+  end_date,
+  flix_type = "movies",
+  token = "FLIX_PATROL"
+)
+```
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `title` | Character. The title to track. |
+| `platform_name` | Character. Platform name. |
+| `country_name` | Character. Country name. |
+| `start_date` | Date/Character. Start of the range. |
+| `end_date` | Date/Character. End of the range. |
+| `flix_type` | Character. Content type (default '"movies"'). |
+| `token` | Character. API environment variable name. |
+
+## Value
+
+A tibble with one row per date the title appeared in the Top 10.
+
+## Description
+
+Fetches the daily Top 10 for a date range and filters to a single title,
+returning a time series of that title's rank, days on chart, and position
+changes.
+

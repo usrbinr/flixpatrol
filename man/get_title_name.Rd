@@ -2,22 +2,27 @@
 % Please edit documentation in R/utils-api.R
 \name{get_title_name}
 \alias{get_title_name}
-\title{Get Title Name from ID}
+\title{Get Name from FlixPatrol ID}
 \usage{
-get_title_name(fp_id, token = "FLIX_PATROL")
+get_title_name(fp_id)
 }
 \arguments{
-\item{token}{Character. API environment variable name.}
-
-\item{id_prefix}{Character. The FlixPatrol title ID (e.g., "ttl_bHyGTvopBHPVtIKhR2CF68WD").}
+\item{fp_id}{Character vector. FlixPatrol IDs (e.g., "ttl_xxx", "cmp_xxx", "frn_xxx").}
 }
 \value{
-A character string containing the title name.
+A character vector of names, with `NA` for failures.
 }
 \description{
-Retrieves the official movie or TV show title associated with a FlixPatrol ID.
+Retrieves human-readable names for FlixPatrol IDs. Vectorized and works
+inside `dplyr::mutate()`.
 }
 \details{
-Accesses the specific resource path `/titles/:id`. Useful for cleaning
-up datasets where only IDs are present.
+Automatically detects the ID type from prefix (`cmp_`, `ttl_`, `frn_`) and
+queries the appropriate endpoint. Returns `NA` for IDs that cannot be resolved.
+}
+\examples{
+\dontrun{
+get_title_name("cmp_IA6TdMqwf6kuyQvxo9bJ4nKX")
+get_title_name(c("cmp_xxx", "ttl_yyy", "frn_zzz"))
+}
 }
