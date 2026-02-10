@@ -392,452 +392,431 @@
     "text": "Description\nResolves date types (Day, Week, Month) to internal API IDs."
   },
   {
-    "objectID": "reference/hello.html",
-    "href": "reference/hello.html",
-    "title": "hello",
+    "objectID": "reference/get_weekly_movers.html",
+    "href": "reference/get_weekly_movers.html",
+    "title": "get_weekly_movers",
     "section": "",
     "text": "&lt; Back to Reference"
   },
   {
-    "objectID": "reference/hello.html#usage",
-    "href": "reference/hello.html#usage",
-    "title": "hello",
+    "objectID": "reference/get_weekly_movers.html#usage",
+    "href": "reference/get_weekly_movers.html#usage",
+    "title": "get_weekly_movers",
     "section": "Usage",
-    "text": "Usage\nhello()"
+    "text": "Usage\nget_weekly_movers(\n  platform_name = \"netflix\",\n  country_name = \"United States\",\n  date_before,\n  date_after,\n  flix_type = \"movies\",\n  token = \"FLIX_PATROL\"\n)"
   },
   {
-    "objectID": "reference/hello.html#description",
-    "href": "reference/hello.html#description",
-    "title": "hello",
+    "objectID": "reference/get_weekly_movers.html#arguments",
+    "href": "reference/get_weekly_movers.html#arguments",
+    "title": "get_weekly_movers",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\nplatform_name\nCharacter. Platform name.\n\n\ncountry_name\nCharacter. Country name.\n\n\ndate_before\nDate/Character. The earlier chart date.\n\n\ndate_after\nDate/Character. The later chart date.\n\n\nflix_type\nCharacter. Content type (default ‘“movies”’).\n\n\ntoken\nCharacter. API environment variable name."
+  },
+  {
+    "objectID": "reference/get_weekly_movers.html#value",
+    "href": "reference/get_weekly_movers.html#value",
+    "title": "get_weekly_movers",
+    "section": "Value",
+    "text": "Value\nA tibble with columns ‘title’, ‘rank_before’, ‘rank_after’, ‘change’, and ‘status’ (one of “new_entry”, “exit”, “gainer”, “loser”, “unchanged”)."
+  },
+  {
+    "objectID": "reference/get_weekly_movers.html#description",
+    "href": "reference/get_weekly_movers.html#description",
+    "title": "get_weekly_movers",
     "section": "Description",
-    "text": "Description\nPrints ‘Hello, world!’."
+    "text": "Description\nCompares two dates (e.g., consecutive days or weeks) and classifies each title as a gainer, loser, new entry, or exit."
   },
   {
-    "objectID": "reference/hello.html#examples",
-    "href": "reference/hello.html#examples",
-    "title": "hello",
+    "objectID": "reference/get_top_titles_summary.html",
+    "href": "reference/get_top_titles_summary.html",
+    "title": "get_top_titles_summary",
+    "section": "",
+    "text": "&lt; Back to Reference"
+  },
+  {
+    "objectID": "reference/get_top_titles_summary.html#usage",
+    "href": "reference/get_top_titles_summary.html#usage",
+    "title": "get_top_titles_summary",
+    "section": "Usage",
+    "text": "Usage\nget_top_titles_summary(\n  platform_name = \"netflix\",\n  country_name = \"United States\",\n  start_date,\n  end_date,\n  flix_type = \"movies\",\n  n = 20,\n  token = \"FLIX_PATROL\"\n)"
+  },
+  {
+    "objectID": "reference/get_top_titles_summary.html#arguments",
+    "href": "reference/get_top_titles_summary.html#arguments",
+    "title": "get_top_titles_summary",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\nplatform_name\nCharacter. Platform name.\n\n\ncountry_name\nCharacter. Country name.\n\n\nstart_date\nDate/Character. Start of the range.\n\n\nend_date\nDate/Character. End of the range.\n\n\nflix_type\nCharacter. Content type (default ‘“movies”’).\n\n\nn\nInteger. Number of top titles to return (default 20).\n\n\ntoken\nCharacter. API environment variable name."
+  },
+  {
+    "objectID": "reference/get_top_titles_summary.html#value",
+    "href": "reference/get_top_titles_summary.html#value",
+    "title": "get_top_titles_summary",
+    "section": "Value",
+    "text": "Value\nA tibble with columns ‘title’, ‘days_on_chart’, ‘best_rank’, ‘avg_rank’, ‘first_seen’, ‘last_seen’."
+  },
+  {
+    "objectID": "reference/get_top_titles_summary.html#description",
+    "href": "reference/get_top_titles_summary.html#description",
+    "title": "get_top_titles_summary",
+    "section": "Description",
+    "text": "Description\nAggregates daily Top 10 data over a date range and returns a summary of which titles appeared most frequently, along with their best rank and average rank."
+  },
+  {
+    "objectID": "reference/get_title_name.html",
+    "href": "reference/get_title_name.html",
+    "title": "get_title_name",
+    "section": "",
+    "text": "&lt; Back to Reference"
+  },
+  {
+    "objectID": "reference/get_title_name.html#usage",
+    "href": "reference/get_title_name.html#usage",
+    "title": "get_title_name",
+    "section": "Usage",
+    "text": "Usage\nget_title_name(fp_id)"
+  },
+  {
+    "objectID": "reference/get_title_name.html#arguments",
+    "href": "reference/get_title_name.html#arguments",
+    "title": "get_title_name",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nfp_id\nCharacter vector. FlixPatrol IDs (e.g., “ttl_xxx”, “cmp_xxx”, “frn_xxx”)."
+  },
+  {
+    "objectID": "reference/get_title_name.html#value",
+    "href": "reference/get_title_name.html#value",
+    "title": "get_title_name",
+    "section": "Value",
+    "text": "Value\nA character vector of names, with ‘NA’ for failures."
+  },
+  {
+    "objectID": "reference/get_title_name.html#description",
+    "href": "reference/get_title_name.html#description",
+    "title": "get_title_name",
+    "section": "Description",
+    "text": "Description\nRetrieves human-readable names for FlixPatrol IDs. Vectorized and works inside ‘dplyr::mutate()’."
+  },
+  {
+    "objectID": "reference/get_title_name.html#details",
+    "href": "reference/get_title_name.html#details",
+    "title": "get_title_name",
+    "section": "Details",
+    "text": "Details\nAutomatically detects the ID type from prefix (‘cmp_’, ‘ttl_’, ‘frn_’) and queries the appropriate endpoint. Returns ‘NA’ for IDs that cannot be resolved."
+  },
+  {
+    "objectID": "reference/get_title_name.html#examples",
+    "href": "reference/get_title_name.html#examples",
+    "title": "get_title_name",
     "section": "Examples",
-    "text": "Examples\nhello()"
+    "text": "Examples\n## Not run: \nget_title_name(\"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX\")\nget_title_name(c(\"cmp_xxx\", \"ttl_yyy\", \"frn_zzz\"))\n\n## End(Not run)"
   },
   {
-    "objectID": "reference/get_torrent_ranking.html",
-    "href": "reference/get_torrent_ranking.html",
-    "title": "get_torrent_ranking",
+    "objectID": "reference/get_title_details.html",
+    "href": "reference/get_title_details.html",
+    "title": "get_title_details",
     "section": "",
     "text": "&lt; Back to Reference"
   },
   {
-    "objectID": "reference/get_torrent_ranking.html#usage",
-    "href": "reference/get_torrent_ranking.html#usage",
-    "title": "get_torrent_ranking",
+    "objectID": "reference/get_title_details.html#usage",
+    "href": "reference/get_title_details.html#usage",
+    "title": "get_title_details",
     "section": "Usage",
-    "text": "Usage\nget_torrent_ranking(\n  token = \"FLIX_PATROL\",\n  torrent_site,\n  start_date,\n  end_date,\n  date_type = \"day\",\n  media_type = NULL\n)"
+    "text": "Usage\nget_title_details(title_id, token = \"FLIX_PATROL\")"
   },
   {
-    "objectID": "reference/get_torrent_ranking.html#arguments",
-    "href": "reference/get_torrent_ranking.html#arguments",
-    "title": "get_torrent_ranking",
+    "objectID": "reference/get_title_details.html#arguments",
+    "href": "reference/get_title_details.html#arguments",
+    "title": "get_title_details",
     "section": "Arguments",
-    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\ntoken\nCharacter. API environment variable name.\n\n\ntorrent_site\nCharacter. Torrent site name (e.g., “1337x”) or ’“*“’ for all.\n\n\nstart_date\nDate/Character. Start of the date range.\n\n\nend_date\nDate/Character. End of the date range.\n\n\ndate_type\nCharacter. Date granularity (default ‘“day”’).\n\n\nmedia_type\nCharacter. Optional media type filter."
+    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\ntitle_id\nCharacter. The FlixPatrol title ID (e.g., ‘“ttl_…”’).\n\n\ntoken\nCharacter. API environment variable name."
   },
   {
-    "objectID": "reference/get_torrent_ranking.html#value",
-    "href": "reference/get_torrent_ranking.html#value",
-    "title": "get_torrent_ranking",
+    "objectID": "reference/get_title_details.html#value",
+    "href": "reference/get_title_details.html#value",
+    "title": "get_title_details",
     "section": "Value",
-    "text": "Value\nA tibble of torrent rankings."
+    "text": "Value\nA named list of title metadata."
   },
   {
-    "objectID": "reference/get_torrent_ranking.html#description",
-    "href": "reference/get_torrent_ranking.html#description",
-    "title": "get_torrent_ranking",
+    "objectID": "reference/get_title_details.html#description",
+    "href": "reference/get_title_details.html#description",
+    "title": "get_title_details",
     "section": "Description",
-    "text": "Description\nFetches torrent chart rankings for a given site and date range."
+    "text": "Description\nRetrieves full metadata for a single title by its FlixPatrol ID, including runtime, genre, release date, IMDB rating, and other details."
   },
   {
-    "objectID": "reference/get_top_ten.html",
-    "href": "reference/get_top_ten.html",
-    "title": "get_top_ten",
+    "objectID": "reference/get_premieres.html",
+    "href": "reference/get_premieres.html",
+    "title": "get_premieres",
     "section": "",
     "text": "&lt; Back to Reference"
   },
   {
-    "objectID": "reference/get_top_ten.html#usage",
-    "href": "reference/get_top_ten.html#usage",
-    "title": "get_top_ten",
+    "objectID": "reference/get_premieres.html#usage",
+    "href": "reference/get_premieres.html#usage",
+    "title": "get_premieres",
     "section": "Usage",
-    "text": "Usage\nget_top_ten(\n  token = \"FLIX_PATROL\",\n  platform_name,\n  country_name,\n  start_date,\n  end_date,\n  flix_type\n)"
+    "text": "Usage\nget_premieres(\n  platform_name = \"netflix\",\n  start_date,\n  end_date,\n  media_type = NULL\n)"
   },
   {
-    "objectID": "reference/get_top_ten.html#arguments",
-    "href": "reference/get_top_ten.html#arguments",
-    "title": "get_top_ten",
+    "objectID": "reference/get_premieres.html#arguments",
+    "href": "reference/get_premieres.html#arguments",
+    "title": "get_premieres",
     "section": "Arguments",
-    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\ntoken\nCharacter. API environment variable name.\n\n\nplatform_name\nCharacter. Name of the platform.\n\n\ncountry_name\nCharacter. Name of the country.\n\n\nstart_date\nDate/Character. Start of the range.\n\n\nend_date\nDate/Character. End of the range.\n\n\nflix_type\nCharacter. Content type."
+    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\nplatform_name\nCharacter. Platform name (e.g., “netflix”).\n\n\nstart_date\nDate/Character. Start of the date range.\n\n\nend_date\nDate/Character. End of the date range.\n\n\nmedia_type\nCharacter. “movie” or “tv” (optional)."
   },
   {
-    "objectID": "reference/get_top_ten.html#value",
-    "href": "reference/get_top_ten.html#value",
-    "title": "get_top_ten",
+    "objectID": "reference/get_premieres.html#value",
+    "href": "reference/get_premieres.html#value",
+    "title": "get_premieres",
     "section": "Value",
-    "text": "Value\nA combined tibble for the specified date range."
+    "text": "Value\nA tibble of upcoming premieres."
   },
   {
-    "objectID": "reference/get_top_ten.html#description",
-    "href": "reference/get_top_ten.html#description",
-    "title": "get_top_ten",
+    "objectID": "reference/get_premieres.html#description",
+    "href": "reference/get_premieres.html#description",
+    "title": "get_premieres",
     "section": "Description",
-    "text": "Description\nIterates over a sequence of dates to build a historical Top 10 dataset."
+    "text": "Description\nFetches upcoming premiere dates from the FlixPatrol API."
   },
   {
-    "objectID": "reference/get_top_ten.html#details",
-    "href": "reference/get_top_ten.html#details",
-    "title": "get_top_ten",
+    "objectID": "reference/get_hours_viewed.html",
+    "href": "reference/get_hours_viewed.html",
+    "title": "get_hours_viewed",
+    "section": "",
+    "text": "&lt; Back to Reference"
+  },
+  {
+    "objectID": "reference/get_hours_viewed.html#usage",
+    "href": "reference/get_hours_viewed.html#usage",
+    "title": "get_hours_viewed",
+    "section": "Usage",
+    "text": "Usage\nget_hours_viewed(\n  token = \"FLIX_PATROL\",\n  platform_name = \"netflix\",\n  media_type_name = \"movie\",\n  language_name = \"english\",\n  start_date,\n  end_date\n)"
+  },
+  {
+    "objectID": "reference/get_hours_viewed.html#arguments",
+    "href": "reference/get_hours_viewed.html#arguments",
+    "title": "get_hours_viewed",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\ntoken\nCharacter. API environment variable name.\n\n\nplatform_name\nCharacter. Platform name (defaults to “netflix”).\n\n\nmedia_type_name\nCharacter. Media type (e.g., “Movie”).\n\n\nlanguage_name\nCharacter. Language (e.g., “English”).\n\n\nstart_date\nDate/Character. Must be a Monday.\n\n\nend_date\nDate/Character. Must be 7 days from start."
+  },
+  {
+    "objectID": "reference/get_hours_viewed.html#value",
+    "href": "reference/get_hours_viewed.html#value",
+    "title": "get_hours_viewed",
+    "section": "Value",
+    "text": "Value\nA wide tibble containing viewing hours and metadata."
+  },
+  {
+    "objectID": "reference/get_hours_viewed.html#description",
+    "href": "reference/get_hours_viewed.html#description",
+    "title": "get_hours_viewed",
+    "section": "Description",
+    "text": "Description\nRetrieves the “Hours Viewed” metric for a platform, language, and content type."
+  },
+  {
+    "objectID": "reference/get_hours_viewed.html#details",
+    "href": "reference/get_hours_viewed.html#details",
+    "title": "get_hours_viewed",
     "section": "Details",
-    "text": "Details\nThis function generates a date vector between ‘start_date’ and ‘end_date’ and maps ‘get_single_top_ten’ over each date. The results are bound together into a single master tibble."
+    "text": "Details\nThis function specifically handles the ‘/hoursviewed’ endpoint. It defaults to “week” views (API type 3) and requires a 7-day range starting on a Monday. The resulting JSON is heavily unnested to provide a wide, analysis-ready tibble."
   },
   {
-    "objectID": "reference/get_title_history.html",
-    "href": "reference/get_title_history.html",
-    "title": "get_title_history",
+    "objectID": "reference/get_franchise_performance.html",
+    "href": "reference/get_franchise_performance.html",
+    "title": "get_franchise_performance",
     "section": "",
     "text": "&lt; Back to Reference"
   },
   {
-    "objectID": "reference/get_title_history.html#usage",
-    "href": "reference/get_title_history.html#usage",
-    "title": "get_title_history",
+    "objectID": "reference/get_franchise_performance.html#usage",
+    "href": "reference/get_franchise_performance.html#usage",
+    "title": "get_franchise_performance",
     "section": "Usage",
-    "text": "Usage\nget_title_history(\n  title,\n  platform_name = \"netflix\",\n  country_name = \"United States\",\n  start_date,\n  end_date,\n  flix_type = \"movies\",\n  token = \"FLIX_PATROL\"\n)"
+    "text": "Usage\nget_franchise_performance(\n  franchise_title,\n  platform_name = \"netflix\",\n  country_name = \"United States\",\n  start_date,\n  end_date,\n  flix_type = \"movies\",\n  token = \"FLIX_PATROL\"\n)"
   },
   {
-    "objectID": "reference/get_title_history.html#arguments",
-    "href": "reference/get_title_history.html#arguments",
-    "title": "get_title_history",
+    "objectID": "reference/get_franchise_performance.html#arguments",
+    "href": "reference/get_franchise_performance.html#arguments",
+    "title": "get_franchise_performance",
     "section": "Arguments",
-    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\ntitle\nCharacter. The title to track.\n\n\nplatform_name\nCharacter. Platform name.\n\n\ncountry_name\nCharacter. Country name.\n\n\nstart_date\nDate/Character. Start of the range.\n\n\nend_date\nDate/Character. End of the range.\n\n\nflix_type\nCharacter. Content type (default ‘“movies”’).\n\n\ntoken\nCharacter. API environment variable name."
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nfranchise_title\nCharacter. The franchise name (e.g., “Marvel”, “Star Wars”).\n\n\nplatform_name\nCharacter. Platform name.\n\n\ncountry_name\nCharacter. Country name.\n\n\nstart_date\nDate/Character. Start of the range.\n\n\nend_date\nDate/Character. End of the range.\n\n\nflix_type\nCharacter. Content type (default ‘“movies”’).\n\n\ntoken\nCharacter. API environment variable name."
   },
   {
-    "objectID": "reference/get_title_history.html#value",
-    "href": "reference/get_title_history.html#value",
-    "title": "get_title_history",
+    "objectID": "reference/get_franchise_performance.html#value",
+    "href": "reference/get_franchise_performance.html#value",
+    "title": "get_franchise_performance",
     "section": "Value",
-    "text": "Value\nA tibble with one row per date the title appeared in the Top 10."
+    "text": "Value\nA tibble with columns ‘title’, ‘days_on_chart’, ‘best_rank’, ‘avg_rank’, plus a ‘franchise’ column."
   },
   {
-    "objectID": "reference/get_title_history.html#description",
-    "href": "reference/get_title_history.html#description",
-    "title": "get_title_history",
+    "objectID": "reference/get_franchise_performance.html#description",
+    "href": "reference/get_franchise_performance.html#description",
+    "title": "get_franchise_performance",
     "section": "Description",
-    "text": "Description\nFetches the daily Top 10 for a date range and filters to a single title, returning a time series of that title’s rank, days on chart, and position changes."
+    "text": "Description\nLooks up all titles in a franchise, then aggregates their Top 10 appearances across a date range into a single summary table."
   },
   {
-    "objectID": "reference/get_social_fans.html",
-    "href": "reference/get_social_fans.html",
-    "title": "get_social_fans",
+    "objectID": "reference/get_company_name.html",
+    "href": "reference/get_company_name.html",
+    "title": "get_company_name",
     "section": "",
     "text": "&lt; Back to Reference"
   },
   {
-    "objectID": "reference/get_social_fans.html#usage",
-    "href": "reference/get_social_fans.html#usage",
-    "title": "get_social_fans",
+    "objectID": "reference/get_company_name.html#usage",
+    "href": "reference/get_company_name.html#usage",
+    "title": "get_company_name",
     "section": "Usage",
-    "text": "Usage\nget_social_fans(\n  token = \"FLIX_PATROL\",\n  social_platform,\n  start_date,\n  end_date,\n  date_type = \"day\"\n)"
+    "text": "Usage\nget_company_name(company_id, token = \"FLIX_PATROL\")"
   },
   {
-    "objectID": "reference/get_social_fans.html#arguments",
-    "href": "reference/get_social_fans.html#arguments",
-    "title": "get_social_fans",
+    "objectID": "reference/get_company_name.html#arguments",
+    "href": "reference/get_company_name.html#arguments",
+    "title": "get_company_name",
     "section": "Arguments",
-    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\ntoken\nCharacter. API environment variable name.\n\n\nsocial_platform\nCharacter. Social media platform name (e.g., “Instagram”, “Facebook”, “Twitter”).\n\n\nstart_date\nDate/Character. Start date.\n\n\nend_date\nDate/Character. End date.\n\n\ndate_type\nCharacter. Date granularity (default ‘“day”’)."
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\ncompany_id\nCharacter. The FlixPatrol ID (e.g., “cmp_IA6TdMqwf6kuyQvxo9bJ4nKX”).\n\n\ntoken\nCharacter. The name of the environment variable containing the API key."
   },
   {
-    "objectID": "reference/get_social_fans.html#value",
-    "href": "reference/get_social_fans.html#value",
-    "title": "get_social_fans",
+    "objectID": "reference/get_company_name.html#value",
+    "href": "reference/get_company_name.html#value",
+    "title": "get_company_name",
     "section": "Value",
-    "text": "Value\nA tibble of social fan rankings."
+    "text": "Value\nA character string containing the company name."
   },
   {
-    "objectID": "reference/get_social_fans.html#description",
-    "href": "reference/get_social_fans.html#description",
-    "title": "get_social_fans",
+    "objectID": "reference/get_company_name.html#description",
+    "href": "reference/get_company_name.html#description",
+    "title": "get_company_name",
     "section": "Description",
-    "text": "Description\nFetches social media fan count data using the social media platform lookup table."
+    "text": "Description\nRetrieves the human-readable company name associated with a specific FlixPatrol company ID."
   },
   {
-    "objectID": "reference/get_official_ranking.html",
-    "href": "reference/get_official_ranking.html",
-    "title": "get_official_ranking",
-    "section": "",
-    "text": "&lt; Back to Reference"
-  },
-  {
-    "objectID": "reference/get_official_ranking.html#usage",
-    "href": "reference/get_official_ranking.html#usage",
-    "title": "get_official_ranking",
-    "section": "Usage",
-    "text": "Usage\nget_official_ranking(\n  token = \"FLIX_PATROL\",\n  platform_name = \"netflix\",\n  country_name,\n  start_date,\n  end_date,\n  media_type,\n  date_type = \"week\",\n  language = \"english\"\n)"
-  },
-  {
-    "objectID": "reference/get_official_ranking.html#arguments",
-    "href": "reference/get_official_ranking.html#arguments",
-    "title": "get_official_ranking",
-    "section": "Arguments",
-    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\ntoken\nCharacter. API environment variable name.\n\n\nplatform_name\nCharacter. Must be “netflix”.\n\n\ncountry_name\nCharacter. Name of the country.\n\n\nstart_date\nDate/Character. Range start (Monday).\n\n\nend_date\nDate/Character. Range end (Sunday).\n\n\nmedia_type\nCharacter. Content type.\n\n\ndate_type\nCharacter. Defaults to “week”.\n\n\nlanguage_id\nCharacter. Language for lookup."
-  },
-  {
-    "objectID": "reference/get_official_ranking.html#value",
-    "href": "reference/get_official_ranking.html#value",
-    "title": "get_official_ranking",
-    "section": "Value",
-    "text": "Value\nA tibble of official rankings."
-  },
-  {
-    "objectID": "reference/get_official_ranking.html#description",
-    "href": "reference/get_official_ranking.html#description",
-    "title": "get_official_ranking",
-    "section": "Description",
-    "text": "Description\nFetches the official weekly rankings (currently Netflix exclusive)."
-  },
-  {
-    "objectID": "reference/get_official_ranking.html#details",
-    "href": "reference/get_official_ranking.html#details",
-    "title": "get_official_ranking",
+    "objectID": "reference/get_company_name.html#details",
+    "href": "reference/get_company_name.html#details",
+    "title": "get_company_name",
     "section": "Details",
-    "text": "Details\nQueries the ‘/rankingsofficial’ endpoint. Note that as of the current package version, FlixPatrol only provides official lists for Netflix. This function enforces that restriction."
+    "text": "Details\nThis function hits the ‘/companies/:id’ endpoint. It is specifically designed to reverse a lookup where you have the ID (e.g., from a data table) and need the display name (e.g., “Netflix”)."
   },
   {
-    "objectID": "reference/get_global_ranking.html",
-    "href": "reference/get_global_ranking.html",
-    "title": "get_global_ranking",
-    "section": "",
-    "text": "&lt; Back to Reference"
-  },
-  {
-    "objectID": "reference/get_global_ranking.html#usage",
-    "href": "reference/get_global_ranking.html#usage",
-    "title": "get_global_ranking",
-    "section": "Usage",
-    "text": "Usage\nget_global_ranking(\n  title,\n  platform_name = \"netflix\",\n  date,\n  countries = c(\"United States\", \"United Kingdom\", \"Canada\", \"Australia\", \"Germany\",\n    \"France\", \"Brazil\", \"India\", \"Japan\", \"South Korea\", \"Mexico\", \"Spain\", \"Italy\",\n    \"Netherlands\", \"Sweden\"),\n  flix_type = \"movies\",\n  token = \"FLIX_PATROL\"\n)"
-  },
-  {
-    "objectID": "reference/get_global_ranking.html#arguments",
-    "href": "reference/get_global_ranking.html#arguments",
-    "title": "get_global_ranking",
-    "section": "Arguments",
-    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\ntitle\nCharacter. The title to look up.\n\n\nplatform_name\nCharacter. Platform name (default ‘“netflix”’).\n\n\ndate\nDate/Character. The chart date.\n\n\ncountries\nCharacter vector. Country names to check. Defaults to a broad set of 15 major markets.\n\n\nflix_type\nCharacter. Content type (default ‘“movies”’).\n\n\ntoken\nCharacter. API environment variable name."
-  },
-  {
-    "objectID": "reference/get_global_ranking.html#value",
-    "href": "reference/get_global_ranking.html#value",
-    "title": "get_global_ranking",
-    "section": "Value",
-    "text": "Value\nA tibble with columns ‘country’, ‘rank’, ‘title’, ‘date’. Countries where the title is not in the Top 10 return ‘rank = NA’."
-  },
-  {
-    "objectID": "reference/get_global_ranking.html#description",
-    "href": "reference/get_global_ranking.html#description",
-    "title": "get_global_ranking",
-    "section": "Description",
-    "text": "Description\nFor a given title and date, fetches its Top 10 rank in every country provided, showing geographic reach and relative performance."
-  },
-  {
-    "objectID": "reference/get_franchise_name.html",
-    "href": "reference/get_franchise_name.html",
-    "title": "get_franchise_name",
-    "section": "",
-    "text": "&lt; Back to Reference"
-  },
-  {
-    "objectID": "reference/get_franchise_name.html#usage",
-    "href": "reference/get_franchise_name.html#usage",
-    "title": "get_franchise_name",
-    "section": "Usage",
-    "text": "Usage\nget_franchise_name(franchise_id, token = \"FLIX_PATROL\")"
-  },
-  {
-    "objectID": "reference/get_franchise_name.html#arguments",
-    "href": "reference/get_franchise_name.html#arguments",
-    "title": "get_franchise_name",
-    "section": "Arguments",
-    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nfranchise_id\nCharacter. The FlixPatrol franchise ID (e.g., “frn_STNa2GEw54ahWxJsXNgBMmt0”).\n\n\ntoken\nCharacter. The name of the environment variable containing the API key."
-  },
-  {
-    "objectID": "reference/get_franchise_name.html#value",
-    "href": "reference/get_franchise_name.html#value",
-    "title": "get_franchise_name",
-    "section": "Value",
-    "text": "Value\nA character string containing the franchise title."
-  },
-  {
-    "objectID": "reference/get_franchise_name.html#description",
-    "href": "reference/get_franchise_name.html#description",
-    "title": "get_franchise_name",
-    "section": "Description",
-    "text": "Description\nRetrieves the human-readable franchise title associated with a specific FlixPatrol franchise ID."
-  },
-  {
-    "objectID": "reference/get_franchise_name.html#details",
-    "href": "reference/get_franchise_name.html#details",
-    "title": "get_franchise_name",
-    "section": "Details",
-    "text": "Details\nThis function hits the ‘/franchises/:id’ endpoint. It is used to resolve IDs found in data tables back into readable titles for reporting or visualization."
-  },
-  {
-    "objectID": "reference/get_franchise_name.html#examples",
-    "href": "reference/get_franchise_name.html#examples",
-    "title": "get_franchise_name",
+    "objectID": "reference/get_company_name.html#examples",
+    "href": "reference/get_company_name.html#examples",
+    "title": "get_company_name",
     "section": "Examples",
-    "text": "Examples\n## Not run: \nget_franchise_name(\"frn_STNa2GEw54ahWxJsXNgBMmt0\")\n# [1] \"Indiana Jones\"\n\n## End(Not run)"
+    "text": "Examples\n## Not run: \nget_company_name(\"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX\")\n# [1] \"Netflix\"\n\n## End(Not run)"
   },
   {
-    "objectID": "reference/fp_enrich.html",
-    "href": "reference/fp_enrich.html",
-    "title": "fp_enrich",
+    "objectID": "reference/fp_cache_ids.html",
+    "href": "reference/fp_cache_ids.html",
+    "title": "fp_cache_ids",
     "section": "",
     "text": "&lt; Back to Reference"
   },
   {
-    "objectID": "reference/fp_enrich.html#usage",
-    "href": "reference/fp_enrich.html#usage",
-    "title": "fp_enrich",
+    "objectID": "reference/fp_cache_ids.html#usage",
+    "href": "reference/fp_cache_ids.html#usage",
+    "title": "fp_cache_ids",
     "section": "Usage",
-    "text": "Usage\nfp_enrich(.data, id_col = NULL, name_col = \"name\", token = \"FLIX_PATROL\")"
+    "text": "Usage\nfp_cache_ids(\n  country_names = NULL,\n  platform_names = NULL,\n  token = \"FLIX_PATROL\",\n  pkg_path = \".\"\n)"
   },
   {
-    "objectID": "reference/fp_enrich.html#arguments",
-    "href": "reference/fp_enrich.html#arguments",
-    "title": "fp_enrich",
+    "objectID": "reference/fp_cache_ids.html#arguments",
+    "href": "reference/fp_cache_ids.html#arguments",
+    "title": "fp_cache_ids",
     "section": "Arguments",
-    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\n.data\nA data frame or tibble.\n\n\nid_col\nTidy-select. The column containing FlixPatrol IDs. If not supplied, the function searches for the first column whose values start with ‘“cmp_”’, ‘“ttl_”’, or ‘“frn_”’.\n\n\nname_col\nCharacter. Name of the new column (default ‘“name”’).\n\n\ntoken\nCharacter. API environment variable name."
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\ncountry_names\nCharacter vector. Country names to cache (or ‘NULL’ to skip).\n\n\nplatform_names\nCharacter vector. Platform names to cache (or ‘NULL’ to skip).\n\n\ntoken\nCharacter. API environment variable name.\n\n\npkg_path\nCharacter. Path to the package root directory."
   },
   {
-    "objectID": "reference/fp_enrich.html#value",
-    "href": "reference/fp_enrich.html#value",
-    "title": "fp_enrich",
+    "objectID": "reference/fp_cache_ids.html#value",
+    "href": "reference/fp_cache_ids.html#value",
+    "title": "fp_cache_ids",
     "section": "Value",
-    "text": "Value\nThe input tibble with an additional column of resolved names."
+    "text": "Value\nInvisible ‘TRUE’ on success."
   },
   {
-    "objectID": "reference/fp_enrich.html#description",
-    "href": "reference/fp_enrich.html#description",
-    "title": "fp_enrich",
+    "objectID": "reference/fp_cache_ids.html#description",
+    "href": "reference/fp_cache_ids.html#description",
+    "title": "fp_cache_ids",
     "section": "Description",
-    "text": "Description\nPipe-friendly helper that detects a column of FlixPatrol IDs (mixed ‘cmp_’, ‘ttl_’, ‘frn_’ prefixes) and appends a ‘name’ column with the resolved human-readable names."
+    "text": "Description\nHits the API once for each provided country and platform name, resolves them to IDs, and saves the results to the package’s ‘country_name’ and ‘platform_name’ lookup tables in ‘data/’.\nThis is useful for populating the cached lookup tables with your own commonly-used values so subsequent lookups avoid API calls."
   },
   {
-    "objectID": "reference/flixpatrol_options.html",
-    "href": "reference/flixpatrol_options.html",
-    "title": "flixpatrol_options",
+    "objectID": "reference/fetch_fans_ranking_tbl.html",
+    "href": "reference/fetch_fans_ranking_tbl.html",
+    "title": "fetch_fans_ranking_tbl",
     "section": "",
     "text": "&lt; Back to Reference"
   },
   {
-    "objectID": "reference/flixpatrol_options.html#usage",
-    "href": "reference/flixpatrol_options.html#usage",
-    "title": "flixpatrol_options",
+    "objectID": "reference/fetch_fans_ranking_tbl.html#usage",
+    "href": "reference/fetch_fans_ranking_tbl.html#usage",
+    "title": "fetch_fans_ranking_tbl",
     "section": "Usage",
-    "text": "Usage\nflixpatrol_options()"
+    "text": "Usage\nfetch_fans_ranking_tbl(\n  token = \"FLIX_PATROL\",\n  platform_name = \"netflix\",\n  country_name = \"United States\",\n  start_date,\n  end_date,\n  media_type = \"Movie\",\n  date_type = \"day\",\n  language = \"English\"\n)"
   },
   {
-    "objectID": "reference/flixpatrol_options.html#value",
-    "href": "reference/flixpatrol_options.html#value",
-    "title": "flixpatrol_options",
+    "objectID": "reference/fetch_fans_ranking_tbl.html#arguments",
+    "href": "reference/fetch_fans_ranking_tbl.html#arguments",
+    "title": "fetch_fans_ranking_tbl",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\ntoken\nCharacter. API environment variable name.\n\n\nplatform_name\nCharacter. The platform (e.g., “Netflix”).\n\n\ncountry_name\nCharacter. The country name.\n\n\nstart_date\nDate/Character. Start date of the ranking.\n\n\nend_date\nDate/Character. End date of the ranking.\n\n\nmedia_type\nCharacter. “Movie” or “TvShow”.\n\n\ndate_type\nCharacter. Defaults to “day”.\n\n\nlanguage\nCharacter. Language name for filtering."
+  },
+  {
+    "objectID": "reference/fetch_fans_ranking_tbl.html#value",
+    "href": "reference/fetch_fans_ranking_tbl.html#value",
+    "title": "fetch_fans_ranking_tbl",
     "section": "Value",
-    "text": "Value\nA tibble of available options (invisibly). Prints a formatted list."
+    "text": "Value\nA tidy tibble of fan rankings."
   },
   {
-    "objectID": "reference/flixpatrol_options.html#description",
-    "href": "reference/flixpatrol_options.html#description",
-    "title": "flixpatrol_options",
+    "objectID": "reference/fetch_fans_ranking_tbl.html#description",
+    "href": "reference/fetch_fans_ranking_tbl.html#description",
+    "title": "fetch_fans_ranking_tbl",
     "section": "Description",
-    "text": "Description\nLists all available package options, their descriptions, and current values."
+    "text": "Description\nRetrieves the “Fans” ranking data for titles based on platform, country, and date range."
   },
   {
-    "objectID": "reference/flixpatrol_options.html#details",
-    "href": "reference/flixpatrol_options.html#details",
-    "title": "flixpatrol_options",
+    "objectID": "reference/authenticate.html",
+    "href": "reference/authenticate.html",
+    "title": "authenticate",
+    "section": "",
+    "text": "&lt; Back to Reference"
+  },
+  {
+    "objectID": "reference/authenticate.html#usage",
+    "href": "reference/authenticate.html#usage",
+    "title": "authenticate",
+    "section": "Usage",
+    "text": "Usage\nauthenticate(\n  site = \"https://api.flixpatrol.com/v2/top10s\",\n  token = \"FLIX_PATROL\"\n)"
+  },
+  {
+    "objectID": "reference/authenticate.html#arguments",
+    "href": "reference/authenticate.html#arguments",
+    "title": "authenticate",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nsite\nCharacter. The specific API endpoint URL. Defaults to the Top 10s endpoint.\n\n\ntoken\nCharacter. The name of the environment variable containing the API key. Default is “FLIX_PATROL”."
+  },
+  {
+    "objectID": "reference/authenticate.html#value",
+    "href": "reference/authenticate.html#value",
+    "title": "authenticate",
+    "section": "Value",
+    "text": "Value\nA ‘httr2_request’ object with basic authentication headers."
+  },
+  {
+    "objectID": "reference/authenticate.html#description",
+    "href": "reference/authenticate.html#description",
+    "title": "authenticate",
+    "section": "Description",
+    "text": "Description\nInitializes an authenticated ‘httr2’ request object for the FlixPatrol API using basic authentication."
+  },
+  {
+    "objectID": "reference/authenticate.html#details",
+    "href": "reference/authenticate.html#details",
+    "title": "authenticate",
     "section": "Details",
-    "text": "Details\nSet options using ‘options(flixpatrol.option_name = value)’. Add to your ‘~/.Rprofile’ to make permanent."
-  },
-  {
-    "objectID": "reference/flixpatrol_options.html#examples",
-    "href": "reference/flixpatrol_options.html#examples",
-    "title": "flixpatrol_options",
-    "section": "Examples",
-    "text": "Examples\nflixpatrol_options()\n\n# Set an option\noptions(flixpatrol.silent = TRUE)"
-  },
-  {
-    "objectID": "reference/compare_platforms_tbl.html",
-    "href": "reference/compare_platforms_tbl.html",
-    "title": "compare_platforms_tbl",
-    "section": "",
-    "text": "&lt; Back to Reference"
-  },
-  {
-    "objectID": "reference/compare_platforms_tbl.html#usage",
-    "href": "reference/compare_platforms_tbl.html#usage",
-    "title": "compare_platforms_tbl",
-    "section": "Usage",
-    "text": "Usage\ncompare_platforms_tbl(\n  title,\n  platforms = c(\"netflix\", \"disney+\", \"hbo max\", \"amazon prime\", \"apple tv+\"),\n  country_name = \"United States\",\n  date,\n  flix_type = \"movies\",\n  token = \"FLIX_PATROL\"\n)"
-  },
-  {
-    "objectID": "reference/compare_platforms_tbl.html#arguments",
-    "href": "reference/compare_platforms_tbl.html#arguments",
-    "title": "compare_platforms_tbl",
-    "section": "Arguments",
-    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\ntitle\nCharacter. The title to search for in each platform’s chart.\n\n\nplatforms\nCharacter vector. Platform names to compare (default: Netflix, Disney+, HBO Max, Amazon Prime, Apple TV+).\n\n\ncountry_name\nCharacter. Country name.\n\n\ndate\nDate/Character. The chart date.\n\n\nflix_type\nCharacter. Content type (default ‘“movies”’).\n\n\ntoken\nCharacter. API environment variable name."
-  },
-  {
-    "objectID": "reference/compare_platforms_tbl.html#value",
-    "href": "reference/compare_platforms_tbl.html#value",
-    "title": "compare_platforms_tbl",
-    "section": "Value",
-    "text": "Value\nA tibble with columns ‘platform’, ‘rank’, ‘title’, ‘date’, and chart metadata. Platforms where the title does not appear return a row with ‘rank = NA’."
-  },
-  {
-    "objectID": "reference/compare_platforms_tbl.html#description",
-    "href": "reference/compare_platforms_tbl.html#description",
-    "title": "compare_platforms_tbl",
-    "section": "Description",
-    "text": "Description\nGiven a title, fetches its Top 10 ranking on multiple platforms for the same date, returning a single tibble for easy side-by-side comparison."
-  },
-  {
-    "objectID": "reference.html",
-    "href": "reference.html",
-    "title": "Function reference",
-    "section": "",
-    "text": "All functions and classes exported by flixpatrol."
-  },
-  {
-    "objectID": "reference.html#functions",
-    "href": "reference.html#functions",
-    "title": "Function reference",
-    "section": "Functions",
-    "text": "Functions\n\n\n\nFunction\nDescription\n\n\n\n\nauthenticate()\nAuthenticate and Create Base Request\n\n\ncompare_platforms_tbl()\nCompare a Title’s Ranking Across Platforms\n\n\nfetch_fans_ranking_tbl()\nFetch Fans Site Rankings\n\n\nflixpatrol_options()\nFlixPatrol Package Options\n\n\nfp_cache_ids()\nCache Country and Platform IDs to Lookup Tables\n\n\nfp_enrich()\nEnrich a Tibble with Resolved Names\n\n\nget_company_name()\nGet Company Name from ID\n\n\nget_franchise_name()\nGet Franchise Name from ID\n\n\nget_franchise_performance()\nFranchise Performance Rollup\n\n\nget_global_ranking()\nGlobal Ranking for a Title Across Countries\n\n\nget_hours_viewed()\nCreate Hours Viewed Table\n\n\nget_official_ranking()\nCreate Official Ranking Table\n\n\nget_premieres()\nCreate Premiere Table\n\n\nget_social_fans()\nCreate Social Fans Table\n\n\nget_title_details()\nGet Title Details\n\n\nget_title_history()\nTrack a Single Title’s Rank Over Time\n\n\nget_title_name()\nGet Name from FlixPatrol ID\n\n\nget_top_ten()\nCreate a Daily Top 10 Table for a Date Range\n\n\nget_top_titles_summary()\nSummarize Top Titles Over a Date Range\n\n\nget_torrent_ranking()\nCreate Torrent Ranking Table\n\n\nget_weekly_movers()\nWeekly Movers: Gainers, Losers, New Entries, and Exits\n\n\nhello()\nHello, World!\n\n\nlookup_country()\nLookup Country IDs\n\n\nlookup_date_type()\nLookup Date Type IDs\n\n\nlookup_flix_type()\nLookup Flix Type IDs\n\n\nlookup_franchise()\nLookup Franchise IDs\n\n\nlookup_from_table()\nLookup Values from a Reference Table\n\n\nlookup_language()\nLookup Language IDs\n\n\nlookup_media_type()\nLookup Media Type IDs\n\n\nlookup_platform()\nLookup Platform (Company) IDs\n\n\nlookup_title()\nLookup Title ID\n\n\nlookup_torrent_site()\nLookup Torrent Site IDs\n\n\nunnest_flixpatrol_response()\nUnnest a FlixPatrol API Response\n\n\nvalidate_date_range()\nValidate Date Ranges for API Compatibility"
-  },
-  {
-    "objectID": "citation.html",
-    "href": "citation.html",
-    "title": "Citation",
-    "section": "",
-    "text": "To cite this package in publications, use:\n\nDoe J (2026). flixpatrol: R Client for the FlixPatrol Streaming Rankings API. R package version 0.2.0.\n\n\n\n@Manual{,\n  title = {flixpatrol: R Client for the FlixPatrol Streaming Rankings API},\n  author = {Jane Doe},\n  year = {2026},\n  note = {R package version 0.2.0},\n}"
-  },
-  {
-    "objectID": "citation.html#bibtex-entry",
-    "href": "citation.html#bibtex-entry",
-    "title": "Citation",
-    "section": "",
-    "text": "@Manual{,\n  title = {flixpatrol: R Client for the FlixPatrol Streaming Rankings API},\n  author = {Jane Doe},\n  year = {2026},\n  note = {R package version 0.2.0},\n}"
-  },
-  {
-    "objectID": "articles.html",
-    "href": "articles.html",
-    "title": "Articles",
-    "section": "",
-    "text": "flixpatrol Articles\nIn-depth guides and tutorials for using the package.\n\nDeveloper’s Guide\nGetting Started with flixpatrol"
+    "text": "Details\nThis function serves as the foundation for all API calls in the package. It checks for a valid access token stored in the user’s system environment. If the token is missing or invalid, it provides instructions on how to set it using ‘usethis::edit_r_environ()’."
   },
   {
     "objectID": "index.html",
@@ -910,431 +889,424 @@
     "text": "License\nMIT"
   },
   {
-    "objectID": "reference/authenticate.html",
-    "href": "reference/authenticate.html",
-    "title": "authenticate",
+    "objectID": "articles.html",
+    "href": "articles.html",
+    "title": "Articles",
+    "section": "",
+    "text": "flixpatrol Articles\nIn-depth guides and tutorials for using the package.\n\nDeveloper’s Guide\nGetting Started with flixpatrol"
+  },
+  {
+    "objectID": "citation.html",
+    "href": "citation.html",
+    "title": "Citation",
+    "section": "",
+    "text": "To cite this package in publications, use:\n\nDoe J (2026). flixpatrol: R Client for the FlixPatrol Streaming Rankings API. R package version 0.2.0.\n\n\n\n@Manual{,\n  title = {flixpatrol: R Client for the FlixPatrol Streaming Rankings API},\n  author = {Jane Doe},\n  year = {2026},\n  note = {R package version 0.2.0},\n}"
+  },
+  {
+    "objectID": "citation.html#bibtex-entry",
+    "href": "citation.html#bibtex-entry",
+    "title": "Citation",
+    "section": "",
+    "text": "@Manual{,\n  title = {flixpatrol: R Client for the FlixPatrol Streaming Rankings API},\n  author = {Jane Doe},\n  year = {2026},\n  note = {R package version 0.2.0},\n}"
+  },
+  {
+    "objectID": "reference.html",
+    "href": "reference.html",
+    "title": "Function reference",
+    "section": "",
+    "text": "All functions and classes exported by flixpatrol."
+  },
+  {
+    "objectID": "reference.html#functions",
+    "href": "reference.html#functions",
+    "title": "Function reference",
+    "section": "Functions",
+    "text": "Functions\n\n\n\nFunction\nDescription\n\n\n\n\nauthenticate()\nAuthenticate and Create Base Request\n\n\ncompare_platforms_tbl()\nCompare a Title’s Ranking Across Platforms\n\n\nfetch_fans_ranking_tbl()\nFetch Fans Site Rankings\n\n\nflixpatrol_options()\nFlixPatrol Package Options\n\n\nfp_cache_ids()\nCache Country and Platform IDs to Lookup Tables\n\n\nfp_enrich()\nEnrich a Tibble with Resolved Names\n\n\nget_company_name()\nGet Company Name from ID\n\n\nget_franchise_name()\nGet Franchise Name from ID\n\n\nget_franchise_performance()\nFranchise Performance Rollup\n\n\nget_global_ranking()\nGlobal Ranking for a Title Across Countries\n\n\nget_hours_viewed()\nCreate Hours Viewed Table\n\n\nget_official_ranking()\nCreate Official Ranking Table\n\n\nget_premieres()\nCreate Premiere Table\n\n\nget_social_fans()\nCreate Social Fans Table\n\n\nget_title_details()\nGet Title Details\n\n\nget_title_history()\nTrack a Single Title’s Rank Over Time\n\n\nget_title_name()\nGet Name from FlixPatrol ID\n\n\nget_top_ten()\nCreate a Daily Top 10 Table for a Date Range\n\n\nget_top_titles_summary()\nSummarize Top Titles Over a Date Range\n\n\nget_torrent_ranking()\nCreate Torrent Ranking Table\n\n\nget_weekly_movers()\nWeekly Movers: Gainers, Losers, New Entries, and Exits\n\n\nlookup_country()\nLookup Country IDs\n\n\nlookup_date_type()\nLookup Date Type IDs\n\n\nlookup_flix_type()\nLookup Flix Type IDs\n\n\nlookup_franchise()\nLookup Franchise IDs\n\n\nlookup_from_table()\nLookup Values from a Reference Table\n\n\nlookup_language()\nLookup Language IDs\n\n\nlookup_media_type()\nLookup Media Type IDs\n\n\nlookup_platform()\nLookup Platform (Company) IDs\n\n\nlookup_title()\nLookup Title ID\n\n\nlookup_torrent_site()\nLookup Torrent Site IDs\n\n\nunnest_flixpatrol_response()\nUnnest a FlixPatrol API Response\n\n\nvalidate_date_range()\nValidate Date Ranges for API Compatibility"
+  },
+  {
+    "objectID": "reference/compare_platforms_tbl.html",
+    "href": "reference/compare_platforms_tbl.html",
+    "title": "compare_platforms_tbl",
     "section": "",
     "text": "&lt; Back to Reference"
   },
   {
-    "objectID": "reference/authenticate.html#usage",
-    "href": "reference/authenticate.html#usage",
-    "title": "authenticate",
+    "objectID": "reference/compare_platforms_tbl.html#usage",
+    "href": "reference/compare_platforms_tbl.html#usage",
+    "title": "compare_platforms_tbl",
     "section": "Usage",
-    "text": "Usage\nauthenticate(\n  site = \"https://api.flixpatrol.com/v2/top10s\",\n  token = \"FLIX_PATROL\"\n)"
+    "text": "Usage\ncompare_platforms_tbl(\n  title,\n  platforms = c(\"netflix\", \"disney+\", \"hbo max\", \"amazon prime\", \"apple tv+\"),\n  country_name = \"United States\",\n  date,\n  flix_type = \"movies\",\n  token = \"FLIX_PATROL\"\n)"
   },
   {
-    "objectID": "reference/authenticate.html#arguments",
-    "href": "reference/authenticate.html#arguments",
-    "title": "authenticate",
+    "objectID": "reference/compare_platforms_tbl.html#arguments",
+    "href": "reference/compare_platforms_tbl.html#arguments",
+    "title": "compare_platforms_tbl",
     "section": "Arguments",
-    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nsite\nCharacter. The specific API endpoint URL. Defaults to the Top 10s endpoint.\n\n\ntoken\nCharacter. The name of the environment variable containing the API key. Default is “FLIX_PATROL”."
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\ntitle\nCharacter. The title to search for in each platform’s chart.\n\n\nplatforms\nCharacter vector. Platform names to compare (default: Netflix, Disney+, HBO Max, Amazon Prime, Apple TV+).\n\n\ncountry_name\nCharacter. Country name.\n\n\ndate\nDate/Character. The chart date.\n\n\nflix_type\nCharacter. Content type (default ‘“movies”’).\n\n\ntoken\nCharacter. API environment variable name."
   },
   {
-    "objectID": "reference/authenticate.html#value",
-    "href": "reference/authenticate.html#value",
-    "title": "authenticate",
+    "objectID": "reference/compare_platforms_tbl.html#value",
+    "href": "reference/compare_platforms_tbl.html#value",
+    "title": "compare_platforms_tbl",
     "section": "Value",
-    "text": "Value\nA ‘httr2_request’ object with basic authentication headers."
+    "text": "Value\nA tibble with columns ‘platform’, ‘rank’, ‘title’, ‘date’, and chart metadata. Platforms where the title does not appear return a row with ‘rank = NA’."
   },
   {
-    "objectID": "reference/authenticate.html#description",
-    "href": "reference/authenticate.html#description",
-    "title": "authenticate",
+    "objectID": "reference/compare_platforms_tbl.html#description",
+    "href": "reference/compare_platforms_tbl.html#description",
+    "title": "compare_platforms_tbl",
     "section": "Description",
-    "text": "Description\nInitializes an authenticated ‘httr2’ request object for the FlixPatrol API using basic authentication."
+    "text": "Description\nGiven a title, fetches its Top 10 ranking on multiple platforms for the same date, returning a single tibble for easy side-by-side comparison."
   },
   {
-    "objectID": "reference/authenticate.html#details",
-    "href": "reference/authenticate.html#details",
-    "title": "authenticate",
+    "objectID": "reference/flixpatrol_options.html",
+    "href": "reference/flixpatrol_options.html",
+    "title": "flixpatrol_options",
+    "section": "",
+    "text": "&lt; Back to Reference"
+  },
+  {
+    "objectID": "reference/flixpatrol_options.html#usage",
+    "href": "reference/flixpatrol_options.html#usage",
+    "title": "flixpatrol_options",
+    "section": "Usage",
+    "text": "Usage\nflixpatrol_options()"
+  },
+  {
+    "objectID": "reference/flixpatrol_options.html#value",
+    "href": "reference/flixpatrol_options.html#value",
+    "title": "flixpatrol_options",
+    "section": "Value",
+    "text": "Value\nA tibble of available options (invisibly). Prints a formatted list."
+  },
+  {
+    "objectID": "reference/flixpatrol_options.html#description",
+    "href": "reference/flixpatrol_options.html#description",
+    "title": "flixpatrol_options",
+    "section": "Description",
+    "text": "Description\nLists all available package options, their descriptions, and current values."
+  },
+  {
+    "objectID": "reference/flixpatrol_options.html#details",
+    "href": "reference/flixpatrol_options.html#details",
+    "title": "flixpatrol_options",
     "section": "Details",
-    "text": "Details\nThis function serves as the foundation for all API calls in the package. It checks for a valid access token stored in the user’s system environment. If the token is missing or invalid, it provides instructions on how to set it using ‘usethis::edit_r_environ()’."
+    "text": "Details\nSet options using ‘options(flixpatrol.option_name = value)’. Add to your ‘~/.Rprofile’ to make permanent."
   },
   {
-    "objectID": "reference/fetch_fans_ranking_tbl.html",
-    "href": "reference/fetch_fans_ranking_tbl.html",
-    "title": "fetch_fans_ranking_tbl",
-    "section": "",
-    "text": "&lt; Back to Reference"
-  },
-  {
-    "objectID": "reference/fetch_fans_ranking_tbl.html#usage",
-    "href": "reference/fetch_fans_ranking_tbl.html#usage",
-    "title": "fetch_fans_ranking_tbl",
-    "section": "Usage",
-    "text": "Usage\nfetch_fans_ranking_tbl(\n  token = \"FLIX_PATROL\",\n  platform_name = \"netflix\",\n  country_name = \"United States\",\n  start_date,\n  end_date,\n  media_type = \"Movie\",\n  date_type = \"day\",\n  language = \"English\"\n)"
-  },
-  {
-    "objectID": "reference/fetch_fans_ranking_tbl.html#arguments",
-    "href": "reference/fetch_fans_ranking_tbl.html#arguments",
-    "title": "fetch_fans_ranking_tbl",
-    "section": "Arguments",
-    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\ntoken\nCharacter. API environment variable name.\n\n\nplatform_name\nCharacter. The platform (e.g., “Netflix”).\n\n\ncountry_name\nCharacter. The country name.\n\n\nstart_date\nDate/Character. Start date of the ranking.\n\n\nend_date\nDate/Character. End date of the ranking.\n\n\nmedia_type\nCharacter. “Movie” or “TvShow”.\n\n\ndate_type\nCharacter. Defaults to “day”.\n\n\nlanguage\nCharacter. Language name for filtering."
-  },
-  {
-    "objectID": "reference/fetch_fans_ranking_tbl.html#value",
-    "href": "reference/fetch_fans_ranking_tbl.html#value",
-    "title": "fetch_fans_ranking_tbl",
-    "section": "Value",
-    "text": "Value\nA tidy tibble of fan rankings."
-  },
-  {
-    "objectID": "reference/fetch_fans_ranking_tbl.html#description",
-    "href": "reference/fetch_fans_ranking_tbl.html#description",
-    "title": "fetch_fans_ranking_tbl",
-    "section": "Description",
-    "text": "Description\nRetrieves the “Fans” ranking data for titles based on platform, country, and date range."
-  },
-  {
-    "objectID": "reference/fp_cache_ids.html",
-    "href": "reference/fp_cache_ids.html",
-    "title": "fp_cache_ids",
-    "section": "",
-    "text": "&lt; Back to Reference"
-  },
-  {
-    "objectID": "reference/fp_cache_ids.html#usage",
-    "href": "reference/fp_cache_ids.html#usage",
-    "title": "fp_cache_ids",
-    "section": "Usage",
-    "text": "Usage\nfp_cache_ids(\n  country_names = NULL,\n  platform_names = NULL,\n  token = \"FLIX_PATROL\",\n  pkg_path = \".\"\n)"
-  },
-  {
-    "objectID": "reference/fp_cache_ids.html#arguments",
-    "href": "reference/fp_cache_ids.html#arguments",
-    "title": "fp_cache_ids",
-    "section": "Arguments",
-    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\ncountry_names\nCharacter vector. Country names to cache (or ‘NULL’ to skip).\n\n\nplatform_names\nCharacter vector. Platform names to cache (or ‘NULL’ to skip).\n\n\ntoken\nCharacter. API environment variable name.\n\n\npkg_path\nCharacter. Path to the package root directory."
-  },
-  {
-    "objectID": "reference/fp_cache_ids.html#value",
-    "href": "reference/fp_cache_ids.html#value",
-    "title": "fp_cache_ids",
-    "section": "Value",
-    "text": "Value\nInvisible ‘TRUE’ on success."
-  },
-  {
-    "objectID": "reference/fp_cache_ids.html#description",
-    "href": "reference/fp_cache_ids.html#description",
-    "title": "fp_cache_ids",
-    "section": "Description",
-    "text": "Description\nHits the API once for each provided country and platform name, resolves them to IDs, and saves the results to the package’s ‘country_name’ and ‘platform_name’ lookup tables in ‘data/’.\nThis is useful for populating the cached lookup tables with your own commonly-used values so subsequent lookups avoid API calls."
-  },
-  {
-    "objectID": "reference/get_company_name.html",
-    "href": "reference/get_company_name.html",
-    "title": "get_company_name",
-    "section": "",
-    "text": "&lt; Back to Reference"
-  },
-  {
-    "objectID": "reference/get_company_name.html#usage",
-    "href": "reference/get_company_name.html#usage",
-    "title": "get_company_name",
-    "section": "Usage",
-    "text": "Usage\nget_company_name(company_id, token = \"FLIX_PATROL\")"
-  },
-  {
-    "objectID": "reference/get_company_name.html#arguments",
-    "href": "reference/get_company_name.html#arguments",
-    "title": "get_company_name",
-    "section": "Arguments",
-    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\ncompany_id\nCharacter. The FlixPatrol ID (e.g., “cmp_IA6TdMqwf6kuyQvxo9bJ4nKX”).\n\n\ntoken\nCharacter. The name of the environment variable containing the API key."
-  },
-  {
-    "objectID": "reference/get_company_name.html#value",
-    "href": "reference/get_company_name.html#value",
-    "title": "get_company_name",
-    "section": "Value",
-    "text": "Value\nA character string containing the company name."
-  },
-  {
-    "objectID": "reference/get_company_name.html#description",
-    "href": "reference/get_company_name.html#description",
-    "title": "get_company_name",
-    "section": "Description",
-    "text": "Description\nRetrieves the human-readable company name associated with a specific FlixPatrol company ID."
-  },
-  {
-    "objectID": "reference/get_company_name.html#details",
-    "href": "reference/get_company_name.html#details",
-    "title": "get_company_name",
-    "section": "Details",
-    "text": "Details\nThis function hits the ‘/companies/:id’ endpoint. It is specifically designed to reverse a lookup where you have the ID (e.g., from a data table) and need the display name (e.g., “Netflix”)."
-  },
-  {
-    "objectID": "reference/get_company_name.html#examples",
-    "href": "reference/get_company_name.html#examples",
-    "title": "get_company_name",
+    "objectID": "reference/flixpatrol_options.html#examples",
+    "href": "reference/flixpatrol_options.html#examples",
+    "title": "flixpatrol_options",
     "section": "Examples",
-    "text": "Examples\n## Not run: \nget_company_name(\"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX\")\n# [1] \"Netflix\"\n\n## End(Not run)"
+    "text": "Examples\nflixpatrol_options()\n\n# Set an option\noptions(flixpatrol.silent = TRUE)"
   },
   {
-    "objectID": "reference/get_franchise_performance.html",
-    "href": "reference/get_franchise_performance.html",
-    "title": "get_franchise_performance",
+    "objectID": "reference/fp_enrich.html",
+    "href": "reference/fp_enrich.html",
+    "title": "fp_enrich",
     "section": "",
     "text": "&lt; Back to Reference"
   },
   {
-    "objectID": "reference/get_franchise_performance.html#usage",
-    "href": "reference/get_franchise_performance.html#usage",
-    "title": "get_franchise_performance",
+    "objectID": "reference/fp_enrich.html#usage",
+    "href": "reference/fp_enrich.html#usage",
+    "title": "fp_enrich",
     "section": "Usage",
-    "text": "Usage\nget_franchise_performance(\n  franchise_title,\n  platform_name = \"netflix\",\n  country_name = \"United States\",\n  start_date,\n  end_date,\n  flix_type = \"movies\",\n  token = \"FLIX_PATROL\"\n)"
+    "text": "Usage\nfp_enrich(.data, id_col = NULL, name_col = \"name\", token = \"FLIX_PATROL\")"
   },
   {
-    "objectID": "reference/get_franchise_performance.html#arguments",
-    "href": "reference/get_franchise_performance.html#arguments",
-    "title": "get_franchise_performance",
+    "objectID": "reference/fp_enrich.html#arguments",
+    "href": "reference/fp_enrich.html#arguments",
+    "title": "fp_enrich",
     "section": "Arguments",
-    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nfranchise_title\nCharacter. The franchise name (e.g., “Marvel”, “Star Wars”).\n\n\nplatform_name\nCharacter. Platform name.\n\n\ncountry_name\nCharacter. Country name.\n\n\nstart_date\nDate/Character. Start of the range.\n\n\nend_date\nDate/Character. End of the range.\n\n\nflix_type\nCharacter. Content type (default ‘“movies”’).\n\n\ntoken\nCharacter. API environment variable name."
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\n.data\nA data frame or tibble.\n\n\nid_col\nTidy-select. The column containing FlixPatrol IDs. If not supplied, the function searches for the first column whose values start with ‘“cmp_”’, ‘“ttl_”’, or ‘“frn_”’.\n\n\nname_col\nCharacter. Name of the new column (default ‘“name”’).\n\n\ntoken\nCharacter. API environment variable name."
   },
   {
-    "objectID": "reference/get_franchise_performance.html#value",
-    "href": "reference/get_franchise_performance.html#value",
-    "title": "get_franchise_performance",
+    "objectID": "reference/fp_enrich.html#value",
+    "href": "reference/fp_enrich.html#value",
+    "title": "fp_enrich",
     "section": "Value",
-    "text": "Value\nA tibble with columns ‘title’, ‘days_on_chart’, ‘best_rank’, ‘avg_rank’, plus a ‘franchise’ column."
+    "text": "Value\nThe input tibble with an additional column of resolved names."
   },
   {
-    "objectID": "reference/get_franchise_performance.html#description",
-    "href": "reference/get_franchise_performance.html#description",
-    "title": "get_franchise_performance",
+    "objectID": "reference/fp_enrich.html#description",
+    "href": "reference/fp_enrich.html#description",
+    "title": "fp_enrich",
     "section": "Description",
-    "text": "Description\nLooks up all titles in a franchise, then aggregates their Top 10 appearances across a date range into a single summary table."
+    "text": "Description\nPipe-friendly helper that detects a column of FlixPatrol IDs (mixed ‘cmp_’, ‘ttl_’, ‘frn_’ prefixes) and appends a ‘name’ column with the resolved human-readable names."
   },
   {
-    "objectID": "reference/get_hours_viewed.html",
-    "href": "reference/get_hours_viewed.html",
-    "title": "get_hours_viewed",
+    "objectID": "reference/get_franchise_name.html",
+    "href": "reference/get_franchise_name.html",
+    "title": "get_franchise_name",
     "section": "",
     "text": "&lt; Back to Reference"
   },
   {
-    "objectID": "reference/get_hours_viewed.html#usage",
-    "href": "reference/get_hours_viewed.html#usage",
-    "title": "get_hours_viewed",
+    "objectID": "reference/get_franchise_name.html#usage",
+    "href": "reference/get_franchise_name.html#usage",
+    "title": "get_franchise_name",
     "section": "Usage",
-    "text": "Usage\nget_hours_viewed(\n  token = \"FLIX_PATROL\",\n  platform_name = \"netflix\",\n  media_type_name = \"movie\",\n  language_name = \"english\",\n  start_date,\n  end_date\n)"
+    "text": "Usage\nget_franchise_name(franchise_id, token = \"FLIX_PATROL\")"
   },
   {
-    "objectID": "reference/get_hours_viewed.html#arguments",
-    "href": "reference/get_hours_viewed.html#arguments",
-    "title": "get_hours_viewed",
+    "objectID": "reference/get_franchise_name.html#arguments",
+    "href": "reference/get_franchise_name.html#arguments",
+    "title": "get_franchise_name",
     "section": "Arguments",
-    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\ntoken\nCharacter. API environment variable name.\n\n\nplatform_name\nCharacter. Platform name (defaults to “netflix”).\n\n\nmedia_type_name\nCharacter. Media type (e.g., “Movie”).\n\n\nlanguage_name\nCharacter. Language (e.g., “English”).\n\n\nstart_date\nDate/Character. Must be a Monday.\n\n\nend_date\nDate/Character. Must be 7 days from start."
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nfranchise_id\nCharacter. The FlixPatrol franchise ID (e.g., “frn_STNa2GEw54ahWxJsXNgBMmt0”).\n\n\ntoken\nCharacter. The name of the environment variable containing the API key."
   },
   {
-    "objectID": "reference/get_hours_viewed.html#value",
-    "href": "reference/get_hours_viewed.html#value",
-    "title": "get_hours_viewed",
+    "objectID": "reference/get_franchise_name.html#value",
+    "href": "reference/get_franchise_name.html#value",
+    "title": "get_franchise_name",
     "section": "Value",
-    "text": "Value\nA wide tibble containing viewing hours and metadata."
+    "text": "Value\nA character string containing the franchise title."
   },
   {
-    "objectID": "reference/get_hours_viewed.html#description",
-    "href": "reference/get_hours_viewed.html#description",
-    "title": "get_hours_viewed",
+    "objectID": "reference/get_franchise_name.html#description",
+    "href": "reference/get_franchise_name.html#description",
+    "title": "get_franchise_name",
     "section": "Description",
-    "text": "Description\nRetrieves the “Hours Viewed” metric for a platform, language, and content type."
+    "text": "Description\nRetrieves the human-readable franchise title associated with a specific FlixPatrol franchise ID."
   },
   {
-    "objectID": "reference/get_hours_viewed.html#details",
-    "href": "reference/get_hours_viewed.html#details",
-    "title": "get_hours_viewed",
+    "objectID": "reference/get_franchise_name.html#details",
+    "href": "reference/get_franchise_name.html#details",
+    "title": "get_franchise_name",
     "section": "Details",
-    "text": "Details\nThis function specifically handles the ‘/hoursviewed’ endpoint. It defaults to “week” views (API type 3) and requires a 7-day range starting on a Monday. The resulting JSON is heavily unnested to provide a wide, analysis-ready tibble."
+    "text": "Details\nThis function hits the ‘/franchises/:id’ endpoint. It is used to resolve IDs found in data tables back into readable titles for reporting or visualization."
   },
   {
-    "objectID": "reference/get_premieres.html",
-    "href": "reference/get_premieres.html",
-    "title": "get_premieres",
-    "section": "",
-    "text": "&lt; Back to Reference"
-  },
-  {
-    "objectID": "reference/get_premieres.html#usage",
-    "href": "reference/get_premieres.html#usage",
-    "title": "get_premieres",
-    "section": "Usage",
-    "text": "Usage\nget_premieres(\n  platform_name = \"netflix\",\n  start_date,\n  end_date,\n  media_type = NULL\n)"
-  },
-  {
-    "objectID": "reference/get_premieres.html#arguments",
-    "href": "reference/get_premieres.html#arguments",
-    "title": "get_premieres",
-    "section": "Arguments",
-    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\nplatform_name\nCharacter. Platform name (e.g., “netflix”).\n\n\nstart_date\nDate/Character. Start of the date range.\n\n\nend_date\nDate/Character. End of the date range.\n\n\nmedia_type\nCharacter. “movie” or “tv” (optional)."
-  },
-  {
-    "objectID": "reference/get_premieres.html#value",
-    "href": "reference/get_premieres.html#value",
-    "title": "get_premieres",
-    "section": "Value",
-    "text": "Value\nA tibble of upcoming premieres."
-  },
-  {
-    "objectID": "reference/get_premieres.html#description",
-    "href": "reference/get_premieres.html#description",
-    "title": "get_premieres",
-    "section": "Description",
-    "text": "Description\nFetches upcoming premiere dates from the FlixPatrol API."
-  },
-  {
-    "objectID": "reference/get_title_details.html",
-    "href": "reference/get_title_details.html",
-    "title": "get_title_details",
-    "section": "",
-    "text": "&lt; Back to Reference"
-  },
-  {
-    "objectID": "reference/get_title_details.html#usage",
-    "href": "reference/get_title_details.html#usage",
-    "title": "get_title_details",
-    "section": "Usage",
-    "text": "Usage\nget_title_details(title_id, token = \"FLIX_PATROL\")"
-  },
-  {
-    "objectID": "reference/get_title_details.html#arguments",
-    "href": "reference/get_title_details.html#arguments",
-    "title": "get_title_details",
-    "section": "Arguments",
-    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\ntitle_id\nCharacter. The FlixPatrol title ID (e.g., ‘“ttl_…”’).\n\n\ntoken\nCharacter. API environment variable name."
-  },
-  {
-    "objectID": "reference/get_title_details.html#value",
-    "href": "reference/get_title_details.html#value",
-    "title": "get_title_details",
-    "section": "Value",
-    "text": "Value\nA named list of title metadata."
-  },
-  {
-    "objectID": "reference/get_title_details.html#description",
-    "href": "reference/get_title_details.html#description",
-    "title": "get_title_details",
-    "section": "Description",
-    "text": "Description\nRetrieves full metadata for a single title by its FlixPatrol ID, including runtime, genre, release date, IMDB rating, and other details."
-  },
-  {
-    "objectID": "reference/get_title_name.html",
-    "href": "reference/get_title_name.html",
-    "title": "get_title_name",
-    "section": "",
-    "text": "&lt; Back to Reference"
-  },
-  {
-    "objectID": "reference/get_title_name.html#usage",
-    "href": "reference/get_title_name.html#usage",
-    "title": "get_title_name",
-    "section": "Usage",
-    "text": "Usage\nget_title_name(fp_id)"
-  },
-  {
-    "objectID": "reference/get_title_name.html#arguments",
-    "href": "reference/get_title_name.html#arguments",
-    "title": "get_title_name",
-    "section": "Arguments",
-    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nfp_id\nCharacter vector. FlixPatrol IDs (e.g., “ttl_xxx”, “cmp_xxx”, “frn_xxx”)."
-  },
-  {
-    "objectID": "reference/get_title_name.html#value",
-    "href": "reference/get_title_name.html#value",
-    "title": "get_title_name",
-    "section": "Value",
-    "text": "Value\nA character vector of names, with ‘NA’ for failures."
-  },
-  {
-    "objectID": "reference/get_title_name.html#description",
-    "href": "reference/get_title_name.html#description",
-    "title": "get_title_name",
-    "section": "Description",
-    "text": "Description\nRetrieves human-readable names for FlixPatrol IDs. Vectorized and works inside ‘dplyr::mutate()’."
-  },
-  {
-    "objectID": "reference/get_title_name.html#details",
-    "href": "reference/get_title_name.html#details",
-    "title": "get_title_name",
-    "section": "Details",
-    "text": "Details\nAutomatically detects the ID type from prefix (‘cmp_’, ‘ttl_’, ‘frn_’) and queries the appropriate endpoint. Returns ‘NA’ for IDs that cannot be resolved."
-  },
-  {
-    "objectID": "reference/get_title_name.html#examples",
-    "href": "reference/get_title_name.html#examples",
-    "title": "get_title_name",
+    "objectID": "reference/get_franchise_name.html#examples",
+    "href": "reference/get_franchise_name.html#examples",
+    "title": "get_franchise_name",
     "section": "Examples",
-    "text": "Examples\n## Not run: \nget_title_name(\"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX\")\nget_title_name(c(\"cmp_xxx\", \"ttl_yyy\", \"frn_zzz\"))\n\n## End(Not run)"
+    "text": "Examples\n## Not run: \nget_franchise_name(\"frn_STNa2GEw54ahWxJsXNgBMmt0\")\n# [1] \"Indiana Jones\"\n\n## End(Not run)"
   },
   {
-    "objectID": "reference/get_top_titles_summary.html",
-    "href": "reference/get_top_titles_summary.html",
-    "title": "get_top_titles_summary",
+    "objectID": "reference/get_global_ranking.html",
+    "href": "reference/get_global_ranking.html",
+    "title": "get_global_ranking",
     "section": "",
     "text": "&lt; Back to Reference"
   },
   {
-    "objectID": "reference/get_top_titles_summary.html#usage",
-    "href": "reference/get_top_titles_summary.html#usage",
-    "title": "get_top_titles_summary",
+    "objectID": "reference/get_global_ranking.html#usage",
+    "href": "reference/get_global_ranking.html#usage",
+    "title": "get_global_ranking",
     "section": "Usage",
-    "text": "Usage\nget_top_titles_summary(\n  platform_name = \"netflix\",\n  country_name = \"United States\",\n  start_date,\n  end_date,\n  flix_type = \"movies\",\n  n = 20,\n  token = \"FLIX_PATROL\"\n)"
+    "text": "Usage\nget_global_ranking(\n  title,\n  platform_name = \"netflix\",\n  date,\n  countries = c(\"United States\", \"United Kingdom\", \"Canada\", \"Australia\", \"Germany\",\n    \"France\", \"Brazil\", \"India\", \"Japan\", \"South Korea\", \"Mexico\", \"Spain\", \"Italy\",\n    \"Netherlands\", \"Sweden\"),\n  flix_type = \"movies\",\n  token = \"FLIX_PATROL\"\n)"
   },
   {
-    "objectID": "reference/get_top_titles_summary.html#arguments",
-    "href": "reference/get_top_titles_summary.html#arguments",
-    "title": "get_top_titles_summary",
+    "objectID": "reference/get_global_ranking.html#arguments",
+    "href": "reference/get_global_ranking.html#arguments",
+    "title": "get_global_ranking",
     "section": "Arguments",
-    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\nplatform_name\nCharacter. Platform name.\n\n\ncountry_name\nCharacter. Country name.\n\n\nstart_date\nDate/Character. Start of the range.\n\n\nend_date\nDate/Character. End of the range.\n\n\nflix_type\nCharacter. Content type (default ‘“movies”’).\n\n\nn\nInteger. Number of top titles to return (default 20).\n\n\ntoken\nCharacter. API environment variable name."
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\ntitle\nCharacter. The title to look up.\n\n\nplatform_name\nCharacter. Platform name (default ‘“netflix”’).\n\n\ndate\nDate/Character. The chart date.\n\n\ncountries\nCharacter vector. Country names to check. Defaults to a broad set of 15 major markets.\n\n\nflix_type\nCharacter. Content type (default ‘“movies”’).\n\n\ntoken\nCharacter. API environment variable name."
   },
   {
-    "objectID": "reference/get_top_titles_summary.html#value",
-    "href": "reference/get_top_titles_summary.html#value",
-    "title": "get_top_titles_summary",
+    "objectID": "reference/get_global_ranking.html#value",
+    "href": "reference/get_global_ranking.html#value",
+    "title": "get_global_ranking",
     "section": "Value",
-    "text": "Value\nA tibble with columns ‘title’, ‘days_on_chart’, ‘best_rank’, ‘avg_rank’, ‘first_seen’, ‘last_seen’."
+    "text": "Value\nA tibble with columns ‘country’, ‘rank’, ‘title’, ‘date’. Countries where the title is not in the Top 10 return ‘rank = NA’."
   },
   {
-    "objectID": "reference/get_top_titles_summary.html#description",
-    "href": "reference/get_top_titles_summary.html#description",
-    "title": "get_top_titles_summary",
+    "objectID": "reference/get_global_ranking.html#description",
+    "href": "reference/get_global_ranking.html#description",
+    "title": "get_global_ranking",
     "section": "Description",
-    "text": "Description\nAggregates daily Top 10 data over a date range and returns a summary of which titles appeared most frequently, along with their best rank and average rank."
+    "text": "Description\nFor a given title and date, fetches its Top 10 rank in every country provided, showing geographic reach and relative performance."
   },
   {
-    "objectID": "reference/get_weekly_movers.html",
-    "href": "reference/get_weekly_movers.html",
-    "title": "get_weekly_movers",
+    "objectID": "reference/get_official_ranking.html",
+    "href": "reference/get_official_ranking.html",
+    "title": "get_official_ranking",
     "section": "",
     "text": "&lt; Back to Reference"
   },
   {
-    "objectID": "reference/get_weekly_movers.html#usage",
-    "href": "reference/get_weekly_movers.html#usage",
-    "title": "get_weekly_movers",
+    "objectID": "reference/get_official_ranking.html#usage",
+    "href": "reference/get_official_ranking.html#usage",
+    "title": "get_official_ranking",
     "section": "Usage",
-    "text": "Usage\nget_weekly_movers(\n  platform_name = \"netflix\",\n  country_name = \"United States\",\n  date_before,\n  date_after,\n  flix_type = \"movies\",\n  token = \"FLIX_PATROL\"\n)"
+    "text": "Usage\nget_official_ranking(\n  token = \"FLIX_PATROL\",\n  platform_name = \"netflix\",\n  country_name,\n  start_date,\n  end_date,\n  media_type,\n  date_type = \"week\",\n  language = \"english\"\n)"
   },
   {
-    "objectID": "reference/get_weekly_movers.html#arguments",
-    "href": "reference/get_weekly_movers.html#arguments",
-    "title": "get_weekly_movers",
+    "objectID": "reference/get_official_ranking.html#arguments",
+    "href": "reference/get_official_ranking.html#arguments",
+    "title": "get_official_ranking",
     "section": "Arguments",
-    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\nplatform_name\nCharacter. Platform name.\n\n\ncountry_name\nCharacter. Country name.\n\n\ndate_before\nDate/Character. The earlier chart date.\n\n\ndate_after\nDate/Character. The later chart date.\n\n\nflix_type\nCharacter. Content type (default ‘“movies”’).\n\n\ntoken\nCharacter. API environment variable name."
+    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\ntoken\nCharacter. API environment variable name.\n\n\nplatform_name\nCharacter. Must be “netflix”.\n\n\ncountry_name\nCharacter. Name of the country.\n\n\nstart_date\nDate/Character. Range start (Monday).\n\n\nend_date\nDate/Character. Range end (Sunday).\n\n\nmedia_type\nCharacter. Content type.\n\n\ndate_type\nCharacter. Defaults to “week”.\n\n\nlanguage_id\nCharacter. Language for lookup."
   },
   {
-    "objectID": "reference/get_weekly_movers.html#value",
-    "href": "reference/get_weekly_movers.html#value",
-    "title": "get_weekly_movers",
+    "objectID": "reference/get_official_ranking.html#value",
+    "href": "reference/get_official_ranking.html#value",
+    "title": "get_official_ranking",
     "section": "Value",
-    "text": "Value\nA tibble with columns ‘title’, ‘rank_before’, ‘rank_after’, ‘change’, and ‘status’ (one of “new_entry”, “exit”, “gainer”, “loser”, “unchanged”)."
+    "text": "Value\nA tibble of official rankings."
   },
   {
-    "objectID": "reference/get_weekly_movers.html#description",
-    "href": "reference/get_weekly_movers.html#description",
-    "title": "get_weekly_movers",
+    "objectID": "reference/get_official_ranking.html#description",
+    "href": "reference/get_official_ranking.html#description",
+    "title": "get_official_ranking",
     "section": "Description",
-    "text": "Description\nCompares two dates (e.g., consecutive days or weeks) and classifies each title as a gainer, loser, new entry, or exit."
+    "text": "Description\nFetches the official weekly rankings (currently Netflix exclusive)."
+  },
+  {
+    "objectID": "reference/get_official_ranking.html#details",
+    "href": "reference/get_official_ranking.html#details",
+    "title": "get_official_ranking",
+    "section": "Details",
+    "text": "Details\nQueries the ‘/rankingsofficial’ endpoint. Note that as of the current package version, FlixPatrol only provides official lists for Netflix. This function enforces that restriction."
+  },
+  {
+    "objectID": "reference/get_social_fans.html",
+    "href": "reference/get_social_fans.html",
+    "title": "get_social_fans",
+    "section": "",
+    "text": "&lt; Back to Reference"
+  },
+  {
+    "objectID": "reference/get_social_fans.html#usage",
+    "href": "reference/get_social_fans.html#usage",
+    "title": "get_social_fans",
+    "section": "Usage",
+    "text": "Usage\nget_social_fans(\n  token = \"FLIX_PATROL\",\n  social_platform,\n  start_date,\n  end_date,\n  date_type = \"day\"\n)"
+  },
+  {
+    "objectID": "reference/get_social_fans.html#arguments",
+    "href": "reference/get_social_fans.html#arguments",
+    "title": "get_social_fans",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\ntoken\nCharacter. API environment variable name.\n\n\nsocial_platform\nCharacter. Social media platform name (e.g., “Instagram”, “Facebook”, “Twitter”).\n\n\nstart_date\nDate/Character. Start date.\n\n\nend_date\nDate/Character. End date.\n\n\ndate_type\nCharacter. Date granularity (default ‘“day”’)."
+  },
+  {
+    "objectID": "reference/get_social_fans.html#value",
+    "href": "reference/get_social_fans.html#value",
+    "title": "get_social_fans",
+    "section": "Value",
+    "text": "Value\nA tibble of social fan rankings."
+  },
+  {
+    "objectID": "reference/get_social_fans.html#description",
+    "href": "reference/get_social_fans.html#description",
+    "title": "get_social_fans",
+    "section": "Description",
+    "text": "Description\nFetches social media fan count data using the social media platform lookup table."
+  },
+  {
+    "objectID": "reference/get_title_history.html",
+    "href": "reference/get_title_history.html",
+    "title": "get_title_history",
+    "section": "",
+    "text": "&lt; Back to Reference"
+  },
+  {
+    "objectID": "reference/get_title_history.html#usage",
+    "href": "reference/get_title_history.html#usage",
+    "title": "get_title_history",
+    "section": "Usage",
+    "text": "Usage\nget_title_history(\n  title,\n  platform_name = \"netflix\",\n  country_name = \"United States\",\n  start_date,\n  end_date,\n  flix_type = \"movies\",\n  token = \"FLIX_PATROL\"\n)"
+  },
+  {
+    "objectID": "reference/get_title_history.html#arguments",
+    "href": "reference/get_title_history.html#arguments",
+    "title": "get_title_history",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\ntitle\nCharacter. The title to track.\n\n\nplatform_name\nCharacter. Platform name.\n\n\ncountry_name\nCharacter. Country name.\n\n\nstart_date\nDate/Character. Start of the range.\n\n\nend_date\nDate/Character. End of the range.\n\n\nflix_type\nCharacter. Content type (default ‘“movies”’).\n\n\ntoken\nCharacter. API environment variable name."
+  },
+  {
+    "objectID": "reference/get_title_history.html#value",
+    "href": "reference/get_title_history.html#value",
+    "title": "get_title_history",
+    "section": "Value",
+    "text": "Value\nA tibble with one row per date the title appeared in the Top 10."
+  },
+  {
+    "objectID": "reference/get_title_history.html#description",
+    "href": "reference/get_title_history.html#description",
+    "title": "get_title_history",
+    "section": "Description",
+    "text": "Description\nFetches the daily Top 10 for a date range and filters to a single title, returning a time series of that title’s rank, days on chart, and position changes."
+  },
+  {
+    "objectID": "reference/get_top_ten.html",
+    "href": "reference/get_top_ten.html",
+    "title": "get_top_ten",
+    "section": "",
+    "text": "&lt; Back to Reference"
+  },
+  {
+    "objectID": "reference/get_top_ten.html#usage",
+    "href": "reference/get_top_ten.html#usage",
+    "title": "get_top_ten",
+    "section": "Usage",
+    "text": "Usage\nget_top_ten(\n  token = \"FLIX_PATROL\",\n  platform_name,\n  country_name,\n  start_date,\n  end_date,\n  flix_type\n)"
+  },
+  {
+    "objectID": "reference/get_top_ten.html#arguments",
+    "href": "reference/get_top_ten.html#arguments",
+    "title": "get_top_ten",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\nArgument\nDescription\n\n\n\n\ntoken\nCharacter. API environment variable name.\n\n\nplatform_name\nCharacter. Name of the platform.\n\n\ncountry_name\nCharacter. Name of the country.\n\n\nstart_date\nDate/Character. Start of the range.\n\n\nend_date\nDate/Character. End of the range.\n\n\nflix_type\nCharacter. Content type."
+  },
+  {
+    "objectID": "reference/get_top_ten.html#value",
+    "href": "reference/get_top_ten.html#value",
+    "title": "get_top_ten",
+    "section": "Value",
+    "text": "Value\nA combined tibble for the specified date range."
+  },
+  {
+    "objectID": "reference/get_top_ten.html#description",
+    "href": "reference/get_top_ten.html#description",
+    "title": "get_top_ten",
+    "section": "Description",
+    "text": "Description\nIterates over a sequence of dates to build a historical Top 10 dataset."
+  },
+  {
+    "objectID": "reference/get_top_ten.html#details",
+    "href": "reference/get_top_ten.html#details",
+    "title": "get_top_ten",
+    "section": "Details",
+    "text": "Details\nThis function generates a date vector between ‘start_date’ and ‘end_date’ and maps ‘get_single_top_ten’ over each date. The results are bound together into a single master tibble."
+  },
+  {
+    "objectID": "reference/get_torrent_ranking.html",
+    "href": "reference/get_torrent_ranking.html",
+    "title": "get_torrent_ranking",
+    "section": "",
+    "text": "&lt; Back to Reference"
+  },
+  {
+    "objectID": "reference/get_torrent_ranking.html#usage",
+    "href": "reference/get_torrent_ranking.html#usage",
+    "title": "get_torrent_ranking",
+    "section": "Usage",
+    "text": "Usage\nget_torrent_ranking(\n  token = \"FLIX_PATROL\",\n  torrent_site,\n  start_date,\n  end_date,\n  date_type = \"day\",\n  media_type = NULL\n)"
+  },
+  {
+    "objectID": "reference/get_torrent_ranking.html#arguments",
+    "href": "reference/get_torrent_ranking.html#arguments",
+    "title": "get_torrent_ranking",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\ntoken\nCharacter. API environment variable name.\n\n\ntorrent_site\nCharacter. Torrent site name (e.g., “1337x”) or ’“*“’ for all.\n\n\nstart_date\nDate/Character. Start of the date range.\n\n\nend_date\nDate/Character. End of the date range.\n\n\ndate_type\nCharacter. Date granularity (default ‘“day”’).\n\n\nmedia_type\nCharacter. Optional media type filter."
+  },
+  {
+    "objectID": "reference/get_torrent_ranking.html#value",
+    "href": "reference/get_torrent_ranking.html#value",
+    "title": "get_torrent_ranking",
+    "section": "Value",
+    "text": "Value\nA tibble of torrent rankings."
+  },
+  {
+    "objectID": "reference/get_torrent_ranking.html#description",
+    "href": "reference/get_torrent_ranking.html#description",
+    "title": "get_torrent_ranking",
+    "section": "Description",
+    "text": "Description\nFetches torrent chart rankings for a given site and date range."
   },
   {
     "objectID": "reference/lookup_country.html",

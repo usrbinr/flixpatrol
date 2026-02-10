@@ -29,7 +29,6 @@ All functions and classes exported by flixpatrol.
 | [`get_top_titles_summary()`](reference/get_top_titles_summary.qmd) | Summarize Top Titles Over a Date Range |
 | [`get_torrent_ranking()`](reference/get_torrent_ranking.qmd) | Create Torrent Ranking Table |
 | [`get_weekly_movers()`](reference/get_weekly_movers.qmd) | Weekly Movers: Gainers, Losers, New Entries, and Exits |
-| [`hello()`](reference/hello.qmd) | Hello, World! |
 | [`lookup_country()`](reference/lookup_country.qmd) | Lookup Country IDs |
 | [`lookup_date_type()`](reference/lookup_date_type.qmd) | Lookup Date Type IDs |
 | [`lookup_flix_type()`](reference/lookup_flix_type.qmd) | Lookup Flix Type IDs |
