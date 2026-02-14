@@ -122,46 +122,82 @@ lookup_franchise <- function(franchise_title, silent = getOption("flixpatrol.sil
 #' @details
 #' This function hits the `/franchises/:id` endpoint. It is used to resolve
 #' IDs found in data tables back into readable titles for reporting or
-#' visualization.
+#' visualization. Vectorized to handle multiple IDs.
 #'
-#' @param franchise_id Character. The FlixPatrol franchise ID (e.g., "frn_STNa2GEw54ahWxJsXNgBMmt0").
+#' @param franchise_id Character vector. One or more FlixPatrol franchise IDs
+#'   (e.g., "frn_STNa2GEw54ahWxJsXNgBMmt0").
 #' @param token Character. The name of the environment variable containing the API key.
 #'
-#' @return A character string containing the franchise title.
+#' @return A character vector of franchise titles (same length as input).
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' get_franchise_name("frn_STNa2GEw54ahWxJsXNgBMmt0")
 #' # [1] "Indiana Jones"
+#'
+#' # Vectorized
+#' get_franchise_name(c("frn_abc123", "frn_def456"))
 #' }
 get_franchise_name <- function(franchise_id, token = "FLIX_PATROL") {
 
     if (missing(franchise_id) || !is.character(franchise_id)) {
-        cli::cli_abort("{.arg franchise_id} must be a character string.")
+        cli::cli_abort("{.arg franchise_id} must be a character vector.")
     }
 
-    # 1. Build the specific URL for this ID
-    # Path format: https://api.flixpatrol.com/v2/franchises/:id
-    endpoint_url <- paste0("https://api.flixpatrol.com/v2/franchises/", franchise_id)
+    # Remove NAs
+    franchise_id <- franchise_id[!is.na(franchise_id)]
 
-    # 2. Authenticate and Perform Request
-    # Reuses your package's authenticate() helper
-    resp <- authenticate(site = endpoint_url, token = token) |>
-        httr2::req_perform()
-
-    # 3. Parse Response
-    body <- httr2::resp_body_json(resp)
-
-    # 4. Extract Title
-    # According to docs, the title is at: body$data$title
-    franchise_title <- purrr::pluck(body, "data", "title", .default = NULL)
-
-    if (is.null(franchise_title)) {
-        cli::cli_abort("Could not find a franchise title for ID: {.val {franchise_id}}")
+    if (length(franchise_id) == 0) {
+        return(character(0))
     }
 
-    return(franchise_title)
+    # Single ID - use direct endpoint
+    if (length(franchise_id) == 1) {
+        endpoint_url <- paste0("https://api.flixpatrol.com/v2/franchises/", franchise_id)
+
+        resp <- tryCatch(
+            authenticate(site = endpoint_url, token = token) |>
+                httr2::req_perform() |>
+                httr2::resp_body_json(),
+            error = function(e) NULL
+        )
+
+        if (is.null(resp)) {
+            return(NA_character_)
+        }
+
+        return(purrr::pluck(resp, "data", "title", .default = NA_character_))
+    }
+
+    # Multiple IDs - use batch lookup with [in] operator (single API call)
+    ids_string <- paste(franchise_id, collapse = ",")
+
+    resp <- tryCatch(
+        authenticate(site = "https://api.flixpatrol.com/v2/franchises", token = token) |>
+            httr2::req_url_query(`id[in]` = ids_string) |>
+            httr2::req_perform() |>
+            httr2::resp_body_json(),
+        error = function(e) NULL
+    )
+
+    if (is.null(resp) || length(resp$data) == 0) {
+        return(rep(NA_character_, length(franchise_id)))
+    }
+
+    # Build lookup table from response
+    result_lookup <- purrr::map_dfr(resp$data, function(item) {
+        tibble::tibble(
+            id = purrr::pluck(item, "data", "id", .default = NA_character_),
+            title = purrr::pluck(item, "data", "title", .default = NA_character_)
+        )
+    })
+
+    # Match input IDs to results (preserving order)
+    matched <- result_lookup$title[match(franchise_id, result_lookup$id)]
+    matched[is.na(matched)] <- NA_character_
+
+    return(matched)
 }
 
 

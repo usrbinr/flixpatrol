@@ -8,3 +8,7 @@
 
 # qrtdown
 _quarto.yml
+
+# Claude
+.claude/
+CLAUDE.md

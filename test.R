@@ -1,118 +1,90 @@
-# flixpatrol — interactive testing & examples
+# flixpatrol — interactive testing
 # Run devtools::document() and load_all() before using these.
 
 library(devtools)
 devtools::document()
-load_all()
-
+devtools::load_all()
+library(tidyverse)
 # --- Package Options ---
 flixpatrol_options()
-options(flixpatrol.silent = TRUE)  # suppress messages globally
+options(flixpatrol.silent = TRUE)
 
 # --- Lookup Functions ---
 lookup_country("United States")
 lookup_platform("Netflix")
-lookup_franchise("Indiana Jones")
-lookup_title("Squid Game")
-
-# --- Reverse Lookups (ID to Name) ---
-get_title_name("cmp_IA6TdMqwf6kuyQvxo9bJ4nKX")  # company
-get_title_name("ttl_yPCJU2UzROTNVv5JZ7Hu4m8M")  # title
-get_title_name(c("cmp_IA6TdMqwf6kuyQvxo9bJ4nKX", "ttl_yPCJU2UzROTNVv5JZ7Hu4m8M"))  # vectorized
+lookup_flix_type("movies")
 
 # --- Top 10 Rankings ---
 get_top_ten(
   platform_name = "netflix",
   country_name  = "United States",
-  start_date    = "2025-12-01",
-  end_date      = "2025-12-07",
+  start_date    = "2026-02-14",
+  end_date      = "2026-02-14",
   flix_type     = "movies"
 )
 
-# --- Hours Viewed ---
+# --- Hours Viewed (Netflix weekly data, must start on Monday) ---
 get_hours_viewed(
   language_name   = "english",
   media_type_name = "movie",
-  start_date      = "2025-12-15",
-  end_date        = "2025-12-21"
+  start_date      = "2026-02-10",
+  end_date        = "2026-02-16"
 )
 
-# --- Official Rankings (Netflix only) ---
+# --- Official Rankings (Netflix only, weekly, must start on Monday) ---
 get_official_ranking(
   country_name = "United States",
-  start_date   = "2025-12-15",
-  end_date     = "2025-12-21",
+  start_date   = "2026-02-10",
+  end_date     = "2026-02-16",
   media_type   = "movie"
 )
 
-# --- Torrent Rankings ---
-get_torrent_ranking(
-  torrent_site = "1337x",
-  start_date   = "2025-12-01",
-  end_date     = "2025-12-01"
+# --- Fans Rankings (social media: instagram, twitter, facebook) ---
+# Franchise names are automatically resolved via batch API lookup
+get_fans_ranking(
+  social_platform = "tiktok",
+  start_date      = "2026-02-14",
+  end_date        = "2026-02-14"
 )
+fans |> arrange(rank)
 
-# --- Social Fans ---
-get_social_fans(
-  social_platform = "Instagram",
-  start_date      = "2025-12-15",
-  end_date        = "2025-12-21"
+# Filter by type
+fans |> filter(type == "title") |> arrange(rank)
+fans |> filter(type == "franchise")
+
+# --- Torrent Rankings (available sites: PirateBay, eztv, 1337x, etc.) ---
+get_torrent_ranking(
+  torrent_site = "PirateBay",
+  start_date   = "2026-02-14",
+  end_date     = "2026-02-14"
 )
 
 # --- Premieres ---
 get_premieres(
-  start_date = "2025-12-15",
-  end_date   = "2025-12-31"
+  platform_name = "netflix",
+  start_date    = "2026-02-14",
+  end_date      = "2026-02-28"
 )
 
 # --- Title Details ---
 get_title_details("ttl_yPCJU2UzROTNVv5JZ7Hu4m8M")
 
-# --- Compare Platforms ---
-# How does a title rank across Netflix, Disney+, etc. on the same day?
-compare_platforms_tbl(
-  title = "Squid Game",
-  date  = "2025-12-15"
-)
-
-# --- Title History ---
-# Track a single title's rank over time
+# --- Title History (track a title over time) ---
 get_title_history(
-  title      = "Squid Game",
-  start_date = "2025-12-01",
-  end_date   = "2025-12-14"
+  title         = "Squid Game",
+  platform_name = "netflix",
+  country_name  = "United States",
+  start_date    = "2026-02-01",
+  end_date      = "2026-02-14",
+  flix_type     = "tv"
 )
 
-# --- Weekly Movers ---
-# Who gained, lost, entered, or exited the chart?
-get_weekly_movers(
-  date_before = "2025-12-14",
-  date_after  = "2025-12-15"
-)
-
-# --- Top Titles Summary ---
-# Most frequent Top 10 titles over a date range
+# --- Top Titles Summary (most frequent Top 10 titles) ---
 get_top_titles_summary(
-  start_date = "2025-12-01",
-  end_date   = "2025-12-14",
-  n          = 10
+  platform_name = "netflix",
+  country_name  = "United States",
+  start_date    = "2026-02-01",
+  end_date      = "2026-02-14",
+  flix_type     = "movies",
+  n             = 10
 )
-
-# --- Global Ranking ---
-# Where does a title rank across 15 countries?
-get_global_ranking(
-  title = "Squid Game",
-  date  = "2025-12-15"
-)
-
-# --- Franchise Performance ---
-# Aggregate all Marvel titles on Netflix over a date range
-get_franchise_performance(
-  franchise_title = "Marvel",
-  start_date      = "2025-12-01",
-  end_date        = "2025-12-14"
-)
-
-# --- Vectorized ID resolution ---
-# get_title_name works on vectors directly
-get_title_name(c("cmp_IA6TdMqwf6kuyQvxo9bJ4nKX", "ttl_yPCJU2UzROTNVv5JZ7Hu4m8M"))

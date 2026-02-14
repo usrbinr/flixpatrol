@@ -10,25 +10,42 @@ get_torrent_ranking(
   start_date,
   end_date,
   date_type = "day",
-  media_type = NULL
+  media_type = NULL,
+  return_ids = getOption("flixpatrol.return_ids", FALSE)
 )
 }
 \arguments{
 \item{token}{Character. API environment variable name.}
 
-\item{torrent_site}{Character. Torrent site name (e.g., "1337x") or `"*"` for all.}
+\item{torrent_site}{Character. Torrent site name (e.g., "PirateBay", "1337x") or `"*"` for all.}
 
-\item{start_date}{Date/Character. Start of the date range.}
+\item{start_date}{Character. Start of the date range (yyyy-mm-dd format).}
 
-\item{end_date}{Date/Character. End of the date range.}
+\item{end_date}{Character. End of the date range (yyyy-mm-dd format).}
 
 \item{date_type}{Character. Date granularity (default `"day"`).}
 
-\item{media_type}{Character. Optional media type filter.}
+\item{media_type}{Character. Optional filter: "movie" or "tv_show".}
+
+\item{return_ids}{Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.}
 }
 \value{
-A tibble of torrent rankings.
+A tibble with columns: rank, title, type (movie/tv_show), seeders, leechers, source, date.
+  If `return_ids = TRUE`, also includes title_id.
 }
 \description{
 Fetches torrent chart rankings for a given site and date range.
+}
+\details{
+Title types (movie/tv_show) are resolved via batch API lookup from the
+`/titles` endpoint. Available torrent sites include: PirateBay, 1337x, eztv, etc.
+}
+\examples{
+\dontrun{
+get_torrent_ranking(
+  torrent_site = "PirateBay",
+  start_date   = "2026-02-14",
+  end_date     = "2026-02-14"
+)
+}
 }

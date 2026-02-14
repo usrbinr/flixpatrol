@@ -8,21 +8,37 @@ get_premieres(
   platform_name = "netflix",
   start_date,
   end_date,
-  media_type = NULL
+  media_type = NULL,
+  return_ids = getOption("flixpatrol.return_ids", FALSE)
 )
 }
 \arguments{
-\item{platform_name}{Character. Platform name (e.g., "netflix").}
+\item{platform_name}{Character. Platform name (e.g., "netflix", "disney+").}
 
-\item{start_date}{Date/Character. Start of the date range.}
+\item{start_date}{Character. Start of the date range (yyyy-mm-dd format).}
 
-\item{end_date}{Date/Character. End of the date range.}
+\item{end_date}{Character. End of the date range (yyyy-mm-dd format).}
 
-\item{media_type}{Character. "movie" or "tv" (optional).}
+\item{media_type}{Character. Optional filter: "movie" or "tv".}
+
+\item{return_ids}{Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.}
 }
 \value{
-A tibble of upcoming premieres.
+A tibble with columns: title, premiere, type (movie/tv), season, episodes, platform.
+  If `return_ids = TRUE`, also includes title_id.
 }
 \description{
 Fetches upcoming premiere dates from the FlixPatrol API.
+}
+\details{
+Queries the `/premieres` endpoint to get scheduled releases for a platform.
+}
+\examples{
+\dontrun{
+get_premieres(
+  platform_name = "netflix",
+  start_date    = "2026-02-14",
+  end_date      = "2026-02-28"
+)
+}
 }

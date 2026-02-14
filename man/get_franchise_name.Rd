@@ -7,12 +7,13 @@
 get_franchise_name(franchise_id, token = "FLIX_PATROL")
 }
 \arguments{
-\item{franchise_id}{Character. The FlixPatrol franchise ID (e.g., "frn_STNa2GEw54ahWxJsXNgBMmt0").}
+\item{franchise_id}{Character vector. One or more FlixPatrol franchise IDs
+(e.g., "frn_STNa2GEw54ahWxJsXNgBMmt0").}
 
 \item{token}{Character. The name of the environment variable containing the API key.}
 }
 \value{
-A character string containing the franchise title.
+A character vector of franchise titles (same length as input).
 }
 \description{
 Retrieves the human-readable franchise title associated with a specific
@@ -21,11 +22,14 @@ FlixPatrol franchise ID.
 \details{
 This function hits the `/franchises/:id` endpoint. It is used to resolve
 IDs found in data tables back into readable titles for reporting or
-visualization.
+visualization. Vectorized to handle multiple IDs.
 }
 \examples{
 \dontrun{
 get_franchise_name("frn_STNa2GEw54ahWxJsXNgBMmt0")
 # [1] "Indiana Jones"
+
+# Vectorized
+get_franchise_name(c("frn_abc123", "frn_def456"))
 }
 }

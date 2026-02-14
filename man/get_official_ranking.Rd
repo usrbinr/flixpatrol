@@ -12,7 +12,8 @@ get_official_ranking(
   end_date,
   media_type,
   date_type = "week",
-  language = "english"
+  language = "english",
+  return_ids = getOption("flixpatrol.return_ids", FALSE)
 )
 }
 \arguments{
@@ -20,20 +21,23 @@ get_official_ranking(
 
 \item{platform_name}{Character. Must be "netflix".}
 
-\item{country_name}{Character. Name of the country.}
+\item{country_name}{Character. Name of the country (e.g., "United States").}
 
-\item{start_date}{Date/Character. Range start (Monday).}
+\item{start_date}{Character. Range start, must be a Monday (yyyy-mm-dd format).}
 
-\item{end_date}{Date/Character. Range end (Sunday).}
+\item{end_date}{Character. Range end, must be Sunday (yyyy-mm-dd format).}
 
-\item{media_type}{Character. Content type.}
+\item{media_type}{Character. Content type ("movie" or "tv_show").}
 
 \item{date_type}{Character. Defaults to "week".}
 
-\item{language_id}{Character. Language for lookup.}
+\item{language}{Character. Language for lookup (e.g., "english").}
+
+\item{return_ids}{Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.}
 }
 \value{
-A tibble of official rankings.
+A tibble with columns: rank, title, hours, streak, date_from, date_to.
+  If `return_ids = TRUE`, also includes title_id.
 }
 \description{
 Fetches the official weekly rankings (currently Netflix exclusive).
@@ -41,5 +45,15 @@ Fetches the official weekly rankings (currently Netflix exclusive).
 \details{
 Queries the `/rankingsofficial` endpoint. Note that as of the current
 package version, FlixPatrol only provides official lists for Netflix.
-This function enforces that restriction.
+Requires a 7-day range starting on a Monday.
+}
+\examples{
+\dontrun{
+get_official_ranking(
+  country_name = "United States",
+  start_date   = "2026-02-10",
+  end_date     = "2026-02-16",
+  media_type   = "movie"
+)
+}
 }

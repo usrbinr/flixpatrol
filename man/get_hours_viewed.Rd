@@ -10,7 +10,8 @@ get_hours_viewed(
   media_type_name = "movie",
   language_name = "english",
   start_date,
-  end_date
+  end_date,
+  return_ids = getOption("flixpatrol.return_ids", FALSE)
 )
 }
 \arguments{
@@ -18,16 +19,19 @@ get_hours_viewed(
 
 \item{platform_name}{Character. Platform name (defaults to "netflix").}
 
-\item{media_type_name}{Character. Media type (e.g., "Movie").}
+\item{media_type_name}{Character. Media type ("movie" or "tv_show").}
 
-\item{language_name}{Character. Language (e.g., "English").}
+\item{language_name}{Character. Language (e.g., "english").}
 
-\item{start_date}{Date/Character. Must be a Monday.}
+\item{start_date}{Character. Must be a Monday (yyyy-mm-dd format).}
 
-\item{end_date}{Date/Character. Must be 7 days from start.}
+\item{end_date}{Character. Must be 7 days from start (yyyy-mm-dd format).}
+
+\item{return_ids}{Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.}
 }
 \value{
-A wide tibble containing viewing hours and metadata.
+A tibble with columns: rank, title, hours, views, runtime, streak, date_from, date_to.
+  If `return_ids = TRUE`, also includes title_id.
 }
 \description{
 Retrieves the "Hours Viewed" metric for a platform, language, and content type.
@@ -35,5 +39,14 @@ Retrieves the "Hours Viewed" metric for a platform, language, and content type.
 \details{
 This function specifically handles the `/hoursviewed` endpoint. It defaults
 to "week" views (API type 3) and requires a 7-day range starting on a Monday.
-The resulting JSON is heavily unnested to provide a wide, analysis-ready tibble.
+}
+\examples{
+\dontrun{
+get_hours_viewed(
+  language_name   = "english",
+  media_type_name = "movie",
+  start_date      = "2026-02-10",
+  end_date        = "2026-02-16"
+)
+}
 }

@@ -10,30 +10,46 @@ get_top_ten(
   country_name,
   start_date,
   end_date,
-  flix_type
+  flix_type,
+  return_ids = getOption("flixpatrol.return_ids", FALSE)
 )
 }
 \arguments{
 \item{token}{Character. API environment variable name.}
 
-\item{platform_name}{Character. Name of the platform.}
+\item{platform_name}{Character. Name of the platform (e.g., "netflix", "disney+").}
 
-\item{country_name}{Character. Name of the country.}
+\item{country_name}{Character. Name of the country (e.g., "United States").}
 
-\item{start_date}{Date/Character. Start of the range.}
+\item{start_date}{Character. Start of the range in yyyy-mm-dd format.}
 
-\item{end_date}{Date/Character. End of the range.}
+\item{end_date}{Character. End of the range in yyyy-mm-dd format.}
 
-\item{flix_type}{Character. Content type.}
+\item{flix_type}{Character. Content type ("movies" or "tv").}
+
+\item{return_ids}{Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.}
 }
 \value{
-A combined tibble for the specified date range.
+A tibble with columns: rank, title, type_id, days_total, rank_last, date, imdb_id.
+  If `return_ids = TRUE`, also includes title_id.
 }
 \description{
-Iterates over a sequence of dates to build a historical Top 10 dataset.
+Retrieves daily Top 10 rankings for a platform, country, and content type
+over a specified date range.
 }
 \details{
-This function generates a date vector between `start_date` and `end_date`
-and maps `get_single_top_ten` over each date. The results
-are bound together into a single master tibble.
+The `/top10s` endpoint only returns data for a single day per request,
+so this function iterates over each date in the range. Lookups are
+performed once upfront to minimize API calls.
+}
+\examples{
+\dontrun{
+get_top_ten(
+  platform_name = "netflix",
+  country_name  = "United States",
+  start_date    = "2026-02-01",
+  end_date      = "2026-02-07",
+  flix_type     = "movies"
+)
+}
 }

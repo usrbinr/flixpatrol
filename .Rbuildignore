@@ -16,3 +16,12 @@
 
 # qrtdown
 ^reference$
+
+# Claude
+^\.claude$
+^test\.R$
+^_freeze$
+^CLAUDE\.md$
+^CONTRIBUTING\.md$
+^_brand\.yml$
+^test_gt_interactive\.html$
