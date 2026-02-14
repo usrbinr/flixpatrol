@@ -10,8 +10,7 @@ get_title_history(
   country_name = "United States",
   start_date,
   end_date,
-  flix_type = "movies",
-  token = "FLIX_PATROL"
+  flix_type = "movies"
 )
 }
 \arguments{
@@ -26,8 +25,6 @@ get_title_history(
 \item{end_date}{Date/Character. End of the range.}
 
 \item{flix_type}{Character. Content type (default `"movies"`).}
-
-\item{token}{Character. API environment variable name.}
 }
 \value{
 A tibble with one row per date the title appeared in the Top 10.

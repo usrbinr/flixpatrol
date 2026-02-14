@@ -9,8 +9,7 @@ get_weekly_movers(
   country_name = "United States",
   date_before,
   date_after,
-  flix_type = "movies",
-  token = "FLIX_PATROL"
+  flix_type = "movies"
 )
 }
 \arguments{
@@ -23,8 +22,6 @@ get_weekly_movers(
 \item{date_after}{Date/Character. The later chart date.}
 
 \item{flix_type}{Character. Content type (default `"movies"`).}
-
-\item{token}{Character. API environment variable name.}
 }
 \value{
 A tibble with columns `title`, `rank_before`, `rank_after`, `change`,

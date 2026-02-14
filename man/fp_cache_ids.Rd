@@ -4,19 +4,12 @@
 \alias{fp_cache_ids}
 \title{Cache Country and Platform IDs to Lookup Tables}
 \usage{
-fp_cache_ids(
-  country_names = NULL,
-  platform_names = NULL,
-  token = "FLIX_PATROL",
-  pkg_path = "."
-)
+fp_cache_ids(country_names = NULL, platform_names = NULL, pkg_path = ".")
 }
 \arguments{
 \item{country_names}{Character vector. Country names to cache (or `NULL` to skip).}
 
 \item{platform_names}{Character vector. Platform names to cache (or `NULL` to skip).}
-
-\item{token}{Character. API environment variable name.}
 
 \item{pkg_path}{Character. Path to the package root directory.}
 }

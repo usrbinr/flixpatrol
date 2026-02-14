@@ -10,8 +10,7 @@ get_top_titles_summary(
   start_date,
   end_date,
   flix_type = "movies",
-  n = 20,
-  token = "FLIX_PATROL"
+  n = 20
 )
 }
 \arguments{
@@ -26,8 +25,6 @@ get_top_titles_summary(
 \item{flix_type}{Character. Content type (default `"movies"`).}
 
 \item{n}{Integer. Number of top titles to return (default 20).}
-
-\item{token}{Character. API environment variable name.}
 }
 \value{
 A tibble with columns `title`, `days_on_chart`, `best_rank`,

@@ -10,7 +10,6 @@
 #' need the display name (e.g., "Netflix").
 #'
 #' @param company_id Character. The FlixPatrol ID (e.g., "cmp_IA6TdMqwf6kuyQvxo9bJ4nKX").
-#' @param token Character. The name of the environment variable containing the API key.
 #'
 #' @return A character string containing the company name.
 #' @export
@@ -20,7 +19,7 @@
 #' get_company_name("cmp_IA6TdMqwf6kuyQvxo9bJ4nKX")
 #' # [1] "Netflix"
 #' }
-get_company_name <- function(company_id, token = "FLIX_PATROL") {
+get_company_name <- function(company_id) {
 
     if (missing(company_id) || !is.character(company_id)) {
         cli::cli_abort("{.arg company_id} must be a character string.")
@@ -31,7 +30,7 @@ get_company_name <- function(company_id, token = "FLIX_PATROL") {
     endpoint_url <- paste0("https://api.flixpatrol.com/v2/companies/", company_id)
 
     # 2. Authenticate and Perform Request
-    resp <- authenticate(site = endpoint_url, token = token) |>
+    resp <- authenticate(site = endpoint_url) |>
         httr2::req_perform()
 
     # 3. Parse Response
@@ -126,7 +125,6 @@ lookup_franchise <- function(franchise_title, silent = getOption("flixpatrol.sil
 #'
 #' @param franchise_id Character vector. One or more FlixPatrol franchise IDs
 #'   (e.g., "frn_STNa2GEw54ahWxJsXNgBMmt0").
-#' @param token Character. The name of the environment variable containing the API key.
 #'
 #' @return A character vector of franchise titles (same length as input).
 #' @export
@@ -139,7 +137,7 @@ lookup_franchise <- function(franchise_title, silent = getOption("flixpatrol.sil
 #' # Vectorized
 #' get_franchise_name(c("frn_abc123", "frn_def456"))
 #' }
-get_franchise_name <- function(franchise_id, token = "FLIX_PATROL") {
+get_franchise_name <- function(franchise_id) {
 
     if (missing(franchise_id) || !is.character(franchise_id)) {
         cli::cli_abort("{.arg franchise_id} must be a character vector.")
@@ -157,7 +155,7 @@ get_franchise_name <- function(franchise_id, token = "FLIX_PATROL") {
         endpoint_url <- paste0("https://api.flixpatrol.com/v2/franchises/", franchise_id)
 
         resp <- tryCatch(
-            authenticate(site = endpoint_url, token = token) |>
+            authenticate(site = endpoint_url) |>
                 httr2::req_perform() |>
                 httr2::resp_body_json(),
             error = function(e) NULL
@@ -174,7 +172,7 @@ get_franchise_name <- function(franchise_id, token = "FLIX_PATROL") {
     ids_string <- paste(franchise_id, collapse = ",")
 
     resp <- tryCatch(
-        authenticate(site = "https://api.flixpatrol.com/v2/franchises", token = token) |>
+        authenticate(site = "https://api.flixpatrol.com/v2/franchises") |>
             httr2::req_url_query(`id[in]` = ids_string) |>
             httr2::req_perform() |>
             httr2::resp_body_json(),

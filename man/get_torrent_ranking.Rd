@@ -5,7 +5,6 @@
 \title{Create Torrent Ranking Table}
 \usage{
 get_torrent_ranking(
-  token = "FLIX_PATROL",
   torrent_site,
   start_date,
   end_date,
@@ -15,8 +14,6 @@ get_torrent_ranking(
 )
 }
 \arguments{
-\item{token}{Character. API environment variable name.}
-
 \item{torrent_site}{Character. Torrent site name (e.g., "PirateBay", "1337x") or `"*"` for all.}
 
 \item{start_date}{Character. Start of the date range (yyyy-mm-dd format).}

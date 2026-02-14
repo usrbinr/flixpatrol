@@ -5,7 +5,6 @@
 \title{Create Official Ranking Table}
 \usage{
 get_official_ranking(
-  token = "FLIX_PATROL",
   platform_name = "netflix",
   country_name,
   start_date,
@@ -17,8 +16,6 @@ get_official_ranking(
 )
 }
 \arguments{
-\item{token}{Character. API environment variable name.}
-
 \item{platform_name}{Character. Must be "netflix".}
 
 \item{country_name}{Character. Name of the country (e.g., "United States").}

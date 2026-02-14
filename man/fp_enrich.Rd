@@ -4,7 +4,7 @@
 \alias{fp_enrich}
 \title{Enrich a Tibble with Resolved Names}
 \usage{
-fp_enrich(.data, id_col = NULL, name_col = "name", token = "FLIX_PATROL")
+fp_enrich(.data, id_col = NULL, name_col = "name")
 }
 \arguments{
 \item{.data}{A data frame or tibble.}
@@ -14,8 +14,6 @@ If not supplied, the function searches for the first column whose values
 start with `"cmp_"`, `"ttl_"`, or `"frn_"`.}
 
 \item{name_col}{Character. Name of the new column (default `"name"`).}
-
-\item{token}{Character. API environment variable name.}
 }
 \value{
 The input tibble with an additional column of resolved names.

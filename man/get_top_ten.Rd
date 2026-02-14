@@ -5,7 +5,6 @@
 \title{Create a Daily Top 10 Table for a Date Range}
 \usage{
 get_top_ten(
-  token = "FLIX_PATROL",
   platform_name,
   country_name,
   start_date,
@@ -15,8 +14,6 @@ get_top_ten(
 )
 }
 \arguments{
-\item{token}{Character. API environment variable name.}
-
 \item{platform_name}{Character. Name of the platform (e.g., "netflix", "disney+").}
 
 \item{country_name}{Character. Name of the country (e.g., "United States").}

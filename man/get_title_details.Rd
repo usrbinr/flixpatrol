@@ -4,12 +4,10 @@
 \alias{get_title_details}
 \title{Get Title Details}
 \usage{
-get_title_details(title_id, token = "FLIX_PATROL")
+get_title_details(title_id)
 }
 \arguments{
 \item{title_id}{Character. The FlixPatrol title ID (e.g., `"ttl_..."`).}
-
-\item{token}{Character. API environment variable name.}
 }
 \value{
 A named list of title metadata.

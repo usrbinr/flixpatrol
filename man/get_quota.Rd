@@ -4,11 +4,7 @@
 \alias{get_quota}
 \title{Get API Quota Information}
 \usage{
-get_quota(token = "FLIX_PATROL")
-}
-\arguments{
-\item{token}{Character. The name of the environment variable containing
-the API key. Default is "FLIX_PATROL".}
+get_quota()
 }
 \value{
 A tibble with quota information: used, available, limit,

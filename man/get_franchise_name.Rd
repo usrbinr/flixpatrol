@@ -4,13 +4,11 @@
 \alias{get_franchise_name}
 \title{Get Franchise Name from ID}
 \usage{
-get_franchise_name(franchise_id, token = "FLIX_PATROL")
+get_franchise_name(franchise_id)
 }
 \arguments{
 \item{franchise_id}{Character vector. One or more FlixPatrol franchise IDs
 (e.g., "frn_STNa2GEw54ahWxJsXNgBMmt0").}
-
-\item{token}{Character. The name of the environment variable containing the API key.}
 }
 \value{
 A character vector of franchise titles (same length as input).

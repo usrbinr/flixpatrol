@@ -11,8 +11,7 @@ get_global_ranking(
   countries = c("United States", "United Kingdom", "Canada", "Australia", "Germany",
     "France", "Brazil", "India", "Japan", "South Korea", "Mexico", "Spain", "Italy",
     "Netherlands", "Sweden"),
-  flix_type = "movies",
-  token = "FLIX_PATROL"
+  flix_type = "movies"
 )
 }
 \arguments{
@@ -26,8 +25,6 @@ get_global_ranking(
 set of 15 major markets.}
 
 \item{flix_type}{Character. Content type (default `"movies"`).}
-
-\item{token}{Character. API environment variable name.}
 }
 \value{
 A tibble with columns `country`, `rank`, `title`, `date`.

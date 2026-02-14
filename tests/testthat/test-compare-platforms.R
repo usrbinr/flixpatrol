@@ -1,9 +1,9 @@
-describe("compare_platforms_tbl()", {
+describe("compare_platforms()", {
 
   it("returns a tibble with expected columns even when API fails", {
     withr::local_envvar(FLIX_PATROL = "fake_key")
     # purrr::possibly wraps the API failures, so this should return NA ranks
-    result <- compare_platforms_tbl(
+    result <- compare_platforms(
       title     = "Test Movie",
       platforms = c("netflix", "disney+"),
       date      = "2025-12-15"
@@ -19,7 +19,7 @@ describe("compare_platforms_tbl()", {
   it("returns one row per platform", {
     withr::local_envvar(FLIX_PATROL = "fake_key")
     platforms <- c("netflix", "disney+", "hbo max")
-    result <- compare_platforms_tbl(
+    result <- compare_platforms(
       title     = "Test",
       platforms = platforms,
       date      = "2025-12-15"
@@ -29,7 +29,7 @@ describe("compare_platforms_tbl()", {
 
   it("fills NA ranks when API is unreachable", {
     withr::local_envvar(FLIX_PATROL = "fake_key")
-    result <- compare_platforms_tbl(
+    result <- compare_platforms(
       title     = "Nonexistent Movie",
       platforms = c("netflix"),
       date      = "2025-12-15"

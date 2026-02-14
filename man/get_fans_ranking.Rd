@@ -5,7 +5,6 @@
 \title{Get Fans Rankings}
 \usage{
 get_fans_ranking(
-  token = "FLIX_PATROL",
   social_platform = "instagram",
   start_date,
   end_date,
@@ -13,8 +12,6 @@ get_fans_ranking(
 )
 }
 \arguments{
-\item{token}{Character. API environment variable name.}
-
 \item{social_platform}{Character. Social media platform: "instagram", "twitter", or "facebook".}
 
 \item{start_date}{Character. Start date in yyyy-mm-dd format.}

@@ -4,12 +4,10 @@
 \alias{get_company_name}
 \title{Get Company Name from ID}
 \usage{
-get_company_name(company_id, token = "FLIX_PATROL")
+get_company_name(company_id)
 }
 \arguments{
 \item{company_id}{Character. The FlixPatrol ID (e.g., "cmp_IA6TdMqwf6kuyQvxo9bJ4nKX").}
-
-\item{token}{Character. The name of the environment variable containing the API key.}
 }
 \value{
 A character string containing the company name.

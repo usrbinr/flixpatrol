@@ -5,7 +5,6 @@
 \title{Create Hours Viewed Table}
 \usage{
 get_hours_viewed(
-  token = "FLIX_PATROL",
   platform_name = "netflix",
   media_type_name = "movie",
   language_name = "english",
@@ -15,8 +14,6 @@ get_hours_viewed(
 )
 }
 \arguments{
-\item{token}{Character. API environment variable name.}
-
 \item{platform_name}{Character. Platform name (defaults to "netflix").}
 
 \item{media_type_name}{Character. Media type ("movie" or "tv_show").}

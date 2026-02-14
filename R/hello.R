@@ -110,9 +110,6 @@ flixpatrol_options <- function() {
 #' Retrieves current API usage quota from FlixPatrol, showing how many
 #' calls have been used, how many remain, and when the quota resets.
 #'
-#' @param token Character. The name of the environment variable containing
-#'   the API key. Default is "FLIX_PATROL".
-#'
 #' @return A tibble with quota information: used, available, limit,
 #'   limit_extra, and reset_at.
 #' @export
@@ -121,9 +118,9 @@ flixpatrol_options <- function() {
 #' \dontrun{
 #' get_quota()
 #' }
-get_quota <- function(token = "FLIX_PATROL") {
+get_quota <- function() {
 
-    resp <- authenticate(site = "https://api.flixpatrol.com/v2/quota", token = token) |>
+    resp <- authenticate(site = "https://api.flixpatrol.com/v2/quota") |>
         httr2::req_perform()
 
     data <- httr2::resp_body_json(resp)$data
@@ -400,15 +397,15 @@ lookup_flix_type <- function(flix_type){
 
 
 #' Internal helper: fetches Top 10 for a single date
-#' Used by compare_platforms_tbl, get_global_ranking, get_weekly_movers
+#' Used by compare_platforms, get_global_ranking, get_weekly_movers
 #' @noRd
-get_single_top_ten <- function(token = "FLIX_PATROL", platform_name, country_name, date, flix_type) {
+get_single_top_ten <- function(platform_name, country_name, date, flix_type) {
 
     company_string   <- lookup_platform(platform_name = platform_name, silent = TRUE)
     country_string   <- lookup_country(country_name = country_name, silent = TRUE)
     flix_type_string <- lookup_flix_type(flix_type = flix_type)
 
-    resp <- authenticate(token = token) |>
+    resp <- authenticate() |>
         httr2::req_url_query(
             `company[eq]`    = company_string,
             `country[eq]`    = country_string,
@@ -452,7 +449,6 @@ get_single_top_ten <- function(token = "FLIX_PATROL", platform_name, country_nam
 #' so this function iterates over each date in the range. Lookups are
 #' performed once upfront to minimize API calls.
 #'
-#' @param token Character. API environment variable name.
 #' @param platform_name Character. Name of the platform (e.g., "netflix", "disney+").
 #' @param country_name Character. Name of the country (e.g., "United States").
 #' @param start_date Character. Start of the range in yyyy-mm-dd format.
@@ -474,7 +470,7 @@ get_single_top_ten <- function(token = "FLIX_PATROL", platform_name, country_nam
 #'   flix_type     = "movies"
 #' )
 #' }
-get_top_ten <- function(token = "FLIX_PATROL", platform_name, country_name, start_date, end_date, flix_type,
+get_top_ten <- function(platform_name, country_name, start_date, end_date, flix_type,
                         return_ids = getOption("flixpatrol.return_ids", FALSE)) {
 
     validate_date_format(start_date)
@@ -487,7 +483,7 @@ get_top_ten <- function(token = "FLIX_PATROL", platform_name, country_name, star
     date_vec <- seq.Date(from = as.Date(start_date), to = as.Date(end_date), by = "day")
 
     fetch_single_day <- function(date) {
-        resp <- authenticate(token = token) |>
+        resp <- authenticate() |>
             httr2::req_url_query(
                 `company[eq]`    = company_string,
                 `country[eq]`    = country_string,
@@ -739,7 +735,6 @@ unnest_flixpatrol_response <- function(data_lst) {
 #' This function specifically handles the `/hoursviewed` endpoint. It defaults
 #' to "week" views (API type 3) and requires a 7-day range starting on a Monday.
 #'
-#' @param token Character. API environment variable name.
 #' @param platform_name Character. Platform name (defaults to "netflix").
 #' @param media_type_name Character. Media type ("movie" or "tv_show").
 #' @param language_name Character. Language (e.g., "english").
@@ -760,7 +755,7 @@ unnest_flixpatrol_response <- function(data_lst) {
 #'   end_date        = "2026-02-16"
 #' )
 #' }
-get_hours_viewed <- function(token = "FLIX_PATROL",
+get_hours_viewed <- function(
                              platform_name = "netflix",
                              media_type_name = "movie",
                              language_name = "english",
@@ -774,7 +769,7 @@ get_hours_viewed <- function(token = "FLIX_PATROL",
 
   validate_date_range(start_date = start_date, end_date = end_date, start_date_wday_abb = "mon", range_length = 7)
 
-  resp <- authenticate(token = token, site = "https://api.flixpatrol.com/v2/hoursviewed") |>
+  resp <- authenticate(site = "https://api.flixpatrol.com/v2/hoursviewed") |>
     httr2::req_url_query(
       `company[eq]`    = platform_name_vec,
       `language[eq]`   = language_name_vec,
@@ -828,7 +823,6 @@ get_hours_viewed <- function(token = "FLIX_PATROL",
 #' package version, FlixPatrol only provides official lists for Netflix.
 #' Requires a 7-day range starting on a Monday.
 #'
-#' @param token Character. API environment variable name.
 #' @param platform_name Character. Must be "netflix".
 #' @param country_name Character. Name of the country (e.g., "United States").
 #' @param start_date Character. Range start, must be a Monday (yyyy-mm-dd format).
@@ -851,7 +845,7 @@ get_hours_viewed <- function(token = "FLIX_PATROL",
 #'   media_type   = "movie"
 #' )
 #' }
-get_official_ranking <- function(token = "FLIX_PATROL",
+get_official_ranking <- function(
                                  platform_name = "netflix",
                                  country_name,
                                  start_date,
@@ -875,7 +869,7 @@ get_official_ranking <- function(token = "FLIX_PATROL",
 
   validate_date_range(start_date = start_date, end_date = end_date, start_date_wday_abb = "mon", range_length = 7)
 
-  resp <- authenticate(site = "https://api.flixpatrol.com/v2/rankingsofficial", token = token) |>
+  resp <- authenticate(site = "https://api.flixpatrol.com/v2/rankingsofficial") |>
     httr2::req_url_query(
       `country[eq]`     = country_id,
       `company[eq]`     = platform_id,
@@ -931,7 +925,6 @@ get_official_ranking <- function(token = "FLIX_PATROL",
 #' Franchise IDs are automatically resolved to names via batch API lookup.
 #' Title types (movie/tv_show) are resolved via batch API lookup.
 #'
-#' @param token Character. API environment variable name.
 #' @param social_platform Character. Social media platform: "instagram", "twitter", or "facebook".
 #' @param start_date Character. Start date in yyyy-mm-dd format.
 #' @param end_date Character. End date in yyyy-mm-dd format.
@@ -949,7 +942,7 @@ get_official_ranking <- function(token = "FLIX_PATROL",
 #'   end_date        = "2026-02-14"
 #' )
 #' }
-get_fans_ranking <- function(token = "FLIX_PATROL",
+get_fans_ranking <- function(
                              social_platform = "instagram",
                              start_date,
                              end_date,
@@ -975,7 +968,7 @@ get_fans_ranking <- function(token = "FLIX_PATROL",
     date_vec <- seq.Date(from = as.Date(start_date), to = as.Date(end_date), by = "day")
 
     fetch_single_day <- function(date) {
-        resp <- authenticate(site = "https://api.flixpatrol.com/v2/fans", token = token) |>
+        resp <- authenticate(site = "https://api.flixpatrol.com/v2/fans") |>
             httr2::req_url_query(
                 `company[eq]`    = platform_id,
                 `date[type][eq]` = 1,
@@ -1023,7 +1016,7 @@ get_fans_ranking <- function(token = "FLIX_PATROL",
     franchise_ids <- unique(out$franchise_id[!is.na(out$franchise_id)])
 
     if (length(franchise_ids) > 0) {
-        franchise_names <- get_franchise_name(franchise_ids, token = token)
+        franchise_names <- get_franchise_name(franchise_ids)
 
         franchise_lookup <- tibble::tibble(
             franchise_id = franchise_ids,
@@ -1047,7 +1040,7 @@ get_fans_ranking <- function(token = "FLIX_PATROL",
         ids_string <- paste(unique_title_ids, collapse = ",")
 
         type_resp <- tryCatch(
-            authenticate(site = "https://api.flixpatrol.com/v2/titles", token = token) |>
+            authenticate(site = "https://api.flixpatrol.com/v2/titles") |>
                 httr2::req_url_query(`id[in]` = ids_string) |>
                 httr2::req_perform() |>
                 httr2::resp_body_json(),
