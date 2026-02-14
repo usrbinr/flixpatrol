@@ -5,6 +5,12 @@ library(devtools)
 devtools::document()
 devtools::load_all()
 library(tidyverse)
+# --- Situation Report ---
+flixpatrol_sitrep()
+
+# --- API Quota ---
+get_quota()
+
 # --- Package Options ---
 flixpatrol_options()
 options(flixpatrol.silent = TRUE)
@@ -71,12 +77,12 @@ get_title_details("ttl_yPCJU2UzROTNVv5JZ7Hu4m8M")
 
 # --- Title History (track a title over time) ---
 get_title_history(
-  title         = "Squid Game",
+  title         = "The Lincoln Lawyer",
   platform_name = "netflix",
   country_name  = "United States",
   start_date    = "2026-02-01",
   end_date      = "2026-02-14",
-  flix_type     = "tv"
+  flix_type     = "tv_shows"
 )
 
 # --- Top Titles Summary (most frequent Top 10 titles) ---

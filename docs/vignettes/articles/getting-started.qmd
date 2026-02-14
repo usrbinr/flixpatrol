@@ -331,6 +331,6 @@ flixpatrol::torrent_sites
 
 ## Next Steps
 
-- Explore the [Function Reference](../../reference.qmd) for complete documentation
+- Explore the [Function Reference](../../_qrtdown/reference.qmd) for complete documentation
 - Check the [FlixPatrol API docs](https://flixpatrol.com/api2/) for endpoint details
 - Report issues at [Codeberg](https://codeberg.org/usrbinr/flixpatrol/issues)

@@ -71,17 +71,19 @@ authenticate <- function(site="https://api.flixpatrol.com/v2/top10s",token="FLIX
 flixpatrol_options <- function() {
 
     opts <- tibble::tibble(
-        option = c("flixpatrol.silent", "flixpatrol.return_ids", "flixpatrol.throttle_rate"),
+        option = c("flixpatrol.silent", "flixpatrol.return_ids", "flixpatrol.throttle_rate", "flixpatrol.show_quota"),
         description = c(
             "Suppress success messages from lookup functions",
             "Include ID columns (title_id, franchise_id, etc.) in output",
-            "API requests per 60 seconds (e.g., 10 = 10 req/min, Inf = no limit)"
+            "API requests per 60 seconds (e.g., 10 = 10 req/min, Inf = no limit)",
+            "Show API quota in flixpatrol_sitrep() output"
         ),
-        default = c("FALSE", "FALSE", "10"),
+        default = c("FALSE", "FALSE", "10", "TRUE"),
         current = c(
             as.character(getOption("flixpatrol.silent", FALSE)),
             as.character(getOption("flixpatrol.return_ids", FALSE)),
-            as.character(getOption("flixpatrol.throttle_rate", 10))
+            as.character(getOption("flixpatrol.throttle_rate", 10)),
+            as.character(getOption("flixpatrol.show_quota", TRUE))
         )
     )
 
@@ -99,6 +101,173 @@ flixpatrol_options <- function() {
     }
 
     invisible(opts)
+}
+
+
+#' Get API Quota Information
+#'
+#' @description
+#' Retrieves current API usage quota from FlixPatrol, showing how many
+#' calls have been used, how many remain, and when the quota resets.
+#'
+#' @param token Character. The name of the environment variable containing
+#'   the API key. Default is "FLIX_PATROL".
+#'
+#' @return A tibble with quota information: used, available, limit,
+#'   limit_extra, and reset_at.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' get_quota()
+#' }
+get_quota <- function(token = "FLIX_PATROL") {
+
+    resp <- authenticate(site = "https://api.flixpatrol.com/v2/quota", token = token) |>
+        httr2::req_perform()
+
+    data <- httr2::resp_body_json(resp)$data
+
+    tibble::tibble(
+        used = data$used %||% NA_integer_,
+        available = data$available %||% NA_integer_,
+        limit = data$limit %||% NA_integer_,
+        limit_extra = data$limitExtra %||% 0L,
+        reset_at = as.POSIXct(data$resetAt, format = "%Y-%m-%dT%H:%M:%S")
+    )
+}
+
+
+#' FlixPatrol Situation Report
+#'
+#' @description
+#' Displays a diagnostic overview of the flixpatrol package configuration,
+#' including authentication status, package options, and API connectivity.
+#'
+#' @param test_api Logical. If `TRUE`, tests API connectivity by making a
+#'   simple request. Default is `TRUE`.
+#' @param show_quota Logical. If `TRUE`, displays API quota usage. Default
+#'   is `TRUE`.
+#'
+#' @return Invisibly returns a list with diagnostic information.
+#' @export
+#'
+#' @examples
+#' flixpatrol_sitrep()
+#'
+#' # Skip API test
+#' flixpatrol_sitrep(test_api = FALSE)
+flixpatrol_sitrep <- function(test_api = TRUE,
+                              show_quota = getOption("flixpatrol.show_quota", TRUE)) {
+
+    cli::cli_h1("FlixPatrol Situation Report")
+
+    # Package version
+    pkg_version <- tryCatch(
+        as.character(utils::packageVersion("flixpatrol")),
+        error = function(e) "unknown"
+    )
+    cli::cli_h2("Package")
+    cli::cli_bullets(c("*" = "Version: {.val {pkg_version}}"))
+
+    # Authentication status
+    cli::cli_h2("Authentication")
+    token_name <- "FLIX_PATROL"
+    token_value <- Sys.getenv(token_name)
+    token_set <- nchar(token_value) > 0
+
+    if (token_set) {
+        # Mask the token for display (show first 4 and last 4 chars)
+        if (nchar(token_value) > 10) {
+            masked <- paste0(
+                substr(token_value, 1, 4),
+                "...",
+                substr(token_value, nchar(token_value) - 3, nchar(token_value))
+            )
+        } else {
+            masked <- "****"
+        }
+        cli::cli_bullets(c(
+            "v" = "{.envvar {token_name}} is set: {.val {masked}}"
+        ))
+    } else {
+        cli::cli_bullets(c(
+            "x" = "{.envvar {token_name}} is {.strong not set}",
+            " " = "Set with {.code usethis::edit_r_environ()} and add:",
+            " " = "{.code FLIX_PATROL=your_api_key_here}"
+        ))
+    }
+
+    # API connectivity test (uses quota endpoint since it's lightweight)
+    api_ok <- FALSE
+    if (test_api && token_set) {
+        cli::cli_h2("API Connectivity")
+        api_ok <- tryCatch({
+            req <- httr2::request("https://api.flixpatrol.com/v2/quota") |>
+                httr2::req_auth_basic(username = token_value, password = "")
+            resp <- httr2::req_perform(req)
+            httr2::resp_status(resp) == 200
+        }, error = function(e) FALSE)
+
+        if (api_ok) {
+            cli::cli_bullets(c("v" = "API connection successful"))
+        } else {
+            cli::cli_bullets(c("x" = "API connection failed (check your API key)"))
+        }
+    } else if (test_api && !token_set) {
+        cli::cli_h2("API Connectivity")
+        cli::cli_bullets(c("!" = "Skipped (no API key configured)"))
+    }
+
+    # API Quota
+    quota <- NULL
+    if (show_quota && token_set) {
+        cli::cli_h2("API Quota")
+        quota <- tryCatch({
+            q <- get_quota()
+            total_limit <- q$limit + q$limit_extra
+            pct_used <- round(100 * q$used / total_limit, 1)
+            cli::cli_bullets(c(
+                "*" = "Used: {.val {q$used}} / {.val {total_limit}} ({pct_used}%)",
+                "*" = "Available: {.val {q$available}}",
+                "*" = "Resets: {.val {format(q$reset_at, '%Y-%m-%d')}}"
+            ))
+            q
+        }, error = function(e) {
+            cli::cli_bullets(c("!" = "Could not retrieve quota"))
+            NULL
+        })
+    } else if (show_quota && !token_set) {
+        cli::cli_h2("API Quota")
+        cli::cli_bullets(c("!" = "Skipped (no API key configured)"))
+    }
+
+    # Package options
+    cli::cli_h2("Options")
+    opts <- list(
+        silent = getOption("flixpatrol.silent", FALSE),
+        return_ids = getOption("flixpatrol.return_ids", FALSE),
+        throttle_rate = getOption("flixpatrol.throttle_rate", 10),
+        show_quota = getOption("flixpatrol.show_quota", TRUE)
+    )
+
+    cli::cli_bullets(c(
+        "*" = "{.code flixpatrol.silent}: {.val {opts$silent}}",
+        "*" = "{.code flixpatrol.return_ids}: {.val {opts$return_ids}}",
+        "*" = "{.code flixpatrol.throttle_rate}: {.val {opts$throttle_rate}} req/min",
+        "*" = "{.code flixpatrol.show_quota}: {.val {opts$show_quota}}"
+    ))
+
+    cli::cli_text("")
+    cli::cli_text("Run {.code flixpatrol_options()} for option descriptions.")
+
+    invisible(list(
+        version = pkg_version,
+        token_set = token_set,
+        api_ok = api_ok,
+        quota = quota,
+        options = opts
+    ))
 }
 
 

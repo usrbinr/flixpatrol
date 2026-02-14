@@ -1,4 +1,23 @@
-# flixpatrol
+---
+title: flixpatrol
+toc: false
+---
+
+::: {.column-margin}
+
+### License
+
+MIT + file LICENSE
+
+### Citation
+
+[Citing this package](_qrtdown/citation.qmd)
+
+### Authors
+
+- Alejandro Hagan (author, maintainer)
+
+:::
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 
@@ -46,16 +65,34 @@ Restart R after saving. All functions default to reading the `FLIX_PATROL` envir
 
 ## Package Options
 
-Suppress lookup success messages globally:
+| Option | Default | Description |
+|---|---|---|
+| `flixpatrol.silent` | `FALSE` | Suppress lookup success messages |
+| `flixpatrol.return_ids` | `FALSE` | Include ID columns in output tibbles |
+| `flixpatrol.throttle_rate` | `10` | API requests per minute (rate limiting) |
+| `flixpatrol.show_quota` | `TRUE` | Show API quota in `flixpatrol_sitrep()` |
+
+Set options globally:
 
 ```r
-options(flixpatrol.silent = TRUE)
+options(
+ flixpatrol.silent = TRUE,
+ flixpatrol.return_ids = TRUE,
+ flixpatrol.throttle_rate = 15,
+ flixpatrol.show_quota = FALSE
+)
 ```
 
-View all available options:
+View current option values:
 
 ```r
 flixpatrol_options()
+```
+
+Check package status and API quota:
+
+```r
+flixpatrol_sitrep()
 ```
 
 ---
@@ -137,7 +174,7 @@ get_torrent_ranking(
 ### Social Media Fans
 
 ```r
-get_social_fans(
+get_fans_ranking(
   social_platform = "Instagram",
   start_date      = "2025-12-15",
   end_date        = "2025-12-21"
@@ -277,11 +314,10 @@ The package ships with pre-built reference tables to avoid unnecessary API calls
 | `get_top_ten()` | `/top10s` | Top 10 over a date range |
 | `get_hours_viewed()` | `/hoursviewed` | Weekly viewing hours |
 | `get_official_ranking()` | `/rankingsofficial` | Official Netflix rankings |
-| `get_social_fans()` | `/fans` | Social media fan counts |
+| `get_fans_ranking()` | `/fans` | Social media fan counts |
 | `get_torrent_ranking()` | `/torrents` | Torrent chart rankings |
 | `get_premieres()` | `/premieres` | Upcoming premiere dates |
 | `get_title_details()` | `/titles/:id` | Full title metadata |
-| `fetch_fans_ranking_tbl()` | `/fans` | Fan rankings by platform |
 
 ### Analytics & Comparison
 

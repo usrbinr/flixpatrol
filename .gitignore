@@ -12,3 +12,8 @@ _quarto.yml
 # Claude
 .claude/
 CLAUDE.md
+
+# qrtdown
+_qrtdown-styles.css
+_qrtdown/
+index.qmd

@@ -6,7 +6,7 @@ navbar:
   title: flixpatrol 0.2.0
   left:
   - text: Reference
-    href: reference.qmd
+    href: _qrtdown/reference.qmd
   - text: Articles
   right:
   - icon: code-square

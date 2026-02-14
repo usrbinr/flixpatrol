@@ -25,3 +25,7 @@
 ^CONTRIBUTING\.md$
 ^_brand\.yml$
 ^test_gt_interactive\.html$
+
+# qrtdown
+^_qrtdown-styles\.css$
+^_qrtdown$
