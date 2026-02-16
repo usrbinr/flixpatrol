@@ -66,11 +66,17 @@ authenticate <- function(site="https://api.flixpatrol.com/v2/top10s",token="FLIX
 #' @examples
 #' flixpatrol_options()
 #'
-#' # Set an option
-#' options(flixpatrol.silent = TRUE)
+#' # Set options for repeated use
+#' options(
+#'   flixpatrol.country_name = "United States",
+#'   flixpatrol.start_date   = "2024-01-01",
+#'   flixpatrol.end_date     = "2026-12-31",
+#'   flixpatrol.media_type   = "movie"
+#' )
 flixpatrol_options <- function() {
 
-    opts <- tibble::tibble(
+    # Package behavior options
+    behavior_opts <- tibble::tibble(
         option = c("flixpatrol.silent", "flixpatrol.return_ids", "flixpatrol.throttle_rate", "flixpatrol.show_quota"),
         description = c(
             "Suppress success messages from lookup functions",
@@ -87,20 +93,71 @@ flixpatrol_options <- function() {
         )
     )
 
+    # Query default options
+    query_opts <- tibble::tibble(
+        option = c(
+            "flixpatrol.platform_name",
+            "flixpatrol.country_name",
+            "flixpatrol.start_date",
+            "flixpatrol.end_date",
+            "flixpatrol.media_type",
+            "flixpatrol.flix_type",
+            "flixpatrol.language",
+            "flixpatrol.social_platform",
+            "flixpatrol.torrent_site"
+        ),
+        description = c(
+            "Default platform (e.g., 'netflix', 'disney+')",
+            "Default country (e.g., 'United States')",
+            "Default start date (yyyy-mm-dd format)",
+            "Default end date (yyyy-mm-dd format)",
+            "Default media type ('movie' or 'tv_show')",
+            "Default flix type for get_top_ten() ('movies' or 'tv')",
+            "Default language (e.g., 'english')",
+            "Default social platform ('instagram', 'twitter', 'facebook')",
+            "Default torrent site (e.g., 'PirateBay', '1337x')"
+        ),
+        default = c("NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "english", "instagram", "NULL"),
+        current = c(
+            as.character(getOption("flixpatrol.platform_name", "NULL")),
+            as.character(getOption("flixpatrol.country_name", "NULL")),
+            as.character(getOption("flixpatrol.start_date", "NULL")),
+            as.character(getOption("flixpatrol.end_date", "NULL")),
+            as.character(getOption("flixpatrol.media_type", "NULL")),
+            as.character(getOption("flixpatrol.flix_type", "NULL")),
+            as.character(getOption("flixpatrol.language", "english")),
+            as.character(getOption("flixpatrol.social_platform", "instagram")),
+            as.character(getOption("flixpatrol.torrent_site", "NULL"))
+        )
+    )
+
     cli::cli_h1("FlixPatrol Package Options")
     cli::cli_text("Set with {.code options(option_name = value)}")
     cli::cli_text("")
 
-    for (i in seq_len(nrow(opts))) {
-        cli::cli_h3("{.val {opts$option[i]}}")
+    cli::cli_h2("Behavior Options")
+    for (i in seq_len(nrow(behavior_opts))) {
+        cli::cli_h3("{.val {behavior_opts$option[i]}}")
         cli::cli_bullets(c(
-            " " = opts$description[i],
-            "*" = "Default: {.val {opts$default[i]}}",
-            "*" = "Current: {.val {opts$current[i]}}"
+            " " = behavior_opts$description[i],
+            "*" = "Default: {.val {behavior_opts$default[i]}}",
+            "*" = "Current: {.val {behavior_opts$current[i]}}"
         ))
     }
 
-    invisible(opts)
+    cli::cli_h2("Query Default Options")
+    cli::cli_text("Set these to avoid passing arguments on every call.")
+    cli::cli_text("")
+    for (i in seq_len(nrow(query_opts))) {
+        cli::cli_h3("{.val {query_opts$option[i]}}")
+        cli::cli_bullets(c(
+            " " = query_opts$description[i],
+            "*" = "Default: {.val {query_opts$default[i]}}",
+            "*" = "Current: {.val {query_opts$current[i]}}"
+        ))
+    }
+
+    invisible(dplyr::bind_rows(behavior_opts, query_opts))
 }
 
 
@@ -381,17 +438,18 @@ lookup_platform <- function(platform_name, silent = getOption("flixpatrol.silent
 #' @export
 lookup_flix_type <- function(flix_type){
 
-    flix_type_lower <- tolower(flix_type)
+    flix_type_normalized <- normalize_plural(flix_type)
 
     validate_flix_types <- flixpatrol::flix_type_tbl$type_label
+    validate_flix_types_normalized <- normalize_plural(validate_flix_types)
 
-    if(!any(flix_type_lower %in% validate_flix_types)){
+    if(!any(flix_type_normalized %in% validate_flix_types_normalized)){
 
         cli::cli_abort("Please ensure {.val {flix_type}} is one of {.val {validate_flix_types}}")
     }
 
 
-    flixpatrol::flix_type_tbl$type_id[flixpatrol::flix_type_tbl$type_label %in% flix_type_lower]
+    flixpatrol::flix_type_tbl$type_id[validate_flix_types_normalized %in% flix_type_normalized]
 
 }
 
@@ -424,11 +482,17 @@ get_single_top_ten <- function(platform_name, country_name, date, flix_type) {
     resp$data |>
         purrr::map_df(function(item) {
             d <- item$data
+            type_id <- purrr::pluck(d, "type", .default = NA_integer_)
+            type_name <- dplyr::case_when(
+                type_id == 2 ~ "movie",
+                type_id == 3 ~ "tv_show",
+                TRUE ~ NA_character_
+            )
 
             tibble::tibble(
                 rank       = purrr::pluck(d, "ranking", .default = NA_integer_),
                 title      = purrr::pluck(d, "movie", "data", "title", .default = purrr::pluck(d, "note")),
-                type_id    = purrr::pluck(d, "type", .default = NA_integer_),
+                type       = type_name,
                 days_total = purrr::pluck(d, "daysTotal", .default = NA_integer_),
                 rank_last  = purrr::pluck(d, "rankingLast", .default = NA_integer_),
                 date       = purrr::pluck(d, "date", "from", .default = NA_character_),
@@ -445,33 +509,77 @@ get_single_top_ten <- function(platform_name, country_name, date, flix_type) {
 #' over a specified date range.
 #'
 #' @details
-#' The `/top10s` endpoint only returns data for a single day per request,
-#' so this function iterates over each date in the range. Lookups are
-#' performed once upfront to minimize API calls.
+#' The `/top10s` endpoint supports date range queries but limits results to
+#' 300 records per call. This function automatically chunks large date ranges
+#' into 30-day periods and combines the results.
+#'
+#' ## Global Options
+#'
+#' Parameters can be set globally using options:
+#' - `options(flixpatrol.platform_name = "netflix")`
+#' - `options(flixpatrol.country_name = "United States")`
+#' - `options(flixpatrol.start_date = "2024-01-01")`
+#' - `options(flixpatrol.end_date = "2026-12-31")`
+#' - `options(flixpatrol.flix_type = "movies")`
+#' - `options(flixpatrol.return_ids = TRUE)`
 #'
 #' @param platform_name Character. Name of the platform (e.g., "netflix", "disney+").
+#'   Default from `getOption("flixpatrol.platform_name")`.
 #' @param country_name Character. Name of the country (e.g., "United States").
+#'   Default from `getOption("flixpatrol.country_name")`.
 #' @param start_date Character. Start of the range in yyyy-mm-dd format.
+#'   Default from `getOption("flixpatrol.start_date")`.
 #' @param end_date Character. End of the range in yyyy-mm-dd format.
+#'   Default from `getOption("flixpatrol.end_date")`.
 #' @param flix_type Character. Content type ("movies" or "tv").
-#' @param return_ids Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.
+#'   Default from `getOption("flixpatrol.flix_type")`.
+#' @param return_ids Logical. Include ID columns in output.
+#'   Default from `getOption("flixpatrol.return_ids", FALSE)`.
 #'
-#' @return A tibble with columns: rank, title, type_id, days_total, rank_last, date, imdb_id.
-#'   If `return_ids = TRUE`, also includes title_id.
+#' @return A tibble with columns: rank, title, type (movie/tv_show), days_total, rank_last, date, imdb_id.
+#'   If `return_ids = TRUE`, also includes title_id and type_id.
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' get_top_ten(
-#'   platform_name = "netflix",
-#'   country_name  = "United States",
-#'   start_date    = "2026-02-01",
-#'   end_date      = "2026-02-07",
-#'   flix_type     = "movies"
+#' # Set global options
+#' options(
+#'   flixpatrol.platform_name = "netflix",
+#'   flixpatrol.country_name  = "United States",
+#'   flixpatrol.start_date    = "2024-01-01",
+#'   flixpatrol.end_date      = "2026-02-14",
+#'   flixpatrol.flix_type     = "movies"
 #' )
+#'
+#' # Call without arguments
+#' get_top_ten()
+#'
+#' # Override specific options
+#' get_top_ten(flix_type = "tv")
 #' }
-get_top_ten <- function(platform_name, country_name, start_date, end_date, flix_type,
+get_top_ten <- function(platform_name = getOption("flixpatrol.platform_name"),
+                        country_name = getOption("flixpatrol.country_name"),
+                        start_date = getOption("flixpatrol.start_date"),
+                        end_date = getOption("flixpatrol.end_date"),
+                        flix_type = getOption("flixpatrol.flix_type"),
                         return_ids = getOption("flixpatrol.return_ids", FALSE)) {
+
+    # Validate required parameters
+    if (is.null(platform_name)) {
+        cli::cli_abort("platform_name is required. Set it via argument or {.code options(flixpatrol.platform_name = \"...\")}.")
+    }
+    if (is.null(country_name)) {
+        cli::cli_abort("country_name is required. Set it via argument or {.code options(flixpatrol.country_name = \"...\")}.")
+    }
+    if (is.null(start_date)) {
+        cli::cli_abort("start_date is required. Set it via argument or {.code options(flixpatrol.start_date = \"...\")}.")
+    }
+    if (is.null(end_date)) {
+        cli::cli_abort("end_date is required. Set it via argument or {.code options(flixpatrol.end_date = \"...\")}.")
+    }
+    if (is.null(flix_type)) {
+        cli::cli_abort("flix_type is required. Set it via argument or {.code options(flixpatrol.flix_type = \"...\")}.")
+    }
 
     validate_date_format(start_date)
     validate_date_format(end_date)
@@ -480,17 +588,27 @@ get_top_ten <- function(platform_name, country_name, start_date, end_date, flix_
     country_string   <- lookup_country(country_name = country_name, silent = TRUE)
     flix_type_string <- lookup_flix_type(flix_type = flix_type)
 
-    date_vec <- seq.Date(from = as.Date(start_date), to = as.Date(end_date), by = "day")
+    # API limits to 300 records (30 days), so chunk into 30-day periods
+    start_dt <- as.Date(start_date)
+    end_dt   <- as.Date(end_date)
+    chunk_size <- 30
 
-    fetch_single_day <- function(date) {
+    # Generate chunk start dates
+    chunk_starts <- seq.Date(from = start_dt, to = end_dt, by = paste(chunk_size, "days"))
+
+    cli::cli_alert_info("Fetching {length(chunk_starts)} chunk{?s} ({length(chunk_starts)} API call{?s})")
+
+    fetch_chunk <- function(chunk_start) {
+        chunk_end <- min(chunk_start + chunk_size - 1, end_dt)
+
         resp <- authenticate() |>
             httr2::req_url_query(
-                `company[eq]`    = company_string,
-                `country[eq]`    = country_string,
-                `type[eq]`       = flix_type_string,
-                `date[type][eq]` = 1,
-                `date[from][eq]` = as.character(date),
-                `date[to][eq]`   = as.character(date)
+                `company[eq]`     = company_string,
+                `country[eq]`     = country_string,
+                `type[eq]`        = flix_type_string,
+                `date[type][eq]`  = 1,
+                `date[from][gte]` = as.character(chunk_start),
+                `date[to][lte]`   = as.character(chunk_end)
             ) |>
             httr2::req_perform() |>
             httr2::resp_body_json()
@@ -502,12 +620,19 @@ get_top_ten <- function(platform_name, country_name, start_date, end_date, flix_
         resp$data |>
             purrr::map_df(function(item) {
                 d <- item$data
+                type_id <- purrr::pluck(d, "type", .default = NA_integer_)
+                type_name <- dplyr::case_when(
+                    type_id == 2 ~ "movie",
+                    type_id == 3 ~ "tv_show",
+                    TRUE ~ NA_character_
+                )
 
                 tibble::tibble(
                     rank       = purrr::pluck(d, "ranking", .default = NA_integer_),
                     title_id   = purrr::pluck(d, "movie", "data", "id", .default = NA_character_),
                     title      = purrr::pluck(d, "movie", "data", "title", .default = purrr::pluck(d, "note")),
-                    type_id    = purrr::pluck(d, "type", .default = NA_integer_),
+                    type_id    = type_id,
+                    type       = type_name,
                     days_total = purrr::pluck(d, "daysTotal", .default = NA_integer_),
                     rank_last  = purrr::pluck(d, "rankingLast", .default = NA_integer_),
                     date       = purrr::pluck(d, "date", "from", .default = NA_character_),
@@ -516,15 +641,19 @@ get_top_ten <- function(platform_name, country_name, start_date, end_date, flix_
             })
     }
 
-    out <- purrr::map(date_vec, fetch_single_day) |>
-        purrr::list_rbind()
+    results <- vector("list", length(chunk_starts))
+    for (i in cli::cli_progress_along(chunk_starts, "Fetching top 10")) {
+        results[[i]] <- fetch_chunk(chunk_starts[[i]])
+    }
+    out <- purrr::list_rbind(results)
 
     if (nrow(out) == 0) {
         cli::cli_alert_warning("No Top 10 data returned for these parameters.")
+        return(tibble::tibble())
     }
 
-    if (!return_ids && "title_id" %in% names(out)) {
-        out <- out |> dplyr::select(-"title_id")
+    if (!return_ids) {
+        out <- out |> dplyr::select(-dplyr::any_of(c("title_id", "type_id")))
     }
 
     return(out)
@@ -532,11 +661,38 @@ get_top_ten <- function(platform_name, country_name, start_date, end_date, flix_
 
 
 
+#' Normalize Plural/Singular Forms
+#'
+#' @description
+#' Converts input to a canonical singular form for matching.
+#' Handles common patterns like "movies" -> "movie", "tv_shows" -> "tv_show",
+#' "documentaries" -> "documentary".
+#'
+#' @param x Character vector. Input to normalize.
+#'
+#' @return Character vector with normalized forms.
+#' @keywords internal
+normalize_plural <- function(x) {
+  x <- tolower(x)
+  # Handle compound words with underscores
+  x <- gsub("_shows$", "_show", x)
+  x <- gsub("_movies$", "_movie", x)
+  # Special case: "movies" -> "movie" (the "ie" is part of the root, not suffix)
+  x <- gsub("^movies$", "movie", x)
+  # Handle "ies" -> "y" for other cases (e.g., documentaries -> documentary)
+  x <- gsub("ies$", "y", x)
+  # Handle simple plurals (but not 'ss' endings like 'business')
+  x <- gsub("([^s])s$", "\\1", x)
+  x
+}
+
 #' Lookup Values from a Reference Table
 #'
 #' @description
 #' Generic helper that resolves human-readable names to internal FlixPatrol IDs
 #' using a pre-built lookup table. Supports `"*"` wildcard to return all IDs.
+#' Input is normalized to handle plural/singular variations (e.g., "movie" or
+#' "movies" both work).
 #'
 #' @param input Character vector. Values to look up, or `"*"` for all.
 #' @param tbl Data frame. The reference table to search.
@@ -551,15 +707,17 @@ lookup_from_table <- function(input, tbl, name_col, id_col, label) {
     return(tbl[[id_col]])
   }
 
-  name_lower <- tolower(input)
+  input_normalized <- normalize_plural(input)
   valid_names <- unique(tbl[[name_col]])
-  valid_names_lower <- tolower(valid_names)
+  valid_names_normalized <- normalize_plural(valid_names)
 
-  if (!all(name_lower %in% valid_names_lower)) {
+  # Check if normalized input matches normalized valid names
+  if (!all(input_normalized %in% valid_names_normalized)) {
     cli::cli_abort("{.arg {label}} must be one of {.val {valid_names}}, not {.val {input}}.")
   }
 
-  tbl[[id_col]][tolower(tbl[[name_col]]) %in% name_lower]
+  # Return IDs where normalized table values match normalized input
+  tbl[[id_col]][valid_names_normalized %in% input_normalized]
 }
 
 
@@ -733,14 +891,32 @@ unnest_flixpatrol_response <- function(data_lst) {
 #'
 #' @details
 #' This function specifically handles the `/hoursviewed` endpoint. It defaults
-#' to "week" views (API type 3) and requires a 7-day range starting on a Monday.
+#' to "week" views (API type 3). The function accepts any date range and will
+#' fetch all weekly data within that period, iterating through Monday-Sunday weeks.
 #'
-#' @param platform_name Character. Platform name (defaults to "netflix").
+#' ## Global Options
+#'
+#' Parameters can be set globally using options:
+#' - `options(flixpatrol.platform_name = "netflix")`
+#' - `options(flixpatrol.media_type = "movie")`
+#' - `options(flixpatrol.language = "english")`
+#' - `options(flixpatrol.start_date = "2024-01-01")`
+#' - `options(flixpatrol.end_date = "2026-12-31")`
+#' - `options(flixpatrol.return_ids = TRUE)`
+#'
+#' @param platform_name Character. Platform name.
+#'   Default from `getOption("flixpatrol.platform_name", "netflix")`.
 #' @param media_type_name Character. Media type ("movie" or "tv_show").
+#'   Default from `getOption("flixpatrol.media_type", "movie")`.
 #' @param language_name Character. Language (e.g., "english").
-#' @param start_date Character. Must be a Monday (yyyy-mm-dd format).
-#' @param end_date Character. Must be 7 days from start (yyyy-mm-dd format).
-#' @param return_ids Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.
+#'   Default from `getOption("flixpatrol.language", "english")`.
+#' @param start_date Character. Range start in yyyy-mm-dd format. Will be adjusted
+#'   to next Monday if not already a Monday.
+#'   Default from `getOption("flixpatrol.start_date")`.
+#' @param end_date Character. Range end in yyyy-mm-dd format.
+#'   Default from `getOption("flixpatrol.end_date")`.
+#' @param return_ids Logical. Include ID columns in output.
+#'   Default from `getOption("flixpatrol.return_ids", FALSE)`.
 #'
 #' @return A tibble with columns: rank, title, hours, views, runtime, streak, date_from, date_to.
 #'   If `return_ids = TRUE`, also includes title_id.
@@ -748,60 +924,106 @@ unnest_flixpatrol_response <- function(data_lst) {
 #'
 #' @examples
 #' \dontrun{
-#' get_hours_viewed(
-#'   language_name   = "english",
-#'   media_type_name = "movie",
-#'   start_date      = "2026-02-10",
-#'   end_date        = "2026-02-16"
+#' # Set global options
+#' options(
+#'   flixpatrol.start_date = "2024-01-01",
+#'   flixpatrol.end_date   = "2026-02-14"
 #' )
+#'
+#' # Call without date arguments
+#' get_hours_viewed()
 #' }
 get_hours_viewed <- function(
-                             platform_name = "netflix",
-                             media_type_name = "movie",
-                             language_name = "english",
-                             start_date,
-                             end_date,
+                             platform_name = getOption("flixpatrol.platform_name", "netflix"),
+                             media_type_name = getOption("flixpatrol.media_type", "movie"),
+                             language_name = getOption("flixpatrol.language", "english"),
+                             start_date = getOption("flixpatrol.start_date"),
+                             end_date = getOption("flixpatrol.end_date"),
                              return_ids = getOption("flixpatrol.return_ids", FALSE)) {
+
+  # Validate required parameters
+  if (is.null(start_date)) {
+    cli::cli_abort("start_date is required. Set it via argument or {.code options(flixpatrol.start_date = \"...\")}.")
+  }
+  if (is.null(end_date)) {
+    cli::cli_abort("end_date is required. Set it via argument or {.code options(flixpatrol.end_date = \"...\")}.")
+  }
+
+  validate_date_format(start_date)
+  validate_date_format(end_date)
 
   platform_name_vec <- lookup_platform(platform_name = platform_name, silent = TRUE)
   language_name_vec <- lookup_language(language_name = language_name)
   media_type_vec    <- lookup_media_type(media_type_name = media_type_name)
 
-  validate_date_range(start_date = start_date, end_date = end_date, start_date_wday_abb = "mon", range_length = 7)
+  # Convert to Date objects
+  start_dt <- as.Date(start_date)
+  end_dt   <- as.Date(end_date)
 
-  resp <- authenticate(site = "https://api.flixpatrol.com/v2/hoursviewed") |>
-    httr2::req_url_query(
-      `company[eq]`    = platform_name_vec,
-      `language[eq]`   = language_name_vec,
-      `number[eq]`     = media_type_vec,
-      `date[type][eq]` = 3,
-      `date[from][eq]` = as.character(start_date),
-      `date[to][eq]`   = as.character(end_date)
-    ) |>
-    httr2::req_perform() |>
-    httr2::resp_body_json()
-
-  if (length(resp$data) == 0) {
-    cli::cli_alert_warning("No hours viewed data returned for these parameters.")
-    return(tibble::tibble())
+  # Adjust start_date to next Monday if not already Monday
+  start_wday <- as.integer(format(start_dt, "%u"))
+  if (start_wday != 1) {
+    days_to_monday <- (8 - start_wday) %% 7
+    if (days_to_monday == 0) days_to_monday <- 7
+    start_dt <- start_dt + days_to_monday
+    cli::cli_alert_info("Adjusted start_date to next Monday: {.val {start_dt}}")
   }
 
-  out <- resp$data |>
-    purrr::map_df(function(item) {
-      d <- item$data
+  # Generate sequence of Mondays
+  monday_vec <- seq.Date(from = start_dt, to = end_dt, by = "7 days")
 
-      tibble::tibble(
-        rank       = purrr::pluck(d, "ranking", .default = NA_integer_),
-        title_id   = purrr::pluck(d, "movie", "data", "id", .default = NA_character_),
-        title      = purrr::pluck(d, "movie", "data", "title", .default = NA_character_),
-        hours      = purrr::pluck(d, "value", .default = NA_integer_),
-        views      = purrr::pluck(d, "views", .default = NA_integer_),
-        runtime    = purrr::pluck(d, "runtime", .default = NA_integer_),
-        streak     = purrr::pluck(d, "streak", .default = NA_integer_),
-        date_from  = purrr::pluck(d, "date", "from", .default = NA_character_),
-        date_to    = purrr::pluck(d, "date", "to", .default = NA_character_)
-      )
-    })
+  if (length(monday_vec) == 0) {
+    cli::cli_abort("No valid weeks found in date range. Ensure end_date is at least 7 days after start_date.")
+  }
+
+  cli::cli_alert_info("Fetching {length(monday_vec)} week{?s} ({length(monday_vec)} API call{?s})")
+
+  fetch_single_week <- function(monday_date) {
+    sunday_date <- monday_date + 6
+
+    resp <- authenticate(site = "https://api.flixpatrol.com/v2/hoursviewed") |>
+      httr2::req_url_query(
+        `company[eq]`    = platform_name_vec,
+        `language[eq]`   = language_name_vec,
+        `number[eq]`     = media_type_vec,
+        `date[type][eq]` = 3,
+        `date[from][eq]` = as.character(monday_date),
+        `date[to][eq]`   = as.character(sunday_date)
+      ) |>
+      httr2::req_perform() |>
+      httr2::resp_body_json()
+
+    if (length(resp$data) == 0) {
+      return(tibble::tibble())
+    }
+
+    resp$data |>
+      purrr::map_df(function(item) {
+        d <- item$data
+
+        tibble::tibble(
+          rank       = purrr::pluck(d, "ranking", .default = NA_integer_),
+          title_id   = purrr::pluck(d, "movie", "data", "id", .default = NA_character_),
+          title      = purrr::pluck(d, "movie", "data", "title", .default = NA_character_),
+          hours      = purrr::pluck(d, "value", .default = NA_integer_),
+          views      = purrr::pluck(d, "views", .default = NA_integer_),
+          runtime    = purrr::pluck(d, "runtime", .default = NA_integer_),
+          streak     = purrr::pluck(d, "streak", .default = NA_integer_),
+          date_from  = purrr::pluck(d, "date", "from", .default = NA_character_),
+          date_to    = purrr::pluck(d, "date", "to", .default = NA_character_)
+        )
+      })
+  }
+
+  results <- vector("list", length(monday_vec))
+  for (i in cli::cli_progress_along(monday_vec, "Fetching hours viewed")) {
+      results[[i]] <- fetch_single_week(monday_vec[[i]])
+  }
+  out <- purrr::list_rbind(results)
+
+  if (nrow(out) == 0) {
+    cli::cli_alert_warning("No hours viewed data returned for these parameters.")
+  }
 
   if (!return_ids && "title_id" %in% names(out)) {
     out <- out |> dplyr::select(-"title_id")
@@ -821,38 +1043,102 @@ get_hours_viewed <- function(
 #' @details
 #' Queries the `/rankingsofficial` endpoint. Note that as of the current
 #' package version, FlixPatrol only provides official lists for Netflix.
-#' Requires a 7-day range starting on a Monday.
+#'
+#' ## Date Range Handling
+#'
+#' The function accepts any date range spanning days, months, or years and
+#' automatically fetches all weekly rankings within that period. The API
+#' requires 7-day Monday-to-Sunday periods, so the function handles this
+#' internally:
+#'
+#' 1. If `start_date` is not a Monday, it is adjusted forward to the next Monday
+#' 2. A sequence of Mondays is generated from start to end date
+#' 3. For each Monday, the corresponding Sunday is calculated (Monday + 6 days)
+#' 4. Each Monday-Sunday pair is queried from the API
+#' 5. All results are combined into a single tibble
+#'
+#' For example, if you provide `start_date = "2024-01-01"` and
+#' `end_date = "2024-01-31"`, the function will fetch rankings for:
+#' - 2024-01-01 to 2024-01-07
+#' - 2024-01-08 to 2024-01-14
+#' - 2024-01-15 to 2024-01-21
+#' - 2024-01-22 to 2024-01-28
+#' - 2024-01-29 to 2024-02-04
+#'
+#' ## Global Options
+#'
+#' Parameters can be set globally using options so you don't have to specify
+#' them on every call:
+#' - `options(flixpatrol.country_name = "United States")`
+#' - `options(flixpatrol.start_date = "2024-01-01")`
+#' - `options(flixpatrol.end_date = "2026-12-31")`
+#' - `options(flixpatrol.media_type = "movie")`
+#' - `options(flixpatrol.language = "english")`
+#' - `options(flixpatrol.return_ids = TRUE)`
 #'
 #' @param platform_name Character. Must be "netflix".
 #' @param country_name Character. Name of the country (e.g., "United States").
-#' @param start_date Character. Range start, must be a Monday (yyyy-mm-dd format).
-#' @param end_date Character. Range end, must be Sunday (yyyy-mm-dd format).
+#'   Default from `getOption("flixpatrol.country_name")`.
+#' @param start_date Character. Range start in yyyy-mm-dd format. Does not need
+#'   to be a Monday; if not, it will be adjusted to the next Monday automatically.
+#'   Default from `getOption("flixpatrol.start_date")`.
+#' @param end_date Character. Range end in yyyy-mm-dd format. The function will
+#'   include any week where the Monday falls on or before this date.
+#'   Default from `getOption("flixpatrol.end_date")`.
 #' @param media_type Character. Content type ("movie" or "tv_show").
+#'   Default from `getOption("flixpatrol.media_type")`.
 #' @param date_type Character. Defaults to "week".
 #' @param language Character. Language for lookup (e.g., "english").
-#' @param return_ids Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.
+#'   Default from `getOption("flixpatrol.language", "english")`.
+#' @param return_ids Logical. Include ID columns in output.
+#'   Default from `getOption("flixpatrol.return_ids", FALSE)`.
 #'
 #' @return A tibble with columns: rank, title, hours, streak, date_from, date_to.
-#'   If `return_ids = TRUE`, also includes title_id.
+#'   If `return_ids = TRUE`, also includes title_id. Each row represents a title's
+#'   ranking for a specific week. Multiple weeks will have multiple rows per title.
 #' @export
 #'
 #' @examples
 #' \dontrun{
+#' # Fetch a single week
 #' get_official_ranking(
 #'   country_name = "United States",
-#'   start_date   = "2026-02-10",
-#'   end_date     = "2026-02-16",
+#'   start_date   = "2024-01-01",
+#'   end_date     = "2024-01-07",
 #'   media_type   = "movie"
 #' )
+#'
+#' # Fetch multiple years of weekly rankings
+#' get_official_ranking(
+#'   country_name = "United States",
+#'   start_date   = "2022-01-01",
+#'   end_date     = "2024-12-31",
+#'   media_type   = "movie"
+#' )
+#'
+#' # Set global options for repeated use
+#' options(
+#'   flixpatrol.country_name = "United States",
+#'   flixpatrol.start_date   = "2024-01-01",
+#'   flixpatrol.end_date     = "2026-02-14",
+#'   flixpatrol.media_type   = "movie"
+#' )
+#'
+#' # Now call without arguments
+#' get_official_ranking()
+#'
+#' # Override specific options as needed
+#' get_official_ranking(media_type = "tv_show")
+#' get_official_ranking(country_name = "United Kingdom")
 #' }
 get_official_ranking <- function(
                                  platform_name = "netflix",
-                                 country_name,
-                                 start_date,
-                                 end_date,
-                                 media_type,
+                                 country_name = getOption("flixpatrol.country_name"),
+                                 start_date = getOption("flixpatrol.start_date"),
+                                 end_date = getOption("flixpatrol.end_date"),
+                                 media_type = getOption("flixpatrol.media_type"),
                                  date_type = "week",
-                                 language = "english",
+                                 language = getOption("flixpatrol.language", "english"),
                                  return_ids = getOption("flixpatrol.return_ids", FALSE)) {
 
   platform_valid_name <- "netflix"
@@ -861,46 +1147,96 @@ get_official_ranking <- function(
     cli::cli_abort("Currently flixpatrol only supports Netflix for the official top ten list, you supplied {.val {platform_name}}.")
   }
 
+  # Validate required parameters
+  if (is.null(country_name)) {
+    cli::cli_abort("country_name is required. Set it via argument or {.code options(flixpatrol.country_name = \"...\")}.")
+  }
+  if (is.null(start_date)) {
+    cli::cli_abort("start_date is required. Set it via argument or {.code options(flixpatrol.start_date = \"...\")}.")
+  }
+  if (is.null(end_date)) {
+    cli::cli_abort("end_date is required. Set it via argument or {.code options(flixpatrol.end_date = \"...\")}.")
+  }
+  if (is.null(media_type)) {
+    cli::cli_abort("media_type is required. Set it via argument or {.code options(flixpatrol.media_type = \"...\")}.")
+  }
+
+  validate_date_format(start_date)
+  validate_date_format(end_date)
+
   platform_id   <- lookup_platform(platform_name = platform_name, silent = TRUE)
   media_type_id <- lookup_media_type(media_type_name = media_type)
   country_id    <- lookup_country(country_name = country_name, silent = TRUE)
   date_type_id  <- lookup_date_type(date_type)
   language_id   <- lookup_language(language)
 
-  validate_date_range(start_date = start_date, end_date = end_date, start_date_wday_abb = "mon", range_length = 7)
+  # Convert to Date objects
+  start_dt <- as.Date(start_date)
+  end_dt   <- as.Date(end_date)
 
-  resp <- authenticate(site = "https://api.flixpatrol.com/v2/rankingsofficial") |>
-    httr2::req_url_query(
-      `country[eq]`     = country_id,
-      `company[eq]`     = platform_id,
-      `language[eq]`    = language_id,
-      `number[eq]`      = media_type_id,
-      `date[type][eq]`  = date_type_id,
-      `date[from][eq]`  = as.character(start_date),
-      `date[to][eq]`    = as.character(end_date)
-    ) |>
-    httr2::req_perform() |>
-    httr2::resp_body_json()
-
-  if (length(resp$data) == 0) {
-    cli::cli_alert_warning("No official ranking data returned for these parameters.")
-    return(tibble::tibble())
+  # Adjust start_date to next Monday if not already Monday
+  start_wday <- as.integer(format(start_dt, "%u"))
+  if (start_wday != 1) {
+    days_to_monday <- (8 - start_wday) %% 7
+    if (days_to_monday == 0) days_to_monday <- 7
+    start_dt <- start_dt + days_to_monday
+    cli::cli_alert_info("Adjusted start_date to next Monday: {.val {start_dt}}")
   }
 
-  out <- resp$data |>
-    purrr::map_df(function(item) {
-      d <- item$data
+  # Generate sequence of Mondays
+  monday_vec <- seq.Date(from = start_dt, to = end_dt, by = "7 days")
 
-      tibble::tibble(
-        rank      = purrr::pluck(d, "ranking", .default = NA_integer_),
-        title_id  = purrr::pluck(d, "movie", "data", "id", .default = NA_character_),
-        title     = purrr::pluck(d, "movie", "data", "title", .default = NA_character_),
-        hours     = purrr::pluck(d, "value", .default = NA_integer_),
-        streak    = purrr::pluck(d, "streak", .default = NA_integer_),
-        date_from = purrr::pluck(d, "date", "from", .default = NA_character_),
-        date_to   = purrr::pluck(d, "date", "to", .default = NA_character_)
-      )
-    })
+  if (length(monday_vec) == 0) {
+    cli::cli_abort("No valid weeks found in date range. Ensure end_date is at least 7 days after start_date.")
+  }
+
+  cli::cli_alert_info("Fetching {length(monday_vec)} week{?s} ({length(monday_vec)} API call{?s})")
+
+  fetch_single_week <- function(monday_date) {
+    sunday_date <- monday_date + 6
+
+    resp <- authenticate(site = "https://api.flixpatrol.com/v2/rankingsofficial") |>
+      httr2::req_url_query(
+        `country[eq]`     = country_id,
+        `company[eq]`     = platform_id,
+        `language[eq]`    = language_id,
+        `number[eq]`      = media_type_id,
+        `date[type][eq]`  = date_type_id,
+        `date[from][eq]`  = as.character(monday_date),
+        `date[to][eq]`    = as.character(sunday_date)
+      ) |>
+      httr2::req_perform() |>
+      httr2::resp_body_json()
+
+    if (length(resp$data) == 0) {
+      return(tibble::tibble())
+    }
+
+    resp$data |>
+      purrr::map_df(function(item) {
+        d <- item$data
+
+        tibble::tibble(
+          rank      = purrr::pluck(d, "ranking", .default = NA_integer_),
+          title_id  = purrr::pluck(d, "movie", "data", "id", .default = NA_character_),
+          title     = purrr::pluck(d, "movie", "data", "title", .default = NA_character_),
+          hours     = purrr::pluck(d, "value", .default = NA_integer_),
+          streak    = purrr::pluck(d, "streak", .default = NA_integer_),
+          date_from = purrr::pluck(d, "date", "from", .default = NA_character_),
+          date_to   = purrr::pluck(d, "date", "to", .default = NA_character_)
+        )
+      })
+  }
+
+  results <- vector("list", length(monday_vec))
+  for (i in cli::cli_progress_along(monday_vec, "Fetching official rankings")) {
+      results[[i]] <- fetch_single_week(monday_vec[[i]])
+  }
+  out <- purrr::list_rbind(results)
+
+  if (nrow(out) == 0) {
+    cli::cli_alert_warning("No official ranking data returned for these parameters.")
+  }
 
   if (!return_ids && "title_id" %in% names(out)) {
     out <- out |> dplyr::select(-"title_id")
@@ -925,28 +1261,51 @@ get_official_ranking <- function(
 #' Franchise IDs are automatically resolved to names via batch API lookup.
 #' Title types (movie/tv_show) are resolved via batch API lookup.
 #'
-#' @param social_platform Character. Social media platform: "instagram", "twitter", or "facebook".
-#' @param start_date Character. Start date in yyyy-mm-dd format.
-#' @param end_date Character. End date in yyyy-mm-dd format.
-#' @param return_ids Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.
+#' ## Global Options
 #'
-#' @return A tibble with columns: rank, name, type (movie/tv_show/franchise), value, value_total, source, date.
+#' Parameters can be set globally using options:
+#' - `options(flixpatrol.social_platform = "instagram")`
+#' - `options(flixpatrol.start_date = "2024-01-01")`
+#' - `options(flixpatrol.end_date = "2026-12-31")`
+#' - `options(flixpatrol.return_ids = TRUE)`
+#'
+#' @param social_platform Character. Social media platform: "instagram", "twitter", or "facebook".
+#'   Default from `getOption("flixpatrol.social_platform", "instagram")`.
+#' @param start_date Character. Start date in yyyy-mm-dd format.
+#'   Default from `getOption("flixpatrol.start_date")`.
+#' @param end_date Character. End date in yyyy-mm-dd format.
+#'   Default from `getOption("flixpatrol.end_date")`.
+#' @param return_ids Logical. Include ID columns in output.
+#'   Default from `getOption("flixpatrol.return_ids", FALSE)`.
+#'
+#' @return A tibble with columns: rank, title, type (movie/tv_show/franchise), value, value_total, source, date.
 #'   If `return_ids = TRUE`, also includes title_id and franchise_id.
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' get_fans_ranking(
-#'   social_platform = "instagram",
-#'   start_date      = "2026-02-14",
-#'   end_date        = "2026-02-14"
+#' # Set global options
+#' options(
+#'   flixpatrol.start_date = "2024-01-01",
+#'   flixpatrol.end_date   = "2026-02-14"
 #' )
+#'
+#' # Call without date arguments
+#' get_fans_ranking()
 #' }
 get_fans_ranking <- function(
-                             social_platform = "instagram",
-                             start_date,
-                             end_date,
+                             social_platform = getOption("flixpatrol.social_platform", "instagram"),
+                             start_date = getOption("flixpatrol.start_date"),
+                             end_date = getOption("flixpatrol.end_date"),
                              return_ids = getOption("flixpatrol.return_ids", FALSE)) {
+
+    # Validate required parameters
+    if (is.null(start_date)) {
+        cli::cli_abort("start_date is required. Set it via argument or {.code options(flixpatrol.start_date = \"...\")}.")
+    }
+    if (is.null(end_date)) {
+        cli::cli_abort("end_date is required. Set it via argument or {.code options(flixpatrol.end_date = \"...\")}.")
+    }
 
     validate_date_format(start_date)
     validate_date_format(end_date)
@@ -965,15 +1324,24 @@ get_fans_ranking <- function(
 
     platform_id <- social_ids[[platform_lower]]
 
-    date_vec <- seq.Date(from = as.Date(start_date), to = as.Date(end_date), by = "day")
+    # API limits to 300 records, so chunk into 5-day periods (60 records/day typical)
+    start_dt <- as.Date(start_date)
+    end_dt   <- as.Date(end_date)
+    chunk_size <- 5
 
-    fetch_single_day <- function(date) {
+    chunk_starts <- seq.Date(from = start_dt, to = end_dt, by = paste(chunk_size, "days"))
+
+    cli::cli_alert_info("Fetching {length(chunk_starts)} chunk{?s} ({length(chunk_starts)} API call{?s})")
+
+    fetch_chunk <- function(chunk_start) {
+        chunk_end <- min(chunk_start + chunk_size - 1, end_dt)
+
         resp <- authenticate(site = "https://api.flixpatrol.com/v2/fans") |>
             httr2::req_url_query(
-                `company[eq]`    = platform_id,
-                `date[type][eq]` = 1,
-                `date[from][eq]` = as.character(date),
-                `date[to][eq]`   = as.character(date)
+                `company[eq]`     = platform_id,
+                `date[type][eq]`  = 1,
+                `date[from][gte]` = as.character(chunk_start),
+                `date[to][lte]`   = as.character(chunk_end)
             ) |>
             httr2::req_perform() |>
             httr2::resp_body_json()
@@ -1004,12 +1372,15 @@ get_fans_ranking <- function(
             })
     }
 
-    out <- purrr::map(date_vec, fetch_single_day) |>
-        purrr::list_rbind()
+    results <- vector("list", length(chunk_starts))
+    for (i in cli::cli_progress_along(chunk_starts, "Fetching fans ranking")) {
+        results[[i]] <- fetch_chunk(chunk_starts[[i]])
+    }
+    out <- purrr::list_rbind(results)
 
     if (nrow(out) == 0) {
         cli::cli_alert_warning("No fan data returned for these parameters.")
-        return(out)
+        return(tibble::tibble())
     }
 
     # Resolve franchise names (batch lookup)
@@ -1026,35 +1397,43 @@ get_fans_ranking <- function(
         out <- out |>
             dplyr::left_join(franchise_lookup, by = "franchise_id") |>
             dplyr::mutate(
-                name = dplyr::coalesce(.data$title, .data$franchise_name)
-            )
-    } else {
-        out <- out |>
-            dplyr::mutate(name = .data$title)
+                title = dplyr::coalesce(.data$title, .data$franchise_name)
+            ) |>
+            dplyr::select(-"franchise_name")
     }
 
     # Resolve title types (movie/tv_show) via batch lookup
+    # Chunk IDs to avoid HTTP 414 URI Too Long errors
     unique_title_ids <- unique(out$title_id[!is.na(out$title_id)])
 
     if (length(unique_title_ids) > 0) {
-        ids_string <- paste(unique_title_ids, collapse = ",")
+        # Split into chunks of 50 IDs
+        id_chunks <- split(unique_title_ids, ceiling(seq_along(unique_title_ids) / 50))
 
-        type_resp <- tryCatch(
-            authenticate(site = "https://api.flixpatrol.com/v2/titles") |>
-                httr2::req_url_query(`id[in]` = ids_string) |>
-                httr2::req_perform() |>
-                httr2::resp_body_json(),
-            error = function(e) NULL
-        )
+        type_lookup <- purrr::map_dfr(id_chunks, function(ids_chunk) {
+            ids_string <- paste(ids_chunk, collapse = ",")
 
-        if (!is.null(type_resp) && length(type_resp$data) > 0) {
-            type_lookup <- purrr::map_dfr(type_resp$data, function(item) {
-                tibble::tibble(
-                    title_id = purrr::pluck(item, "data", "id", .default = NA_character_),
-                    type_int = purrr::pluck(item, "data", "type", .default = NA_integer_)
-                )
-            })
+            type_resp <- tryCatch(
+                authenticate(site = "https://api.flixpatrol.com/v2/titles") |>
+                    httr2::req_url_query(`id[in]` = ids_string) |>
+                    httr2::req_perform() |>
+                    httr2::resp_body_json(),
+                error = function(e) NULL
+            )
 
+            if (!is.null(type_resp) && length(type_resp$data) > 0) {
+                purrr::map_dfr(type_resp$data, function(item) {
+                    tibble::tibble(
+                        title_id = purrr::pluck(item, "data", "id", .default = NA_character_),
+                        type_int = purrr::pluck(item, "data", "type", .default = NA_integer_)
+                    )
+                })
+            } else {
+                tibble::tibble(title_id = character(), type_int = integer())
+            }
+        })
+
+        if (nrow(type_lookup) > 0) {
             out <- out |>
                 dplyr::left_join(type_lookup, by = "title_id") |>
                 dplyr::mutate(
@@ -1072,10 +1451,10 @@ get_fans_ranking <- function(
     # Select final columns
     if (return_ids) {
         out <- out |>
-            dplyr::select("rank", "name", "title_id", "franchise_id", "type", "value", "value_total", "source", "date")
+            dplyr::select("rank", "title", "title_id", "franchise_id", "type", "value", "value_total", "source", "date")
     } else {
         out <- out |>
-            dplyr::select("rank", "name", "type", "value", "value_total", "source", "date")
+            dplyr::select("rank", "title", "type", "value", "value_total", "source", "date")
     }
 
     return(out)

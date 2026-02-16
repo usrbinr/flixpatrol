@@ -23,5 +23,7 @@ A vector of IDs matching the input.
 \description{
 Generic helper that resolves human-readable names to internal FlixPatrol IDs
 using a pre-built lookup table. Supports `"*"` wildcard to return all IDs.
+Input is normalized to handle plural/singular variations (e.g., "movie" or
+"movies" both work).
 }
 \keyword{internal}
