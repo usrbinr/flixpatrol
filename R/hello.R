@@ -1323,6 +1323,51 @@ get_official_ranking <- function(
 
   if (nrow(out) == 0) {
     cli::cli_alert_warning("No official ranking data returned for these parameters.")
+    return(out)
+  }
+
+
+  # Fix incorrect title_ids by looking up correct IDs from title names
+  # The rankingsofficial endpoint returns wrong movie.data.id values,
+
+  # so we need to resolve correct IDs by querying /titles with title names
+  unique_titles <- unique(out$title[!is.na(out$title)])
+
+  if (length(unique_titles) > 0) {
+    # Split into chunks to avoid HTTP 414 URI Too Long errors
+    title_chunks <- split(unique_titles, ceiling(seq_along(unique_titles) / 20))
+
+    id_lookup <- purrr::map_dfr(title_chunks, function(titles_chunk) {
+      titles_string <- paste(titles_chunk, collapse = ",")
+
+      title_resp <- tryCatch(
+        authenticate(site = "https://api.flixpatrol.com/v2/titles") |>
+          httr2::req_url_query(`title[in]` = titles_string) |>
+          httr2::req_perform() |>
+          httr2::resp_body_json(),
+        error = function(e) NULL
+      )
+
+      if (!is.null(title_resp) && length(title_resp$data) > 0) {
+        purrr::map_dfr(title_resp$data, function(item) {
+          tibble::tibble(
+            title = purrr::pluck(item, "data", "title", .default = NA_character_),
+            correct_id = purrr::pluck(item, "data", "id", .default = NA_character_)
+          )
+        })
+      } else {
+        tibble::tibble(title = character(), correct_id = character())
+      }
+    })
+
+    if (nrow(id_lookup) > 0) {
+      out <- out |>
+        dplyr::left_join(id_lookup, by = "title") |>
+        dplyr::mutate(
+          title_id = dplyr::coalesce(.data$correct_id, .data$title_id)
+        ) |>
+        dplyr::select(-"correct_id")
+    }
   }
 
   if (!return_ids && "title_id" %in% names(out)) {
