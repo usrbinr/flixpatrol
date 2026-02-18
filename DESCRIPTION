@@ -1,6 +1,6 @@
 Package: flixpatrol
 Type: Package
-Title: R Client for the FlixPatrol Streaming Rankings API
+Title: R Client for the 'FlixPatrol' Streaming Rankings API
 Version: 0.2.0
 Authors@R: c(
     person(
@@ -9,7 +9,7 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: Provides a programmatic interface to the FlixPatrol API (V2) for
+Description: Provides a programmatic interface to the 'FlixPatrol' API (V2) for
     accessing streaming platform rankings, viewing hours, official charts,
     torrent data, and social media fan metrics. Includes lookup helpers for
     countries, platforms, franchises, and titles.
