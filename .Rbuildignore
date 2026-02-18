@@ -29,3 +29,4 @@
 # qrtdown
 ^_qrtdown-styles\.css$
 ^_qrtdown$
+^README\.qmd$
