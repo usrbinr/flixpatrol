@@ -9,7 +9,7 @@ describe("get_top_ten()", {
         country_name  = "United States",
         start_date    = "2025-12-01",
         end_date      = "2025-12-01",
-        flix_type     = "movies"
+        media_type    = "movie"
       ),
       class = "httr2_http"
     )
