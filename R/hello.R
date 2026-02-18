@@ -801,6 +801,27 @@ lookup_date_type <- function(x) {
 }
 
 
+#' Lookup Social Platform IDs
+#'
+#' @description
+#' Resolves social platform names to internal FlixPatrol company IDs.
+#'
+#' @param social_platform_name Character vector. Social platform names
+#'   (e.g., "instagram", "twitter", "facebook") or `"*"` for all.
+#'
+#' @return A character vector of company IDs.
+#' @export
+lookup_social_platform <- function(social_platform_name) {
+  lookup_from_table(
+    input    = social_platform_name,
+    tbl      = flixpatrol::social_media_name,
+    name_col = "social_media_name",
+    id_col   = "social_media_id",
+    label    = "social_platform_name"
+  )
+}
+
+
 #' Validate Date Ranges for API Compatibility
 #'
 #' @description
@@ -1310,19 +1331,7 @@ get_fans_ranking <- function(
     validate_date_format(start_date)
     validate_date_format(end_date)
 
-    # Social platform IDs (these are in the companies endpoint)
-    social_ids <- c(
-        instagram = "cmp_Di2u9cvFOpmwE3Zhn1SozXJN",
-        twitter   = "cmp_bBrpGTvopBHPVtIKhR2CF68W",
-        facebook  = "cmp_JeAe7ZCyHJKz3fYOrtq6En4s"
-    )
-
-    platform_lower <- tolower(social_platform)
-    if (!platform_lower %in% names(social_ids)) {
-        cli::cli_abort("{.arg social_platform} must be one of {.val {names(social_ids)}}, not {.val {social_platform}}.")
-    }
-
-    platform_id <- social_ids[[platform_lower]]
+    platform_id <- lookup_social_platform(social_platform)
 
     # API limits to 300 records, so chunk into 5-day periods (60 records/day typical)
     start_dt <- as.Date(start_date)
