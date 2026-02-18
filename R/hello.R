@@ -101,7 +101,6 @@ flixpatrol_options <- function() {
             "flixpatrol.start_date",
             "flixpatrol.end_date",
             "flixpatrol.media_type",
-            "flixpatrol.flix_type",
             "flixpatrol.language",
             "flixpatrol.social_platform",
             "flixpatrol.torrent_site"
@@ -111,20 +110,18 @@ flixpatrol_options <- function() {
             "Default country (e.g., 'United States')",
             "Default start date (yyyy-mm-dd format)",
             "Default end date (yyyy-mm-dd format)",
-            "Default media type ('movie' or 'tv_show')",
-            "Default flix type for get_top_ten() ('movies' or 'tv')",
+            "Default content type ('movie', 'movies', 'tv', 'tv_show', etc.)",
             "Default language (e.g., 'english')",
             "Default social platform ('instagram', 'twitter', 'facebook')",
             "Default torrent site (e.g., 'PirateBay', '1337x')"
         ),
-        default = c("NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "english", "instagram", "NULL"),
+        default = c("NULL", "NULL", "NULL", "NULL", "NULL", "english", "instagram", "NULL"),
         current = c(
             as.character(getOption("flixpatrol.platform_name", "NULL")),
             as.character(getOption("flixpatrol.country_name", "NULL")),
             as.character(getOption("flixpatrol.start_date", "NULL")),
             as.character(getOption("flixpatrol.end_date", "NULL")),
             as.character(getOption("flixpatrol.media_type", "NULL")),
-            as.character(getOption("flixpatrol.flix_type", "NULL")),
             as.character(getOption("flixpatrol.language", "english")),
             as.character(getOption("flixpatrol.social_platform", "instagram")),
             as.character(getOption("flixpatrol.torrent_site", "NULL"))
@@ -457,11 +454,11 @@ lookup_flix_type <- function(flix_type){
 #' Internal helper: fetches Top 10 for a single date
 #' Used by compare_platforms, get_global_ranking, get_weekly_movers
 #' @noRd
-get_single_top_ten <- function(platform_name, country_name, date, flix_type) {
+get_single_top_ten <- function(platform_name, country_name, date, media_type) {
 
     company_string   <- lookup_platform(platform_name = platform_name, silent = TRUE)
     country_string   <- lookup_country(country_name = country_name, silent = TRUE)
-    flix_type_string <- lookup_flix_type(flix_type = flix_type)
+    flix_type_string <- resolve_content_type(media_type, "flix")
 
     resp <- authenticate() |>
         httr2::req_url_query(
@@ -520,7 +517,7 @@ get_single_top_ten <- function(platform_name, country_name, date, flix_type) {
 #' - `options(flixpatrol.country_name = "United States")`
 #' - `options(flixpatrol.start_date = "2024-01-01")`
 #' - `options(flixpatrol.end_date = "2026-12-31")`
-#' - `options(flixpatrol.flix_type = "movies")`
+#' - `options(flixpatrol.media_type = "movie")`
 #' - `options(flixpatrol.return_ids = TRUE)`
 #'
 #' @param platform_name Character. Name of the platform (e.g., "netflix", "disney+").
@@ -531,8 +528,8 @@ get_single_top_ten <- function(platform_name, country_name, date, flix_type) {
 #'   Default from `getOption("flixpatrol.start_date")`.
 #' @param end_date Character. End of the range in yyyy-mm-dd format.
 #'   Default from `getOption("flixpatrol.end_date")`.
-#' @param flix_type Character. Content type ("movies" or "tv").
-#'   Default from `getOption("flixpatrol.flix_type")`.
+#' @param media_type Character. Content type (e.g., "movie", "movies", "tv", "tv_show").
+#'   Default from `getOption("flixpatrol.media_type")`.
 #' @param return_ids Logical. Include ID columns in output.
 #'   Default from `getOption("flixpatrol.return_ids", FALSE)`.
 #'
@@ -548,20 +545,20 @@ get_single_top_ten <- function(platform_name, country_name, date, flix_type) {
 #'   flixpatrol.country_name  = "United States",
 #'   flixpatrol.start_date    = "2024-01-01",
 #'   flixpatrol.end_date      = "2026-02-14",
-#'   flixpatrol.flix_type     = "movies"
+#'   flixpatrol.media_type    = "movie"
 #' )
 #'
 #' # Call without arguments
 #' get_top_ten()
 #'
 #' # Override specific options
-#' get_top_ten(flix_type = "tv")
+#' get_top_ten(media_type = "tv")
 #' }
 get_top_ten <- function(platform_name = getOption("flixpatrol.platform_name"),
                         country_name = getOption("flixpatrol.country_name"),
                         start_date = getOption("flixpatrol.start_date"),
                         end_date = getOption("flixpatrol.end_date"),
-                        flix_type = getOption("flixpatrol.flix_type"),
+                        media_type = getOption("flixpatrol.media_type"),
                         return_ids = getOption("flixpatrol.return_ids", FALSE)) {
 
     # Validate required parameters
@@ -577,8 +574,8 @@ get_top_ten <- function(platform_name = getOption("flixpatrol.platform_name"),
     if (is.null(end_date)) {
         cli::cli_abort("end_date is required. Set it via argument or {.code options(flixpatrol.end_date = \"...\")}.")
     }
-    if (is.null(flix_type)) {
-        cli::cli_abort("flix_type is required. Set it via argument or {.code options(flixpatrol.flix_type = \"...\")}.")
+    if (is.null(media_type)) {
+        cli::cli_abort("media_type is required. Set it via argument or {.code options(flixpatrol.media_type = \"...\")}.")
     }
 
     validate_date_format(start_date)
@@ -586,7 +583,7 @@ get_top_ten <- function(platform_name = getOption("flixpatrol.platform_name"),
 
     company_string   <- lookup_platform(platform_name = platform_name, silent = TRUE)
     country_string   <- lookup_country(country_name = country_name, silent = TRUE)
-    flix_type_string <- lookup_flix_type(flix_type = flix_type)
+    flix_type_string <- resolve_content_type(media_type, "flix")
 
     # API limits to 300 records (30 days), so chunk into 30-day periods
     start_dt <- as.Date(start_date)
@@ -684,6 +681,75 @@ normalize_plural <- function(x) {
   # Handle simple plurals (but not 'ss' endings like 'business')
   x <- gsub("([^s])s$", "\\1", x)
   x
+}
+
+
+#' Normalize Content Type Input
+#'
+#' @description
+#' Normalizes various content type inputs to canonical forms.
+#' Handles: "tv", "tvshow", "tv_show", "tv_shows", "movie", "movies", etc.
+#'
+#' @param x Character. Content type input.
+#'
+#' @return Character. Normalized content type ("movie" or "tv_show").
+#' @keywords internal
+normalize_content_type <- function(x) {
+  x <- tolower(trimws(x))
+  # Handle TV variations: tv, tvshow, tvshows, tv show, tv shows, tv_show, tv_shows
+  x <- gsub("^tv[_\\s]?shows?$", "tv_show", x)
+  x <- gsub("^tvshows?$", "tv_show", x)
+  x <- gsub("^tv$", "tv_show", x)
+  # Handle movie variations
+  x <- gsub("^movies?$", "movie", x)
+  x
+}
+
+
+#' Resolve Content Type to API ID
+#'
+#' @description
+#' Resolves a content type string to the appropriate API ID for either
+#' the flix_type (top10s) or media_type (rankingsofficial) endpoints.
+#'
+#' @param content_type Character. Content type (e.g., "movie", "tv_show", "anime").
+#' @param target Character. Either "flix" or "media" to determine which ID mapping to use.
+#'
+#' @return Integer. The API ID for the content type.
+#' @keywords internal
+resolve_content_type <- function(content_type, target = c("flix", "media")) {
+  target <- match.arg(target)
+
+  # First normalize common variations
+
+  normalized <- normalize_content_type(content_type)
+
+  if (target == "media") {
+    # media_type only supports movie (1) and tv_show (2)
+    id <- dplyr::case_when(
+      normalized == "movie" ~ 1L,
+      normalized == "tv_show" ~ 2L,
+      TRUE ~ NA_integer_
+    )
+    if (is.na(id)) {
+      valid_types <- c("movie", "tv_show")
+      cli::cli_abort(
+        "For this endpoint, {.arg content_type} must be one of {.val {valid_types}}, not {.val {content_type}}."
+      )
+    }
+    return(id)
+  }
+
+  if (target == "flix") {
+    # flix_type supports many options - use lookup_flix_type
+    # But first map normalized forms to flix_type_tbl labels
+    flix_input <- dplyr::case_when(
+      normalized == "movie" ~ "movies",
+      normalized == "tv_show" ~ "tv_shows",
+      TRUE ~ normalize_plural(content_type)
+    )
+    return(lookup_flix_type(flix_input))
+  }
 }
 
 #' Lookup Values from a Reference Table
@@ -927,7 +993,7 @@ unnest_flixpatrol_response <- function(data_lst) {
 #'
 #' @param platform_name Character. Platform name.
 #'   Default from `getOption("flixpatrol.platform_name", "netflix")`.
-#' @param media_type_name Character. Media type ("movie" or "tv_show").
+#' @param media_type Character. Media type (e.g., "movie", "movies", "tv", "tv_show").
 #'   Default from `getOption("flixpatrol.media_type", "movie")`.
 #' @param language_name Character. Language (e.g., "english").
 #'   Default from `getOption("flixpatrol.language", "english")`.
@@ -956,7 +1022,7 @@ unnest_flixpatrol_response <- function(data_lst) {
 #' }
 get_hours_viewed <- function(
                              platform_name = getOption("flixpatrol.platform_name", "netflix"),
-                             media_type_name = getOption("flixpatrol.media_type", "movie"),
+                             media_type = getOption("flixpatrol.media_type", "movie"),
                              language_name = getOption("flixpatrol.language", "english"),
                              start_date = getOption("flixpatrol.start_date"),
                              end_date = getOption("flixpatrol.end_date"),
@@ -975,7 +1041,7 @@ get_hours_viewed <- function(
 
   platform_name_vec <- lookup_platform(platform_name = platform_name, silent = TRUE)
   language_name_vec <- lookup_language(language_name = language_name)
-  media_type_vec    <- lookup_media_type(media_type_name = media_type_name)
+  media_type_vec    <- resolve_content_type(media_type, "media")
 
   # Convert to Date objects
   start_dt <- as.Date(start_date)
@@ -1186,7 +1252,7 @@ get_official_ranking <- function(
   validate_date_format(end_date)
 
   platform_id   <- lookup_platform(platform_name = platform_name, silent = TRUE)
-  media_type_id <- lookup_media_type(media_type_name = media_type)
+  media_type_id <- resolve_content_type(media_type, "media")
   country_id    <- lookup_country(country_name = country_name, silent = TRUE)
   date_type_id  <- lookup_date_type(date_type)
   language_id   <- lookup_language(language)
