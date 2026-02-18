@@ -1219,7 +1219,7 @@ get_official_ranking <- function(
         tibble::tibble(
           rank      = purrr::pluck(d, "ranking", .default = NA_integer_),
           title_id  = purrr::pluck(d, "movie", "data", "id", .default = NA_character_),
-          title     = purrr::pluck(d, "movie", "data", "title", .default = NA_character_),
+          title     = purrr::pluck(d, "note", .default = NA_character_),
           hours     = purrr::pluck(d, "value", .default = NA_integer_),
           streak    = purrr::pluck(d, "streak", .default = NA_integer_),
           date_from = purrr::pluck(d, "date", "from", .default = NA_character_),
