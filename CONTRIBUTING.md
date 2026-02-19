@@ -11,9 +11,14 @@ flixpatrol is an R interface for the [FlixPatrol API V2](https://flixpatrol.com/
 ```
 flixpatrol/
 ├── R/                      # Source code
-│   ├── hello.R             # Core functions (auth, lookups, data retrieval)
-│   ├── utils-api.R         # API utility functions
-│   └── utils-new.R         # Analytics and helper functions
+│   ├── hello.R             # Core API functions: authenticate(), lookup_*(),
+│   │                       #   get_top_ten(), get_hours_viewed(), get_official_ranking(),
+│   │                       #   get_fans_ranking(), validation helpers
+│   ├── utils-api.R         # ID-to-name resolution: get_company_name(), get_franchise_name(),
+│   │                       #   get_title_name(), lookup_franchise(), lookup_title()
+│   └── utils-new.R         # Analytics functions: compare_platforms(), get_title_history(),
+│                           #   get_weekly_movers(), get_global_ranking(), get_premieres(),
+│                           #   get_torrent_ranking(), get_top_titles_summary()
 ├── data/                   # Pre-built lookup tables (.rda)
 ├── data-raw/               # Scripts to regenerate lookup tables
 ├── man/                    # Roxygen2-generated documentation

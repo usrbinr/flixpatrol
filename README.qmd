@@ -72,6 +72,21 @@ Restart R after saving. All functions default to reading the `FLIX_PATROL` envir
 | `flixpatrol.throttle_rate` | `10` | API requests per minute (rate limiting) |
 | `flixpatrol.show_quota` | `TRUE` | Show API quota in `flixpatrol_sitrep()` |
 
+### Query Default Options
+
+Set these to avoid passing arguments on every call:
+
+| Option | Default | Description |
+|---|---|---|
+| `flixpatrol.platform_name` | `NULL` | Default platform (e.g., "netflix", "disney+") |
+| `flixpatrol.country_name` | `NULL` | Default country (e.g., "United States") |
+| `flixpatrol.start_date` | `NULL` | Default start date (yyyy-mm-dd) |
+| `flixpatrol.end_date` | `NULL` | Default end date (yyyy-mm-dd) |
+| `flixpatrol.media_type` | `NULL` | Default content type ("movie" or "tv_show") |
+| `flixpatrol.language` | `"english"` | Default language |
+| `flixpatrol.social_platform` | `"instagram"` | Default social platform |
+| `flixpatrol.torrent_site` | `NULL` | Default torrent site |
+
 Set options globally:
 
 ```r
@@ -133,7 +148,7 @@ get_top_ten(
   country_name  = "United States",
   start_date    = "2025-12-01",
   end_date      = "2025-12-07",
-  flix_type     = "movies"
+  media_type    = "movie"
 )
 ```
 
@@ -143,10 +158,11 @@ Requires a 7-day range starting on a Monday:
 
 ```r
 get_hours_viewed(
-  language_name   = "english",
-  media_type_name = "movie",
-  start_date      = "2025-12-15",
-  end_date        = "2025-12-21"
+  platform_name = "netflix",
+  media_type    = "movie",
+  language_name = "english",
+  start_date    = "2025-12-15",
+  end_date      = "2025-12-21"
 )
 ```
 

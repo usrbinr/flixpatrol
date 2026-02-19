@@ -10,7 +10,7 @@ get_franchise_performance(
   country_name = "United States",
   start_date,
   end_date,
-  flix_type = "movies"
+  media_type = "movie"
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ get_franchise_performance(
 
 \item{end_date}{Date/Character. End of the range.}
 
-\item{flix_type}{Character. Content type (default `"movies"`).}
+\item{media_type}{Character. Content type (default `"movies"`).}
 }
 \value{
 A tibble with columns `title`, `days_on_chart`, `best_rank`, `avg_rank`,

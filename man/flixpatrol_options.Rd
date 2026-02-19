@@ -19,6 +19,11 @@ Add to your `~/.Rprofile` to make permanent.
 \examples{
 flixpatrol_options()
 
-# Set an option
-options(flixpatrol.silent = TRUE)
+# Set options for repeated use
+options(
+  flixpatrol.country_name = "United States",
+  flixpatrol.start_date   = "2024-01-01",
+  flixpatrol.end_date     = "2026-12-31",
+  flixpatrol.media_type   = "movie"
+)
 }

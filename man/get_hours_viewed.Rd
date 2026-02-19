@@ -5,26 +5,33 @@
 \title{Create Hours Viewed Table}
 \usage{
 get_hours_viewed(
-  platform_name = "netflix",
-  media_type_name = "movie",
-  language_name = "english",
-  start_date,
-  end_date,
+  platform_name = getOption("flixpatrol.platform_name", "netflix"),
+  media_type = getOption("flixpatrol.media_type", "movie"),
+  language_name = getOption("flixpatrol.language", "english"),
+  start_date = getOption("flixpatrol.start_date"),
+  end_date = getOption("flixpatrol.end_date"),
   return_ids = getOption("flixpatrol.return_ids", FALSE)
 )
 }
 \arguments{
-\item{platform_name}{Character. Platform name (defaults to "netflix").}
+\item{platform_name}{Character. Platform name.
+Default from `getOption("flixpatrol.platform_name", "netflix")`.}
 
-\item{media_type_name}{Character. Media type ("movie" or "tv_show").}
+\item{media_type}{Character. Media type (e.g., "movie", "movies", "tv", "tv_show").
+Default from `getOption("flixpatrol.media_type", "movie")`.}
 
-\item{language_name}{Character. Language (e.g., "english").}
+\item{language_name}{Character. Language (e.g., "english").
+Default from `getOption("flixpatrol.language", "english")`.}
 
-\item{start_date}{Character. Must be a Monday (yyyy-mm-dd format).}
+\item{start_date}{Character. Range start in yyyy-mm-dd format. Will be adjusted
+to next Monday if not already a Monday.
+Default from `getOption("flixpatrol.start_date")`.}
 
-\item{end_date}{Character. Must be 7 days from start (yyyy-mm-dd format).}
+\item{end_date}{Character. Range end in yyyy-mm-dd format.
+Default from `getOption("flixpatrol.end_date")`.}
 
-\item{return_ids}{Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.}
+\item{return_ids}{Logical. Include ID columns in output.
+Default from `getOption("flixpatrol.return_ids", FALSE)`.}
 }
 \value{
 A tibble with columns: rank, title, hours, views, runtime, streak, date_from, date_to.
@@ -35,15 +42,28 @@ Retrieves the "Hours Viewed" metric for a platform, language, and content type.
 }
 \details{
 This function specifically handles the `/hoursviewed` endpoint. It defaults
-to "week" views (API type 3) and requires a 7-day range starting on a Monday.
+to "week" views (API type 3). The function accepts any date range and will
+fetch all weekly data within that period, iterating through Monday-Sunday weeks.
+
+## Global Options
+
+Parameters can be set globally using options:
+- `options(flixpatrol.platform_name = "netflix")`
+- `options(flixpatrol.media_type = "movie")`
+- `options(flixpatrol.language = "english")`
+- `options(flixpatrol.start_date = "2024-01-01")`
+- `options(flixpatrol.end_date = "2026-12-31")`
+- `options(flixpatrol.return_ids = TRUE)`
 }
 \examples{
 \dontrun{
-get_hours_viewed(
-  language_name   = "english",
-  media_type_name = "movie",
-  start_date      = "2026-02-10",
-  end_date        = "2026-02-16"
+# Set global options
+options(
+  flixpatrol.start_date = "2024-01-01",
+  flixpatrol.end_date   = "2026-02-14"
 )
+
+# Call without date arguments
+get_hours_viewed()
 }
 }

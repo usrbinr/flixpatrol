@@ -5,26 +5,30 @@
 \title{Create Torrent Ranking Table}
 \usage{
 get_torrent_ranking(
-  torrent_site,
-  start_date,
-  end_date,
+  torrent_site = getOption("flixpatrol.torrent_site"),
+  start_date = getOption("flixpatrol.start_date"),
+  end_date = getOption("flixpatrol.end_date"),
   date_type = "day",
   media_type = NULL,
   return_ids = getOption("flixpatrol.return_ids", FALSE)
 )
 }
 \arguments{
-\item{torrent_site}{Character. Torrent site name (e.g., "PirateBay", "1337x") or `"*"` for all.}
+\item{torrent_site}{Character. Torrent site name (e.g., "PirateBay", "1337x") or `"*"` for all.
+Default from `getOption("flixpatrol.torrent_site")`.}
 
-\item{start_date}{Character. Start of the date range (yyyy-mm-dd format).}
+\item{start_date}{Character. Start of the date range (yyyy-mm-dd format).
+Default from `getOption("flixpatrol.start_date")`.}
 
-\item{end_date}{Character. End of the date range (yyyy-mm-dd format).}
+\item{end_date}{Character. End of the date range (yyyy-mm-dd format).
+Default from `getOption("flixpatrol.end_date")`.}
 
 \item{date_type}{Character. Date granularity (default `"day"`).}
 
-\item{media_type}{Character. Optional filter: "movie" or "tv_show".}
+\item{media_type}{Character. Optional filter: "movie" or "tv_show". Default NULL (no filter).}
 
-\item{return_ids}{Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.}
+\item{return_ids}{Logical. Include ID columns in output.
+Default from `getOption("flixpatrol.return_ids", FALSE)`.}
 }
 \value{
 A tibble with columns: rank, title, type (movie/tv_show), seeders, leechers, source, date.
@@ -36,13 +40,25 @@ Fetches torrent chart rankings for a given site and date range.
 \details{
 Title types (movie/tv_show) are resolved via batch API lookup from the
 `/titles` endpoint. Available torrent sites include: PirateBay, 1337x, eztv, etc.
+
+## Global Options
+
+Parameters can be set globally using options:
+- `options(flixpatrol.torrent_site = "PirateBay")`
+- `options(flixpatrol.start_date = "2024-01-01")`
+- `options(flixpatrol.end_date = "2026-12-31")`
+- `options(flixpatrol.return_ids = TRUE)`
 }
 \examples{
 \dontrun{
-get_torrent_ranking(
-  torrent_site = "PirateBay",
-  start_date   = "2026-02-14",
-  end_date     = "2026-02-14"
+# Set global options
+options(
+  flixpatrol.torrent_site = "PirateBay",
+  flixpatrol.start_date   = "2024-01-01",
+  flixpatrol.end_date     = "2026-02-14"
 )
+
+# Call without arguments
+get_torrent_ranking()
 }
 }

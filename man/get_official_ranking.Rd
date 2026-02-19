@@ -6,35 +6,44 @@
 \usage{
 get_official_ranking(
   platform_name = "netflix",
-  country_name,
-  start_date,
-  end_date,
-  media_type,
+  country_name = getOption("flixpatrol.country_name"),
+  start_date = getOption("flixpatrol.start_date"),
+  end_date = getOption("flixpatrol.end_date"),
+  media_type = getOption("flixpatrol.media_type"),
   date_type = "week",
-  language = "english",
+  language = getOption("flixpatrol.language", "english"),
   return_ids = getOption("flixpatrol.return_ids", FALSE)
 )
 }
 \arguments{
 \item{platform_name}{Character. Must be "netflix".}
 
-\item{country_name}{Character. Name of the country (e.g., "United States").}
+\item{country_name}{Character. Name of the country (e.g., "United States").
+Default from `getOption("flixpatrol.country_name")`.}
 
-\item{start_date}{Character. Range start, must be a Monday (yyyy-mm-dd format).}
+\item{start_date}{Character. Range start in yyyy-mm-dd format. Does not need
+to be a Monday; if not, it will be adjusted to the next Monday automatically.
+Default from `getOption("flixpatrol.start_date")`.}
 
-\item{end_date}{Character. Range end, must be Sunday (yyyy-mm-dd format).}
+\item{end_date}{Character. Range end in yyyy-mm-dd format. The function will
+include any week where the Monday falls on or before this date.
+Default from `getOption("flixpatrol.end_date")`.}
 
-\item{media_type}{Character. Content type ("movie" or "tv_show").}
+\item{media_type}{Character. Content type ("movie" or "tv_show").
+Default from `getOption("flixpatrol.media_type")`.}
 
 \item{date_type}{Character. Defaults to "week".}
 
-\item{language}{Character. Language for lookup (e.g., "english").}
+\item{language}{Character. Language for lookup (e.g., "english").
+Default from `getOption("flixpatrol.language", "english")`.}
 
-\item{return_ids}{Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.}
+\item{return_ids}{Logical. Include ID columns in output.
+Default from `getOption("flixpatrol.return_ids", FALSE)`.}
 }
 \value{
 A tibble with columns: rank, title, hours, streak, date_from, date_to.
-  If `return_ids = TRUE`, also includes title_id.
+  If `return_ids = TRUE`, also includes title_id. Each row represents a title's
+  ranking for a specific week. Multiple weeks will have multiple rows per title.
 }
 \description{
 Fetches the official weekly rankings (currently Netflix exclusive).
@@ -42,15 +51,70 @@ Fetches the official weekly rankings (currently Netflix exclusive).
 \details{
 Queries the `/rankingsofficial` endpoint. Note that as of the current
 package version, FlixPatrol only provides official lists for Netflix.
-Requires a 7-day range starting on a Monday.
+
+## Date Range Handling
+
+The function accepts any date range spanning days, months, or years and
+automatically fetches all weekly rankings within that period. The API
+requires 7-day Monday-to-Sunday periods, so the function handles this
+internally:
+
+1. If `start_date` is not a Monday, it is adjusted forward to the next Monday
+2. A sequence of Mondays is generated from start to end date
+3. For each Monday, the corresponding Sunday is calculated (Monday + 6 days)
+4. Each Monday-Sunday pair is queried from the API
+5. All results are combined into a single tibble
+
+For example, if you provide `start_date = "2024-01-01"` and
+`end_date = "2024-01-31"`, the function will fetch rankings for:
+- 2024-01-01 to 2024-01-07
+- 2024-01-08 to 2024-01-14
+- 2024-01-15 to 2024-01-21
+- 2024-01-22 to 2024-01-28
+- 2024-01-29 to 2024-02-04
+
+## Global Options
+
+Parameters can be set globally using options so you don't have to specify
+them on every call:
+- `options(flixpatrol.country_name = "United States")`
+- `options(flixpatrol.start_date = "2024-01-01")`
+- `options(flixpatrol.end_date = "2026-12-31")`
+- `options(flixpatrol.media_type = "movie")`
+- `options(flixpatrol.language = "english")`
+- `options(flixpatrol.return_ids = TRUE)`
 }
 \examples{
 \dontrun{
+# Fetch a single week
 get_official_ranking(
   country_name = "United States",
-  start_date   = "2026-02-10",
-  end_date     = "2026-02-16",
+  start_date   = "2024-01-01",
+  end_date     = "2024-01-07",
   media_type   = "movie"
 )
+
+# Fetch multiple years of weekly rankings
+get_official_ranking(
+  country_name = "United States",
+  start_date   = "2022-01-01",
+  end_date     = "2024-12-31",
+  media_type   = "movie"
+)
+
+# Set global options for repeated use
+options(
+  flixpatrol.country_name = "United States",
+  flixpatrol.start_date   = "2024-01-01",
+  flixpatrol.end_date     = "2026-02-14",
+  flixpatrol.media_type   = "movie"
+)
+
+# Now call without arguments
+get_official_ranking()
+
+# Override specific options as needed
+get_official_ranking(media_type = "tv_show")
+get_official_ranking(country_name = "United Kingdom")
 }
 }

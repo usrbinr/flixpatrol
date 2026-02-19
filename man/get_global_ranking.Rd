@@ -11,7 +11,7 @@ get_global_ranking(
   countries = c("United States", "United Kingdom", "Canada", "Australia", "Germany",
     "France", "Brazil", "India", "Japan", "South Korea", "Mexico", "Spain", "Italy",
     "Netherlands", "Sweden"),
-  flix_type = "movies"
+  media_type = "movie"
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ get_global_ranking(
 \item{countries}{Character vector. Country names to check. Defaults to a broad
 set of 15 major markets.}
 
-\item{flix_type}{Character. Content type (default `"movies"`).}
+\item{media_type}{Character. Content type (default `"movies"`).}
 }
 \value{
 A tibble with columns `country`, `rank`, `title`, `date`.

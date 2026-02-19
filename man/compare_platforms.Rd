@@ -9,7 +9,7 @@ compare_platforms(
   platforms = c("netflix", "disney+", "hbo max", "amazon prime", "apple tv+"),
   country_name = "United States",
   date,
-  flix_type = "movies"
+  media_type = "movie"
 )
 }
 \arguments{
@@ -22,7 +22,7 @@ compare_platforms(
 
 \item{date}{Date/Character. The chart date.}
 
-\item{flix_type}{Character. Content type (default `"movies"`).}
+\item{media_type}{Character. Content type (default `"movie"`).}
 }
 \value{
 A tibble with columns `platform`, `rank`, `title`, `date`, and chart metadata.

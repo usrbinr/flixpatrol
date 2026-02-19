@@ -5,23 +5,27 @@
 \title{Get Fans Rankings}
 \usage{
 get_fans_ranking(
-  social_platform = "instagram",
-  start_date,
-  end_date,
+  social_platform = getOption("flixpatrol.social_platform", "instagram"),
+  start_date = getOption("flixpatrol.start_date"),
+  end_date = getOption("flixpatrol.end_date"),
   return_ids = getOption("flixpatrol.return_ids", FALSE)
 )
 }
 \arguments{
-\item{social_platform}{Character. Social media platform: "instagram", "twitter", or "facebook".}
+\item{social_platform}{Character. Social media platform: "instagram", "twitter", or "facebook".
+Default from `getOption("flixpatrol.social_platform", "instagram")`.}
 
-\item{start_date}{Character. Start date in yyyy-mm-dd format.}
+\item{start_date}{Character. Start date in yyyy-mm-dd format.
+Default from `getOption("flixpatrol.start_date")`.}
 
-\item{end_date}{Character. End date in yyyy-mm-dd format.}
+\item{end_date}{Character. End date in yyyy-mm-dd format.
+Default from `getOption("flixpatrol.end_date")`.}
 
-\item{return_ids}{Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.}
+\item{return_ids}{Logical. Include ID columns in output.
+Default from `getOption("flixpatrol.return_ids", FALSE)`.}
 }
 \value{
-A tibble with columns: rank, name, type (movie/tv_show/franchise), value, value_total, source, date.
+A tibble with columns: rank, title, type (movie/tv_show/franchise), value, value_total, source, date.
   If `return_ids = TRUE`, also includes title_id and franchise_id.
 }
 \description{
@@ -34,13 +38,24 @@ The `social_platform` parameter filters by social media site
 (Instagram, Twitter, Facebook), not streaming platforms.
 Franchise IDs are automatically resolved to names via batch API lookup.
 Title types (movie/tv_show) are resolved via batch API lookup.
+
+## Global Options
+
+Parameters can be set globally using options:
+- `options(flixpatrol.social_platform = "instagram")`
+- `options(flixpatrol.start_date = "2024-01-01")`
+- `options(flixpatrol.end_date = "2026-12-31")`
+- `options(flixpatrol.return_ids = TRUE)`
 }
 \examples{
 \dontrun{
-get_fans_ranking(
-  social_platform = "instagram",
-  start_date      = "2026-02-14",
-  end_date        = "2026-02-14"
+# Set global options
+options(
+  flixpatrol.start_date = "2024-01-01",
+  flixpatrol.end_date   = "2026-02-14"
 )
+
+# Call without date arguments
+get_fans_ranking()
 }
 }

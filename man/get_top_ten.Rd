@@ -5,48 +5,71 @@
 \title{Create a Daily Top 10 Table for a Date Range}
 \usage{
 get_top_ten(
-  platform_name,
-  country_name,
-  start_date,
-  end_date,
-  flix_type,
+  platform_name = getOption("flixpatrol.platform_name"),
+  country_name = getOption("flixpatrol.country_name"),
+  start_date = getOption("flixpatrol.start_date"),
+  end_date = getOption("flixpatrol.end_date"),
+  media_type = getOption("flixpatrol.media_type"),
   return_ids = getOption("flixpatrol.return_ids", FALSE)
 )
 }
 \arguments{
-\item{platform_name}{Character. Name of the platform (e.g., "netflix", "disney+").}
+\item{platform_name}{Character. Name of the platform (e.g., "netflix", "disney+").
+Default from `getOption("flixpatrol.platform_name")`.}
 
-\item{country_name}{Character. Name of the country (e.g., "United States").}
+\item{country_name}{Character. Name of the country (e.g., "United States").
+Default from `getOption("flixpatrol.country_name")`.}
 
-\item{start_date}{Character. Start of the range in yyyy-mm-dd format.}
+\item{start_date}{Character. Start of the range in yyyy-mm-dd format.
+Default from `getOption("flixpatrol.start_date")`.}
 
-\item{end_date}{Character. End of the range in yyyy-mm-dd format.}
+\item{end_date}{Character. End of the range in yyyy-mm-dd format.
+Default from `getOption("flixpatrol.end_date")`.}
 
-\item{flix_type}{Character. Content type ("movies" or "tv").}
+\item{media_type}{Character. Content type (e.g., "movie", "movies", "tv", "tv_show").
+Default from `getOption("flixpatrol.media_type")`.}
 
-\item{return_ids}{Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.}
+\item{return_ids}{Logical. Include ID columns in output.
+Default from `getOption("flixpatrol.return_ids", FALSE)`.}
 }
 \value{
-A tibble with columns: rank, title, type_id, days_total, rank_last, date, imdb_id.
-  If `return_ids = TRUE`, also includes title_id.
+A tibble with columns: rank, title, type (movie/tv_show), days_total, rank_last, date, imdb_id.
+  If `return_ids = TRUE`, also includes title_id and type_id.
 }
 \description{
 Retrieves daily Top 10 rankings for a platform, country, and content type
 over a specified date range.
 }
 \details{
-The `/top10s` endpoint only returns data for a single day per request,
-so this function iterates over each date in the range. Lookups are
-performed once upfront to minimize API calls.
+The `/top10s` endpoint supports date range queries but limits results to
+300 records per call. This function automatically chunks large date ranges
+into 30-day periods and combines the results.
+
+## Global Options
+
+Parameters can be set globally using options:
+- `options(flixpatrol.platform_name = "netflix")`
+- `options(flixpatrol.country_name = "United States")`
+- `options(flixpatrol.start_date = "2024-01-01")`
+- `options(flixpatrol.end_date = "2026-12-31")`
+- `options(flixpatrol.media_type = "movie")`
+- `options(flixpatrol.return_ids = TRUE)`
 }
 \examples{
 \dontrun{
-get_top_ten(
-  platform_name = "netflix",
-  country_name  = "United States",
-  start_date    = "2026-02-01",
-  end_date      = "2026-02-07",
-  flix_type     = "movies"
+# Set global options
+options(
+  flixpatrol.platform_name = "netflix",
+  flixpatrol.country_name  = "United States",
+  flixpatrol.start_date    = "2024-01-01",
+  flixpatrol.end_date      = "2026-02-14",
+  flixpatrol.media_type    = "movie"
 )
+
+# Call without arguments
+get_top_ten()
+
+# Override specific options
+get_top_ten(media_type = "tv")
 }
 }

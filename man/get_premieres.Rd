@@ -24,7 +24,7 @@ get_premieres(
 \item{return_ids}{Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.}
 }
 \value{
-A tibble with columns: title, premiere, type (movie/tv), season, episodes, platform.
+A tibble with columns: title, premiere, type (movie/tv_show), season, episodes, platform.
   If `return_ids = TRUE`, also includes title_id.
 }
 \description{

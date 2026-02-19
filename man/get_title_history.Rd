@@ -10,7 +10,7 @@ get_title_history(
   country_name = "United States",
   start_date,
   end_date,
-  flix_type = "movies"
+  media_type = "movie"
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ get_title_history(
 
 \item{end_date}{Date/Character. End of the range.}
 
-\item{flix_type}{Character. Content type (default `"movies"`).}
+\item{media_type}{Character. Content type (default `"movies"`).}
 }
 \value{
 A tibble with one row per date the title appeared in the Top 10.

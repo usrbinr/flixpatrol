@@ -9,7 +9,7 @@ get_top_titles_summary(
   country_name = "United States",
   start_date,
   end_date,
-  flix_type = "movies",
+  media_type = "movie",
   n = 20
 )
 }
@@ -22,7 +22,7 @@ get_top_titles_summary(
 
 \item{end_date}{Date/Character. End of the range.}
 
-\item{flix_type}{Character. Content type (default `"movies"`).}
+\item{media_type}{Character. Content type (default `"movies"`).}
 
 \item{n}{Integer. Number of top titles to return (default 20).}
 }
