@@ -355,7 +355,7 @@ get_title_details <- function(title_id) {
 #'   (default: Netflix, Disney+, HBO Max, Amazon Prime, Apple TV+).
 #' @param country_name Character. Country name.
 #' @param date Date/Character. The chart date.
-#' @param media_type Character. Content type (default `"movies"`).
+#' @param media_type Character. Content type (default `"movie"`).
 #'
 #' @return A tibble with columns `platform`, `rank`, `title`, `date`, and chart metadata.
 #'   Platforms where the title does not appear return a row with `rank = NA`.
@@ -420,7 +420,7 @@ compare_platforms <- function(title,
 #' @param country_name Character. Country name.
 #' @param start_date Date/Character. Start of the range.
 #' @param end_date Date/Character. End of the range.
-#' @param media_type Character. Content type (default `"movies"`).
+#' @param media_type Character. Content type (default `"movie"`).
 #'
 #' @return A tibble with one row per date the title appeared in the Top 10.
 #' @export
@@ -465,7 +465,7 @@ get_title_history <- function(title,
 #' @param country_name Character. Country name.
 #' @param date_before Date/Character. The earlier chart date.
 #' @param date_after Date/Character. The later chart date.
-#' @param media_type Character. Content type (default `"movies"`).
+#' @param media_type Character. Content type (default `"movie"`).
 #'
 #' @return A tibble with columns `title`, `rank_before`, `rank_after`, `change`,
 #'   and `status` (one of "new_entry", "exit", "gainer", "loser", "unchanged").
@@ -516,7 +516,7 @@ get_weekly_movers <- function(platform_name = "netflix",
 #' @param country_name Character. Country name.
 #' @param start_date Date/Character. Start of the range.
 #' @param end_date Date/Character. End of the range.
-#' @param media_type Character. Content type (default `"movies"`).
+#' @param media_type Character. Content type (default `"movie"`).
 #' @param n Integer. Number of top titles to return (default 20).
 #'
 #' @return A tibble with columns `title`, `days_on_chart`, `best_rank`,
@@ -570,7 +570,7 @@ get_top_titles_summary <- function(platform_name = "netflix",
 #' @param date Date/Character. The chart date.
 #' @param countries Character vector. Country names to check. Defaults to a broad
 #'   set of 15 major markets.
-#' @param media_type Character. Content type (default `"movies"`).
+#' @param media_type Character. Content type (default `"movie"`).
 #'
 #' @return A tibble with columns `country`, `rank`, `title`, `date`.
 #'   Countries where the title is not in the Top 10 return `rank = NA`.
@@ -629,7 +629,7 @@ get_global_ranking <- function(title,
 #' @param country_name Character. Country name.
 #' @param start_date Date/Character. Start of the range.
 #' @param end_date Date/Character. End of the range.
-#' @param media_type Character. Content type (default `"movies"`).
+#' @param media_type Character. Content type (default `"movie"`).
 #'
 #' @return A tibble with columns `title`, `days_on_chart`, `best_rank`, `avg_rank`,
 #'   plus a `franchise` column.

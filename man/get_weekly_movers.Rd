@@ -21,7 +21,7 @@ get_weekly_movers(
 
 \item{date_after}{Date/Character. The later chart date.}
 
-\item{media_type}{Character. Content type (default `"movies"`).}
+\item{media_type}{Character. Content type (default `"movie"`).}
 }
 \value{
 A tibble with columns `title`, `rank_before`, `rank_after`, `change`,

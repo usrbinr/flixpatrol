@@ -24,7 +24,7 @@ get_franchise_performance(
 
 \item{end_date}{Date/Character. End of the range.}
 
-\item{media_type}{Character. Content type (default `"movies"`).}
+\item{media_type}{Character. Content type (default `"movie"`).}
 }
 \value{
 A tibble with columns `title`, `days_on_chart`, `best_rank`, `avg_rank`,

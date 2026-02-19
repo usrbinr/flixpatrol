@@ -22,7 +22,7 @@ get_top_titles_summary(
 
 \item{end_date}{Date/Character. End of the range.}
 
-\item{media_type}{Character. Content type (default `"movies"`).}
+\item{media_type}{Character. Content type (default `"movie"`).}
 
 \item{n}{Integer. Number of top titles to return (default 20).}
 }

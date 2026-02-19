@@ -24,7 +24,7 @@ get_global_ranking(
 \item{countries}{Character vector. Country names to check. Defaults to a broad
 set of 15 major markets.}
 
-\item{media_type}{Character. Content type (default `"movies"`).}
+\item{media_type}{Character. Content type (default `"movie"`).}
 }
 \value{
 A tibble with columns `country`, `rank`, `title`, `date`.
