@@ -316,6 +316,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="./_qrtdown/citation.html"> 
 <span class="menu-text">Citation</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./NEWS.html"> 
+<span class="menu-text">Changelog</span></a>
+  </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
@@ -469,6 +473,65 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+<section id="query-default-options" class="level3">
+<h3 class="anchored" data-anchor-id="query-default-options">Query Default Options</h3>
+<p>Set these to avoid passing arguments on every call:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>flixpatrol.platform_name</code></td>
+<td><code>NULL</code></td>
+<td>Default platform (e.g., “netflix”, “disney+”)</td>
+</tr>
+<tr class="even">
+<td><code>flixpatrol.country_name</code></td>
+<td><code>NULL</code></td>
+<td>Default country (e.g., “United States”)</td>
+</tr>
+<tr class="odd">
+<td><code>flixpatrol.start_date</code></td>
+<td><code>NULL</code></td>
+<td>Default start date (yyyy-mm-dd)</td>
+</tr>
+<tr class="even">
+<td><code>flixpatrol.end_date</code></td>
+<td><code>NULL</code></td>
+<td>Default end date (yyyy-mm-dd)</td>
+</tr>
+<tr class="odd">
+<td><code>flixpatrol.media_type</code></td>
+<td><code>NULL</code></td>
+<td>Default content type (“movie” or “tv_show”)</td>
+</tr>
+<tr class="even">
+<td><code>flixpatrol.language</code></td>
+<td><code>"english"</code></td>
+<td>Default language</td>
+</tr>
+<tr class="odd">
+<td><code>flixpatrol.social_platform</code></td>
+<td><code>"instagram"</code></td>
+<td>Default social platform</td>
+</tr>
+<tr class="even">
+<td><code>flixpatrol.torrent_site</code></td>
+<td><code>NULL</code></td>
+<td>Default torrent site</td>
+</tr>
+</tbody>
+</table>
 <p>Set options globally:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a> <span class="at">flixpatrol.silent =</span> <span class="cn">TRUE</span>,</span>
@@ -481,6 +544,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Check package status and API quota:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flixpatrol_sitrep</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
+</section>
 </section>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
@@ -512,18 +576,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">country_name  =</span> <span class="st">"United States"</span>,</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date    =</span> <span class="st">"2025-12-01"</span>,</span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date      =</span> <span class="st">"2025-12-07"</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">flix_type     =</span> <span class="st">"movies"</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">media_type    =</span> <span class="st">"movie"</span></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="hours-viewed" class="level3">
 <h3 class="anchored" data-anchor-id="hours-viewed">Hours Viewed</h3>
 <p>Requires a 7-day range starting on a Monday:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_hours_viewed</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">language_name   =</span> <span class="st">"english"</span>,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">media_type_name =</span> <span class="st">"movie"</span>,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date      =</span> <span class="st">"2025-12-15"</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date        =</span> <span class="st">"2025-12-21"</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">platform_name =</span> <span class="st">"netflix"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">media_type    =</span> <span class="st">"movie"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">language_name =</span> <span class="st">"english"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date    =</span> <span class="st">"2025-12-15"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date      =</span> <span class="st">"2025-12-21"</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="official-rankings-netflix-only" class="level3">
 <h3 class="anchored" data-anchor-id="official-rankings-netflix-only">Official Rankings (Netflix Only)</h3>

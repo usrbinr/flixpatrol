@@ -1,171 +1,31 @@
 [
   {
-    "objectID": "vignettes/articles/getting-started.html",
-    "href": "vignettes/articles/getting-started.html",
-    "title": "Getting Started with flixpatrol",
+    "objectID": "NEWS.html",
+    "href": "NEWS.html",
+    "title": "flixpatrol 0.2.0",
     "section": "",
-    "text": "This article demonstrates how to use the flixpatrol package to retrieve streaming platform rankings and analytics from the FlixPatrol API."
+    "text": "Unified flix_type and media_type parameters into single media_type parameter across all functions. Use media_type = \"movie\" or media_type = \"tv_show\".\n\n\n\n\n\nAdded normalize_content_type() helper to handle various content type inputs (e.g., “tv”, “tvshow”, “tv_show” all resolve correctly).\nAdded resolve_content_type() internal function to map content types to API IDs.\nAdded lookup_social_platform() for social media platform ID lookup.\nAdded query default options: flixpatrol.platform_name, flixpatrol.country_name, flixpatrol.start_date, flixpatrol.end_date, flixpatrol.media_type, flixpatrol.language, flixpatrol.social_platform, flixpatrol.torrent_site.\n\n\n\n\n\nFixed get_official_ranking() to correctly extract title and title_id from API response after FlixPatrol API fix."
   },
   {
-    "objectID": "vignettes/articles/getting-started.html#setup",
-    "href": "vignettes/articles/getting-started.html#setup",
-    "title": "Getting Started with flixpatrol",
-    "section": "Setup",
-    "text": "Setup\nFirst, load the package and set your API key:\n\nlibrary(flixpatrol)\n\n# Set your API key (do this once in your .Renviron)\nusethis::edit_r_environ()\n# Add: FLIX_PATROL=your_api_key_here\n\nTo suppress lookup messages globally:\n\noptions(flixpatrol.silent = TRUE)"
-  },
-  {
-    "objectID": "vignettes/articles/getting-started.html#looking-up-ids",
-    "href": "vignettes/articles/getting-started.html#looking-up-ids",
-    "title": "Getting Started with flixpatrol",
-    "section": "Looking Up IDs",
-    "text": "Looking Up IDs\nBefore fetching data, you often need to translate human-readable names to FlixPatrol IDs.\n\nCountries and Platforms\n\n# Single lookup\nlookup_country(\"United States\")\n#&gt; [1] \"cnt_iMUHNbZvnNHK5YdhgwtOoP4u\"\n\nlookup_platform(\"Netflix\")\n#&gt; [1] \"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX\"\n\n# Multiple at once (vectorized)\nlookup_country(c(\"United States\", \"Germany\", \"Japan\"))\nlookup_platform(c(\"Netflix\", \"Disney+\", \"HBO Max\"))\n\n\n\nTitles and Franchises\n\nlookup_title(\"Squid Game\")\n#&gt; [1] \"ttl_yPCJU2UzROTNVv5JZ7Hu4m8M\"\n\nlookup_franchise(\"Marvel\")\n#&gt; [1] \"frn_KGBes9dtvkV710raDBpXoKRc\"\n\n\n\nReverse Lookup (ID to Name)\n\n# Works with any ID type (cmp_, ttl_, frn_)\nget_title_name(\"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX\")\n#&gt; [1] \"Netflix\"\n\n# Vectorized - returns NA for failures\nget_title_name(c(\"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX\", \"ttl_invalid\"))\n#&gt; [1] \"Netflix\" NA"
-  },
-  {
-    "objectID": "vignettes/articles/getting-started.html#fetching-top-10-rankings",
-    "href": "vignettes/articles/getting-started.html#fetching-top-10-rankings",
-    "title": "Getting Started with flixpatrol",
-    "section": "Fetching Top 10 Rankings",
-    "text": "Fetching Top 10 Rankings\n\nDaily Top 10\n\n# Get a week of Top 10 data\ntop10 &lt;- get_top_ten(\n  platform_name = \"netflix\",\n  country_name  = \"United States\",\n  start_date    = \"2025-12-01\",\n  end_date      = \"2025-12-07\",\n  flix_type     = \"movies\"\n)\n\ntop10\n#&gt; # A tibble: 70 x 7\n#&gt;     rank title                  type_id days_total rank_last date       imdb_id\n#&gt;    &lt;int&gt; &lt;chr&gt;                    &lt;int&gt;      &lt;int&gt;     &lt;int&gt; &lt;chr&gt;        &lt;int&gt;\n#&gt;  1     1 Carry-On                     1         15         1 2025-12-01  123456\n#&gt;  2     2 The Six Triple Eight         1          8         2 2025-12-01  234567\n#&gt;  3     3 Our Little Secret            1         21         3 2025-12-01  345678\n#&gt; # i 67 more rows\n\n\n\nFiltering Results\n\nlibrary(dplyr)\n\n# Find #1 movies each day\ntop10 |&gt;\n  filter(rank == 1) |&gt;\n  select(date, title, days_total)\n\n# Titles that appeared multiple days\ntop10 |&gt;\n  count(title, sort = TRUE) |&gt;\n  filter(n &gt; 3)"
-  },
-  {
-    "objectID": "vignettes/articles/getting-started.html#viewing-hours-data",
-    "href": "vignettes/articles/getting-started.html#viewing-hours-data",
-    "title": "Getting Started with flixpatrol",
-    "section": "Viewing Hours Data",
-    "text": "Viewing Hours Data\nNetflix publishes weekly viewing hours. This requires a Monday-Sunday date range:\n\nhours &lt;- get_hours_viewed(\n  platform_name   = \"netflix\",\n  language_name   = \"english\",\n  media_type_name = \"movie\",\n  start_date      = \"2025-12-16\",\n  end_date        = \"2025-12-22\"\n)\n\nhours |&gt;\n  select(title, hours_viewed = data_value) |&gt;\n  arrange(desc(hours_viewed)) |&gt;\n  head(10)"
-  },
-  {
-    "objectID": "vignettes/articles/getting-started.html#premieres",
-    "href": "vignettes/articles/getting-started.html#premieres",
-    "title": "Getting Started with flixpatrol",
-    "section": "Premieres",
-    "text": "Premieres\nGet upcoming releases for a platform:\n\npremieres &lt;- get_premieres(\n  platform_name = \"netflix\",\n  start_date    = \"2025-12-01\",\n  end_date      = \"2025-12-31\"\n)\n\npremieres |&gt;\n  select(title = movie_data_title, premiere_date = data_premiere, type = data_type) |&gt;\n  arrange(premiere_date)"
-  },
-  {
-    "objectID": "vignettes/articles/getting-started.html#analytics-functions",
-    "href": "vignettes/articles/getting-started.html#analytics-functions",
-    "title": "Getting Started with flixpatrol",
-    "section": "Analytics Functions",
-    "text": "Analytics Functions\n\nCompare Across Platforms\nSee how a title performs on different streaming services:\n\ncompare_platforms_tbl(\n  title     = \"Stranger Things\",\n  date      = \"2025-12-01\",\n  platforms = c(\"netflix\", \"disney+\", \"hbo max\", \"amazon prime\"),\n  flix_type = \"tv_shows\"\n)\n#&gt; # A tibble: 4 x 4\n#&gt;   platform      rank title           date\n#&gt;   &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;           &lt;chr&gt;\n#&gt; 1 netflix          1 Stranger Things 2025-12-01\n#&gt; 2 disney+         NA Stranger Things 2025-12-01\n#&gt; 3 hbo max         NA Stranger Things 2025-12-01\n#&gt; 4 amazon prime    NA Stranger Things 2025-12-01\n\n\n\nTrack a Title Over Time\n\nhistory &lt;- get_title_history(\n  title         = \"Stranger Things\",\n  platform_name = \"netflix\",\n  country_name  = \"United States\",\n  start_date    = \"2025-12-01\",\n  end_date      = \"2025-12-07\",\n  flix_type     = \"tv_shows\"\n)\n\n\n\nWeekly Movers\nIdentify which titles gained or lost positions:\n\nmovers &lt;- get_weekly_movers(\n  platform_name = \"netflix\",\n  country_name  = \"United States\",\n  date_before   = \"2025-12-14\",\n  date_after    = \"2025-12-15\",\n  flix_type     = \"movies\"\n)\n\nmovers |&gt;\n  filter(status %in% c(\"gainer\", \"new_entry\")) |&gt;\n  arrange(desc(change))\n#&gt; # A tibble: 5 x 5\n#&gt;   title              rank_before rank_after change status\n#&gt;   &lt;chr&gt;                    &lt;int&gt;      &lt;int&gt;  &lt;int&gt; &lt;chr&gt;\n#&gt; 1 New Holiday Movie           NA          2     NA new_entry\n#&gt; 2 Rising Star                  8          3      5 gainer\n#&gt; 3 Comeback Film               10          7      3 gainer\n\n\n\nTop Titles Summary\nSummarize which titles dominated over a period:\n\nsummary_tbl &lt;- get_top_titles_summary(\n  platform_name = \"netflix\",\n  country_name  = \"United States\",\n  start_date    = \"2025-12-01\",\n  end_date      = \"2025-12-31\",\n  flix_type     = \"movies\",\n  n             = 10\n)\n\nsummary_tbl\n#&gt; # A tibble: 10 x 6\n#&gt;    title                days_on_chart best_rank avg_rank first_seen last_seen\n#&gt;    &lt;chr&gt;                        &lt;int&gt;     &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;\n#&gt;  1 Carry-On                        31         1      1.5 2025-12-01 2025-12-31\n#&gt;  2 Our Little Secret               28         1      2.3 2025-12-01 2025-12-28\n#&gt;  3 The Six Triple Eight            25         1      3.1 2025-12-01 2025-12-25\n\n\n\nGlobal Ranking\nSee how a title ranks in different countries:\n\nglobal &lt;- get_global_ranking(\n  title         = \"Stranger Things\",\n  platform_name = \"netflix\",\n  date          = \"2025-12-01\",\n  flix_type     = \"tv_shows\"\n)\n\nglobal |&gt;\n  filter(!is.na(rank)) |&gt;\n  arrange(rank)\n#&gt; # A tibble: 12 x 4\n#&gt;    country        rank title           date\n#&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;           &lt;chr&gt;\n#&gt;  1 United States     1 Stranger Things 2025-12-01\n#&gt;  2 Canada            2 Stranger Things 2025-12-01\n#&gt;  3 United Kingdom    3 Stranger Things 2025-12-01\n#&gt;  4 Germany           4 Stranger Things 2025-12-01\n\n\n\nFranchise Performance\nAggregate all titles in a franchise:\n\nmarvel &lt;- get_franchise_performance(\n  franchise_title = \"Marvel\",\n  platform_name   = \"netflix\",\n  country_name    = \"United States\",\n  start_date      = \"2025-12-01\",\n  end_date        = \"2025-12-31\",\n  flix_type       = \"movies\"\n)\n\nmarvel\n#&gt; # A tibble: 4 x 7\n#&gt;   title              days_on_chart best_rank avg_rank first_seen last_seen franchise\n#&gt;   &lt;chr&gt;                      &lt;int&gt;     &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;\n#&gt; 1 Black Panther                 12         3      5.2 2025-12-05 2025-12-16 Marvel\n#&gt; 2 Spider-Man: NWH                8         5      7.1 2025-12-10 2025-12-17 Marvel"
-  },
-  {
-    "objectID": "vignettes/articles/getting-started.html#lookup-tables",
-    "href": "vignettes/articles/getting-started.html#lookup-tables",
-    "title": "Getting Started with flixpatrol",
-    "section": "Lookup Tables",
-    "text": "Lookup Tables\nThe package includes pre-built reference tables to avoid API calls:\n\n# View available content types\nflixpatrol::flix_type_tbl\n#&gt; # A tibble: 13 x 2\n#&gt;    type_id type_label\n#&gt;      &lt;int&gt; &lt;chr&gt;\n#&gt;  1       1 movies\n#&gt;  2       2 tv\n#&gt;  3       3 anime\n#&gt;  4       4 kids\n#&gt;  ...\n\n# View date granularities\nflixpatrol::date_type_name\n#&gt; # A tibble: 7 x 2\n#&gt;   date_type_id date_type_name\n#&gt;          &lt;int&gt; &lt;chr&gt;\n#&gt;  1            1 day\n#&gt;  2            2 week\n#&gt;  3            3 month\n#&gt;  ...\n\n# View torrent sites\nflixpatrol::torrent_sites"
-  },
-  {
-    "objectID": "vignettes/articles/getting-started.html#next-steps",
-    "href": "vignettes/articles/getting-started.html#next-steps",
-    "title": "Getting Started with flixpatrol",
-    "section": "Next Steps",
-    "text": "Next Steps\n\nExplore the Function Reference for complete documentation\nCheck the FlixPatrol API docs for endpoint details\nReport issues at Codeberg"
-  },
-  {
-    "objectID": "_qrtdown/citation.html",
-    "href": "_qrtdown/citation.html",
-    "title": "Citation",
+    "objectID": "NEWS.html#breaking-changes",
+    "href": "NEWS.html#breaking-changes",
+    "title": "flixpatrol 0.2.0",
     "section": "",
-    "text": "To cite this package in publications, use:\n\nHagan A (2026). flixpatrol: R Client for the FlixPatrol Streaming Rankings API. R package version 0.2.0, https://codeberg.org/usrbinr/flixpatrol.\n\n\n\n@Manual{,\n  title = {flixpatrol: R Client for the FlixPatrol Streaming Rankings API},\n  author = {Alejandro Hagan},\n  year = {2026},\n  note = {R package version 0.2.0},\n  url = {https://codeberg.org/usrbinr/flixpatrol},\n}"
+    "text": "Unified flix_type and media_type parameters into single media_type parameter across all functions. Use media_type = \"movie\" or media_type = \"tv_show\"."
   },
   {
-    "objectID": "_qrtdown/citation.html#bibtex-entry",
-    "href": "_qrtdown/citation.html#bibtex-entry",
-    "title": "Citation",
+    "objectID": "NEWS.html#new-features",
+    "href": "NEWS.html#new-features",
+    "title": "flixpatrol 0.2.0",
     "section": "",
-    "text": "@Manual{,\n  title = {flixpatrol: R Client for the FlixPatrol Streaming Rankings API},\n  author = {Alejandro Hagan},\n  year = {2026},\n  note = {R package version 0.2.0},\n  url = {https://codeberg.org/usrbinr/flixpatrol},\n}"
+    "text": "Added normalize_content_type() helper to handle various content type inputs (e.g., “tv”, “tvshow”, “tv_show” all resolve correctly).\nAdded resolve_content_type() internal function to map content types to API IDs.\nAdded lookup_social_platform() for social media platform ID lookup.\nAdded query default options: flixpatrol.platform_name, flixpatrol.country_name, flixpatrol.start_date, flixpatrol.end_date, flixpatrol.media_type, flixpatrol.language, flixpatrol.social_platform, flixpatrol.torrent_site."
   },
   {
-    "objectID": "_qrtdown/reference.html",
-    "href": "_qrtdown/reference.html",
-    "title": "Function reference",
+    "objectID": "NEWS.html#bug-fixes",
+    "href": "NEWS.html#bug-fixes",
+    "title": "flixpatrol 0.2.0",
     "section": "",
-    "text": "All functions and classes exported by flixpatrol."
-  },
-  {
-    "objectID": "_qrtdown/reference.html#functions",
-    "href": "_qrtdown/reference.html#functions",
-    "title": "Function reference",
-    "section": "Functions",
-    "text": "Functions\n\n\n\nFunction\nDescription\n\n\n\n\nauthenticate()\nAuthenticate and Create Base Request\n\n\ncompare_platforms()\nCompare a Title’s Ranking Across Platforms\n\n\ndate_type_name()\nDate Type Lookup Table\n\n\nflix_type_tbl()\nFlix Type Lookup Table\n\n\nflixpatrol_options()\nFlixPatrol Package Options\n\n\nflixpatrol_sitrep()\nFlixPatrol Situation Report\n\n\nflixpatrol-package()\nflixpatrol: R Client for the FlixPatrol Streaming Rankings API\n\n\nfp_cache_ids()\nCache Country and Platform IDs to Lookup Tables\n\n\nfp_enrich()\nEnrich a Tibble with Resolved Names\n\n\nget_company_name()\nGet Company Name from ID\n\n\nget_fans_ranking()\nGet Fans Rankings\n\n\nget_franchise_name()\nGet Franchise Name from ID\n\n\nget_franchise_performance()\nFranchise Performance Rollup\n\n\nget_global_ranking()\nGlobal Ranking for a Title Across Countries\n\n\nget_hours_viewed()\nCreate Hours Viewed Table\n\n\nget_official_ranking()\nCreate Official Ranking Table\n\n\nget_premieres()\nCreate Premiere Table\n\n\nget_quota()\nGet API Quota Information\n\n\nget_title_details()\nGet Title Details\n\n\nget_title_history()\nTrack a Single Title’s Rank Over Time\n\n\nget_title_name()\nGet Name from FlixPatrol ID\n\n\nget_top_ten()\nCreate a Daily Top 10 Table for a Date Range\n\n\nget_top_titles_summary()\nSummarize Top Titles Over a Date Range\n\n\nget_torrent_ranking()\nCreate Torrent Ranking Table\n\n\nget_weekly_movers()\nWeekly Movers: Gainers, Losers, New Entries, and Exits\n\n\nlanguage_name()\nLanguage Lookup Table\n\n\nlookup_country()\nLookup Country IDs\n\n\nlookup_date_type()\nLookup Date Type IDs\n\n\nlookup_flix_type()\nLookup Flix Type IDs\n\n\nlookup_franchise()\nLookup Franchise IDs\n\n\nlookup_from_table()\nLookup Values from a Reference Table\n\n\nlookup_language()\nLookup Language IDs\n\n\nlookup_media_type()\nLookup Media Type IDs\n\n\nlookup_platform()\nLookup Platform (Company) IDs\n\n\nlookup_title()\nLookup Title ID\n\n\nlookup_torrent_site()\nLookup Torrent Site IDs\n\n\nmedia_type_name()\nMedia Type Lookup Table\n\n\nnormalize_plural()\nNormalize Plural/Singular Forms\n\n\nsocial_media_name()\nSocial Media Platform Lookup Table\n\n\ntorrent_sites()\nTorrent Sites Lookup Table\n\n\ntorrent_sites_tbl()\nTorrent Sites Lookup Table (Legacy)\n\n\nunnest_flixpatrol_response()\nUnnest a FlixPatrol API Response\n\n\nvalidate_date_format()\nValidate Date Format\n\n\nvalidate_date_range()\nValidate Date Ranges for API Compatibility"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "flixpatrol",
-    "section": "",
-    "text": "MIT + file LICENSE\n\n\n\nCiting this package\n\n\n\n\nAlejandro Hagan (author, maintainer)\n\n\n\n\n\nMIT + file LICENSE\n\n\n\nCiting this package\n\n\n\n\nAlejandro Hagan (author, maintainer)\nThe flixpatrol package is an R interface for the FlixPatrol API V2. It allows for the programmatic retrieval of VOD rankings, streaming Top 10 lists, official viewing hour statistics, torrent charts, social media fan metrics, and premiere schedules across major global platforms."
-  },
-  {
-    "objectID": "index.html#features",
-    "href": "index.html#features",
-    "title": "flixpatrol",
-    "section": "Features",
-    "text": "Features\n\nMetadata Lookup: Resolve country, platform, franchise, and title names into internal FlixPatrol IDs.\nHistorical Data Retrieval: Fetch daily Top 10 charts over custom date ranges.\nOfficial Metrics: Access “Hours Viewed” and “Official Ranking” tables as analysis-ready tibbles.\nTorrent Rankings: Pull torrent chart data by site and date range.\nSocial Media Fans: Retrieve fan count rankings from Instagram, Facebook, and Twitter.\nPremieres: Get upcoming premiere schedules by platform and country.\nTitle Details: Retrieve full metadata for any title.\nVectorized ID Resolution: Resolve FlixPatrol IDs back to human-readable names in bulk.\nRobust Validation: Built-in checks for date ranges and API-specific weekday requirements (e.g., weekly charts starting on Mondays).\nRate Limiting & Retry: All API calls are throttled (10 req/min) with automatic retry on transient failures."
-  },
-  {
-    "objectID": "index.html#installation",
-    "href": "index.html#installation",
-    "title": "flixpatrol",
-    "section": "Installation",
-    "text": "Installation\nYou can install the development version of flixpatrol from Codeberg:\n# install.packages(\"pak\")\npak::pak(\"git::https://codeberg.org/usrbinr/flixpatrol\")"
-  },
-  {
-    "objectID": "index.html#authentication",
-    "href": "index.html#authentication",
-    "title": "flixpatrol",
-    "section": "Authentication",
-    "text": "Authentication\nThe package uses basic authentication via an API key stored in your R environment. Set it once:\nusethis::edit_r_environ()\n# Add this line to the file that opens:\n# FLIX_PATROL=your_api_key_here\nRestart R after saving. All functions default to reading the FLIX_PATROL environment variable."
-  },
-  {
-    "objectID": "index.html#package-options",
-    "href": "index.html#package-options",
-    "title": "flixpatrol",
-    "section": "Package Options",
-    "text": "Package Options\n\n\n\n\n\n\n\n\nOption\nDefault\nDescription\n\n\n\n\nflixpatrol.silent\nFALSE\nSuppress lookup success messages\n\n\nflixpatrol.return_ids\nFALSE\nInclude ID columns in output tibbles\n\n\nflixpatrol.throttle_rate\n10\nAPI requests per minute (rate limiting)\n\n\nflixpatrol.show_quota\nTRUE\nShow API quota in flixpatrol_sitrep()\n\n\n\nSet options globally:\noptions(\n flixpatrol.silent = TRUE,\n flixpatrol.return_ids = TRUE,\n flixpatrol.throttle_rate = 15,\n flixpatrol.show_quota = FALSE\n)\nView current option values:\nflixpatrol_options()\nCheck package status and API quota:\nflixpatrol_sitrep()"
-  },
-  {
-    "objectID": "index.html#usage",
-    "href": "index.html#usage",
-    "title": "flixpatrol",
-    "section": "Usage",
-    "text": "Usage\n\nLookup Functions\nTranslate human-readable names into FlixPatrol internal IDs:\nlibrary(flixpatrol)\n\nlookup_country(\"United States\")\nlookup_platform(\"Netflix\")\nlookup_franchise(\"Indiana Jones\")\nlookup_title(\"Squid Game\")\n\n# Vectorized\nlookup_country(c(\"United States\", \"Germany\", \"Japan\"))\n\n\nReverse Lookups (ID to Name)\nget_title_name(\"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX\")  # company\nget_title_name(\"ttl_yPCJU2UzROTNVv5JZ7Hu4m8M\")  # title\n\n# Vectorized - returns NA for failures\nget_title_name(c(\"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX\", \"ttl_invalid\"))\n\n\nDaily Top 10\nget_top_ten(\n  platform_name = \"netflix\",\n  country_name  = \"United States\",\n  start_date    = \"2025-12-01\",\n  end_date      = \"2025-12-07\",\n  flix_type     = \"movies\"\n)\n\n\nHours Viewed\nRequires a 7-day range starting on a Monday:\nget_hours_viewed(\n  language_name   = \"english\",\n  media_type_name = \"movie\",\n  start_date      = \"2025-12-15\",\n  end_date        = \"2025-12-21\"\n)\n\n\nOfficial Rankings (Netflix Only)\nget_official_ranking(\n  country_name = \"United States\",\n  start_date   = \"2025-12-15\",\n  end_date     = \"2025-12-21\",\n  media_type   = \"movie\"\n)\n\n\nTorrent Rankings\nget_torrent_ranking(\n  torrent_site = \"1337x\",\n  start_date   = \"2025-12-01\",\n  end_date     = \"2025-12-01\"\n)\n\n\nSocial Media Fans\nget_fans_ranking(\n  social_platform = \"Instagram\",\n  start_date      = \"2025-12-15\",\n  end_date        = \"2025-12-21\"\n)\n\n\nPremieres\nget_premieres(\n  platform_name = \"netflix\",\n  start_date    = \"2025-12-15\",\n  end_date      = \"2025-12-31\"\n)\n\n\nTitle Details\nget_title_details(\"ttl_yPCJU2UzROTNVv5JZ7Hu4m8M\")\n\n\nCompare Platforms\nSee how a title ranks across multiple platforms on the same day:\ncompare_platforms(\n  title = \"Squid Game\",\n  date  = \"2025-12-15\"\n)\n\n\nTitle History\nTrack a single title’s rank over time:\nget_title_history(\n  title      = \"Squid Game\",\n  start_date = \"2025-12-01\",\n  end_date   = \"2025-12-14\"\n)\n\n\nWeekly Movers\nIdentify gainers, losers, new entries, and exits between two chart dates:\nget_weekly_movers(\n  date_before = \"2025-12-14\",\n  date_after  = \"2025-12-15\"\n)\n\n\nTop Titles Summary\nMost frequent Top 10 titles over a date range with best/average rank:\nget_top_titles_summary(\n  start_date = \"2025-12-01\",\n  end_date   = \"2025-12-14\",\n  n          = 10\n)\n\n\nGlobal Ranking\nSee where a title ranks across 15 countries:\nget_global_ranking(\n  title = \"Squid Game\",\n  date  = \"2025-12-15\"\n)\n\n\nFranchise Performance\nAggregate all titles in a franchise over a date range:\nget_franchise_performance(\n  franchise_title = \"Marvel\",\n  start_date      = \"2025-12-01\",\n  end_date        = \"2025-12-14\"\n)"
-  },
-  {
-    "objectID": "index.html#lookup-tables",
-    "href": "index.html#lookup-tables",
-    "title": "flixpatrol",
-    "section": "Lookup Tables",
-    "text": "Lookup Tables\nThe package ships with pre-built reference tables to avoid unnecessary API calls:\n\n\n\n\n\n\n\nTable\nContents\n\n\n\n\nflix_type_tbl\nContent types (movie, tv, anime, kids, docs, etc.)\n\n\nlanguage_name\nLanguage options (english, non_english)\n\n\nmedia_type_name\nMedia categories (movie, tv_show)\n\n\ndate_type_name\nDate granularities (day, week, month, quarter, half_year, year)\n\n\nsocial_media_name\nSocial platforms with company IDs\n\n\ntorrent_sites\nTorrent site name-to-ID mappings"
-  },
-  {
-    "objectID": "index.html#function-reference",
-    "href": "index.html#function-reference",
-    "title": "flixpatrol",
-    "section": "Function Reference",
-    "text": "Function Reference\n\nLookup (Name to ID)\n\n\n\nFunction\nSource\n\n\n\n\nlookup_country()\nAPI /countries\n\n\nlookup_platform()\nAPI /companies\n\n\nlookup_franchise()\nAPI /franchises\n\n\nlookup_title()\nAPI /titles\n\n\nlookup_flix_type()\nLocal table\n\n\nlookup_language()\nLocal table\n\n\nlookup_media_type()\nLocal table\n\n\nlookup_date_type()\nLocal table\n\n\nlookup_torrent_site()\nLocal table\n\n\n\n\n\nReverse Lookup (ID to Name)\n\n\n\n\n\n\n\nFunction\nDescription\n\n\n\n\nget_title_name()\nAuto-detects cmp_, ttl_, frn_ prefixes. Vectorized, returns NA on failure.\n\n\nget_company_name()\nCompany ID to name\n\n\nget_franchise_name()\nFranchise ID to name\n\n\n\n\n\nData Retrieval\n\n\n\n\n\n\n\n\nFunction\nEndpoint\nDescription\n\n\n\n\nget_top_ten()\n/top10s\nTop 10 over a date range\n\n\nget_hours_viewed()\n/hoursviewed\nWeekly viewing hours\n\n\nget_official_ranking()\n/rankingsofficial\nOfficial Netflix rankings\n\n\nget_fans_ranking()\n/fans\nSocial media fan counts\n\n\nget_torrent_ranking()\n/torrents\nTorrent chart rankings\n\n\nget_premieres()\n/premieres\nUpcoming premiere dates\n\n\nget_title_details()\n/titles/:id\nFull title metadata\n\n\n\n\n\nAnalytics & Comparison\n\n\n\n\n\n\n\nFunction\nDescription\n\n\n\n\ncompare_platforms()\nCompare a title’s rank across multiple platforms on the same day\n\n\nget_title_history()\nTrack a single title’s rank over a date range\n\n\nget_weekly_movers()\nGainers, losers, new entries, and exits between two chart dates\n\n\nget_top_titles_summary()\nMost frequent Top 10 titles with best/avg rank over a period\n\n\nget_global_ranking()\nA title’s rank across 15+ countries on a single date\n\n\nget_franchise_performance()\nAggregate chart performance for all titles in a franchise\n\n\n\n\n\nValidation\n\n\n\n\n\n\n\nFunction\nPurpose\n\n\n\n\nvalidate_date_range()\nEnforces weekday and range-length constraints\n\n\nflixpatrol_options()\nList available package options"
-  },
-  {
-    "objectID": "index.html#contributing",
-    "href": "index.html#contributing",
-    "title": "flixpatrol",
-    "section": "Contributing",
-    "text": "Contributing\nSee CONTRIBUTING.md for developer documentation."
-  },
-  {
-    "objectID": "index.html#license-2",
-    "href": "index.html#license-2",
-    "title": "flixpatrol",
-    "section": "License",
-    "text": "License\nMIT"
-  },
-  {
-    "objectID": "_qrtdown/articles.html",
-    "href": "_qrtdown/articles.html",
-    "title": "Articles",
-    "section": "",
-    "text": "flixpatrol Articles\nIn-depth guides and tutorials for using the package.\n\nDeveloper’s Guide\nGetting Started with flixpatrol"
+    "text": "Fixed get_official_ranking() to correctly extract title and title_id from API response after FlixPatrol API fix."
   },
   {
     "objectID": "vignettes/articles/developers-guide.html",
@@ -264,5 +124,173 @@
     "title": "Developer’s Guide",
     "section": "Release Checklist",
     "text": "Release Checklist\n\nUpdate version in DESCRIPTION using qrtdown::use_qrtdown_version()\nRun devtools::check(remote = TRUE, manual = TRUE)\nRun devtools::test()\nUpdate documentation: devtools::document()\nRender website: qrtdown::build_site()\nCommit and push to Codeberg"
+  },
+  {
+    "objectID": "_qrtdown/articles.html",
+    "href": "_qrtdown/articles.html",
+    "title": "Articles",
+    "section": "",
+    "text": "flixpatrol Articles\nIn-depth guides and tutorials for using the package.\n\nDeveloper’s Guide\nGetting Started with flixpatrol"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "flixpatrol",
+    "section": "",
+    "text": "MIT + file LICENSE\n\n\n\nCiting this package\n\n\n\n\nAlejandro Hagan (author, maintainer)\n\n\n\n\n\nMIT + file LICENSE\n\n\n\nCiting this package\n\n\n\n\nAlejandro Hagan (author, maintainer)\nThe flixpatrol package is an R interface for the FlixPatrol API V2. It allows for the programmatic retrieval of VOD rankings, streaming Top 10 lists, official viewing hour statistics, torrent charts, social media fan metrics, and premiere schedules across major global platforms."
+  },
+  {
+    "objectID": "index.html#features",
+    "href": "index.html#features",
+    "title": "flixpatrol",
+    "section": "Features",
+    "text": "Features\n\nMetadata Lookup: Resolve country, platform, franchise, and title names into internal FlixPatrol IDs.\nHistorical Data Retrieval: Fetch daily Top 10 charts over custom date ranges.\nOfficial Metrics: Access “Hours Viewed” and “Official Ranking” tables as analysis-ready tibbles.\nTorrent Rankings: Pull torrent chart data by site and date range.\nSocial Media Fans: Retrieve fan count rankings from Instagram, Facebook, and Twitter.\nPremieres: Get upcoming premiere schedules by platform and country.\nTitle Details: Retrieve full metadata for any title.\nVectorized ID Resolution: Resolve FlixPatrol IDs back to human-readable names in bulk.\nRobust Validation: Built-in checks for date ranges and API-specific weekday requirements (e.g., weekly charts starting on Mondays).\nRate Limiting & Retry: All API calls are throttled (10 req/min) with automatic retry on transient failures."
+  },
+  {
+    "objectID": "index.html#installation",
+    "href": "index.html#installation",
+    "title": "flixpatrol",
+    "section": "Installation",
+    "text": "Installation\nYou can install the development version of flixpatrol from Codeberg:\n# install.packages(\"pak\")\npak::pak(\"git::https://codeberg.org/usrbinr/flixpatrol\")"
+  },
+  {
+    "objectID": "index.html#authentication",
+    "href": "index.html#authentication",
+    "title": "flixpatrol",
+    "section": "Authentication",
+    "text": "Authentication\nThe package uses basic authentication via an API key stored in your R environment. Set it once:\nusethis::edit_r_environ()\n# Add this line to the file that opens:\n# FLIX_PATROL=your_api_key_here\nRestart R after saving. All functions default to reading the FLIX_PATROL environment variable."
+  },
+  {
+    "objectID": "index.html#package-options",
+    "href": "index.html#package-options",
+    "title": "flixpatrol",
+    "section": "Package Options",
+    "text": "Package Options\n\n\n\n\n\n\n\n\nOption\nDefault\nDescription\n\n\n\n\nflixpatrol.silent\nFALSE\nSuppress lookup success messages\n\n\nflixpatrol.return_ids\nFALSE\nInclude ID columns in output tibbles\n\n\nflixpatrol.throttle_rate\n10\nAPI requests per minute (rate limiting)\n\n\nflixpatrol.show_quota\nTRUE\nShow API quota in flixpatrol_sitrep()\n\n\n\n\nQuery Default Options\nSet these to avoid passing arguments on every call:\n\n\n\n\n\n\n\n\nOption\nDefault\nDescription\n\n\n\n\nflixpatrol.platform_name\nNULL\nDefault platform (e.g., “netflix”, “disney+”)\n\n\nflixpatrol.country_name\nNULL\nDefault country (e.g., “United States”)\n\n\nflixpatrol.start_date\nNULL\nDefault start date (yyyy-mm-dd)\n\n\nflixpatrol.end_date\nNULL\nDefault end date (yyyy-mm-dd)\n\n\nflixpatrol.media_type\nNULL\nDefault content type (“movie” or “tv_show”)\n\n\nflixpatrol.language\n\"english\"\nDefault language\n\n\nflixpatrol.social_platform\n\"instagram\"\nDefault social platform\n\n\nflixpatrol.torrent_site\nNULL\nDefault torrent site\n\n\n\nSet options globally:\noptions(\n flixpatrol.silent = TRUE,\n flixpatrol.return_ids = TRUE,\n flixpatrol.throttle_rate = 15,\n flixpatrol.show_quota = FALSE\n)\nView current option values:\nflixpatrol_options()\nCheck package status and API quota:\nflixpatrol_sitrep()"
+  },
+  {
+    "objectID": "index.html#usage",
+    "href": "index.html#usage",
+    "title": "flixpatrol",
+    "section": "Usage",
+    "text": "Usage\n\nLookup Functions\nTranslate human-readable names into FlixPatrol internal IDs:\nlibrary(flixpatrol)\n\nlookup_country(\"United States\")\nlookup_platform(\"Netflix\")\nlookup_franchise(\"Indiana Jones\")\nlookup_title(\"Squid Game\")\n\n# Vectorized\nlookup_country(c(\"United States\", \"Germany\", \"Japan\"))\n\n\nReverse Lookups (ID to Name)\nget_title_name(\"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX\")  # company\nget_title_name(\"ttl_yPCJU2UzROTNVv5JZ7Hu4m8M\")  # title\n\n# Vectorized - returns NA for failures\nget_title_name(c(\"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX\", \"ttl_invalid\"))\n\n\nDaily Top 10\nget_top_ten(\n  platform_name = \"netflix\",\n  country_name  = \"United States\",\n  start_date    = \"2025-12-01\",\n  end_date      = \"2025-12-07\",\n  media_type    = \"movie\"\n)\n\n\nHours Viewed\nRequires a 7-day range starting on a Monday:\nget_hours_viewed(\n  platform_name = \"netflix\",\n  media_type    = \"movie\",\n  language_name = \"english\",\n  start_date    = \"2025-12-15\",\n  end_date      = \"2025-12-21\"\n)\n\n\nOfficial Rankings (Netflix Only)\nget_official_ranking(\n  country_name = \"United States\",\n  start_date   = \"2025-12-15\",\n  end_date     = \"2025-12-21\",\n  media_type   = \"movie\"\n)\n\n\nTorrent Rankings\nget_torrent_ranking(\n  torrent_site = \"1337x\",\n  start_date   = \"2025-12-01\",\n  end_date     = \"2025-12-01\"\n)\n\n\nSocial Media Fans\nget_fans_ranking(\n  social_platform = \"Instagram\",\n  start_date      = \"2025-12-15\",\n  end_date        = \"2025-12-21\"\n)\n\n\nPremieres\nget_premieres(\n  platform_name = \"netflix\",\n  start_date    = \"2025-12-15\",\n  end_date      = \"2025-12-31\"\n)\n\n\nTitle Details\nget_title_details(\"ttl_yPCJU2UzROTNVv5JZ7Hu4m8M\")\n\n\nCompare Platforms\nSee how a title ranks across multiple platforms on the same day:\ncompare_platforms(\n  title = \"Squid Game\",\n  date  = \"2025-12-15\"\n)\n\n\nTitle History\nTrack a single title’s rank over time:\nget_title_history(\n  title      = \"Squid Game\",\n  start_date = \"2025-12-01\",\n  end_date   = \"2025-12-14\"\n)\n\n\nWeekly Movers\nIdentify gainers, losers, new entries, and exits between two chart dates:\nget_weekly_movers(\n  date_before = \"2025-12-14\",\n  date_after  = \"2025-12-15\"\n)\n\n\nTop Titles Summary\nMost frequent Top 10 titles over a date range with best/average rank:\nget_top_titles_summary(\n  start_date = \"2025-12-01\",\n  end_date   = \"2025-12-14\",\n  n          = 10\n)\n\n\nGlobal Ranking\nSee where a title ranks across 15 countries:\nget_global_ranking(\n  title = \"Squid Game\",\n  date  = \"2025-12-15\"\n)\n\n\nFranchise Performance\nAggregate all titles in a franchise over a date range:\nget_franchise_performance(\n  franchise_title = \"Marvel\",\n  start_date      = \"2025-12-01\",\n  end_date        = \"2025-12-14\"\n)"
+  },
+  {
+    "objectID": "index.html#lookup-tables",
+    "href": "index.html#lookup-tables",
+    "title": "flixpatrol",
+    "section": "Lookup Tables",
+    "text": "Lookup Tables\nThe package ships with pre-built reference tables to avoid unnecessary API calls:\n\n\n\n\n\n\n\nTable\nContents\n\n\n\n\nflix_type_tbl\nContent types (movie, tv, anime, kids, docs, etc.)\n\n\nlanguage_name\nLanguage options (english, non_english)\n\n\nmedia_type_name\nMedia categories (movie, tv_show)\n\n\ndate_type_name\nDate granularities (day, week, month, quarter, half_year, year)\n\n\nsocial_media_name\nSocial platforms with company IDs\n\n\ntorrent_sites\nTorrent site name-to-ID mappings"
+  },
+  {
+    "objectID": "index.html#function-reference",
+    "href": "index.html#function-reference",
+    "title": "flixpatrol",
+    "section": "Function Reference",
+    "text": "Function Reference\n\nLookup (Name to ID)\n\n\n\nFunction\nSource\n\n\n\n\nlookup_country()\nAPI /countries\n\n\nlookup_platform()\nAPI /companies\n\n\nlookup_franchise()\nAPI /franchises\n\n\nlookup_title()\nAPI /titles\n\n\nlookup_flix_type()\nLocal table\n\n\nlookup_language()\nLocal table\n\n\nlookup_media_type()\nLocal table\n\n\nlookup_date_type()\nLocal table\n\n\nlookup_torrent_site()\nLocal table\n\n\n\n\n\nReverse Lookup (ID to Name)\n\n\n\n\n\n\n\nFunction\nDescription\n\n\n\n\nget_title_name()\nAuto-detects cmp_, ttl_, frn_ prefixes. Vectorized, returns NA on failure.\n\n\nget_company_name()\nCompany ID to name\n\n\nget_franchise_name()\nFranchise ID to name\n\n\n\n\n\nData Retrieval\n\n\n\n\n\n\n\n\nFunction\nEndpoint\nDescription\n\n\n\n\nget_top_ten()\n/top10s\nTop 10 over a date range\n\n\nget_hours_viewed()\n/hoursviewed\nWeekly viewing hours\n\n\nget_official_ranking()\n/rankingsofficial\nOfficial Netflix rankings\n\n\nget_fans_ranking()\n/fans\nSocial media fan counts\n\n\nget_torrent_ranking()\n/torrents\nTorrent chart rankings\n\n\nget_premieres()\n/premieres\nUpcoming premiere dates\n\n\nget_title_details()\n/titles/:id\nFull title metadata\n\n\n\n\n\nAnalytics & Comparison\n\n\n\n\n\n\n\nFunction\nDescription\n\n\n\n\ncompare_platforms()\nCompare a title’s rank across multiple platforms on the same day\n\n\nget_title_history()\nTrack a single title’s rank over a date range\n\n\nget_weekly_movers()\nGainers, losers, new entries, and exits between two chart dates\n\n\nget_top_titles_summary()\nMost frequent Top 10 titles with best/avg rank over a period\n\n\nget_global_ranking()\nA title’s rank across 15+ countries on a single date\n\n\nget_franchise_performance()\nAggregate chart performance for all titles in a franchise\n\n\n\n\n\nValidation\n\n\n\n\n\n\n\nFunction\nPurpose\n\n\n\n\nvalidate_date_range()\nEnforces weekday and range-length constraints\n\n\nflixpatrol_options()\nList available package options"
+  },
+  {
+    "objectID": "index.html#contributing",
+    "href": "index.html#contributing",
+    "title": "flixpatrol",
+    "section": "Contributing",
+    "text": "Contributing\nSee CONTRIBUTING.md for developer documentation."
+  },
+  {
+    "objectID": "index.html#license-2",
+    "href": "index.html#license-2",
+    "title": "flixpatrol",
+    "section": "License",
+    "text": "License\nMIT"
+  },
+  {
+    "objectID": "_qrtdown/reference.html",
+    "href": "_qrtdown/reference.html",
+    "title": "Function reference",
+    "section": "",
+    "text": "All functions and classes exported by flixpatrol."
+  },
+  {
+    "objectID": "_qrtdown/reference.html#functions",
+    "href": "_qrtdown/reference.html#functions",
+    "title": "Function reference",
+    "section": "Functions",
+    "text": "Functions\n\n\n\nFunction\nDescription\n\n\n\n\nauthenticate()\nAuthenticate and Create Base Request\n\n\ncompare_platforms()\nCompare a Title’s Ranking Across Platforms\n\n\ndate_type_name()\nDate Type Lookup Table\n\n\nflix_type_tbl()\nFlix Type Lookup Table\n\n\nflixpatrol_options()\nFlixPatrol Package Options\n\n\nflixpatrol_sitrep()\nFlixPatrol Situation Report\n\n\nflixpatrol-package()\nflixpatrol: R Client for the ‘FlixPatrol’ Streaming Rankings API\n\n\nfp_cache_ids()\nCache Country and Platform IDs to Lookup Tables\n\n\nfp_enrich()\nEnrich a Tibble with Resolved Names\n\n\nget_company_name()\nGet Company Name from ID\n\n\nget_fans_ranking()\nGet Fans Rankings\n\n\nget_franchise_name()\nGet Franchise Name from ID\n\n\nget_franchise_performance()\nFranchise Performance Rollup\n\n\nget_global_ranking()\nGlobal Ranking for a Title Across Countries\n\n\nget_hours_viewed()\nCreate Hours Viewed Table\n\n\nget_official_ranking()\nCreate Official Ranking Table\n\n\nget_premieres()\nCreate Premiere Table\n\n\nget_quota()\nGet API Quota Information\n\n\nget_title_details()\nGet Title Details\n\n\nget_title_history()\nTrack a Single Title’s Rank Over Time\n\n\nget_title_name()\nGet Name from FlixPatrol ID\n\n\nget_top_ten()\nCreate a Daily Top 10 Table for a Date Range\n\n\nget_top_titles_summary()\nSummarize Top Titles Over a Date Range\n\n\nget_torrent_ranking()\nCreate Torrent Ranking Table\n\n\nget_weekly_movers()\nWeekly Movers: Gainers, Losers, New Entries, and Exits\n\n\nlanguage_name()\nLanguage Lookup Table\n\n\nlookup_country()\nLookup Country IDs\n\n\nlookup_date_type()\nLookup Date Type IDs\n\n\nlookup_flix_type()\nLookup Flix Type IDs\n\n\nlookup_franchise()\nLookup Franchise IDs\n\n\nlookup_from_table()\nLookup Values from a Reference Table\n\n\nlookup_language()\nLookup Language IDs\n\n\nlookup_media_type()\nLookup Media Type IDs\n\n\nlookup_platform()\nLookup Platform (Company) IDs\n\n\nlookup_social_platform()\nLookup Social Platform IDs\n\n\nlookup_title()\nLookup Title ID\n\n\nlookup_torrent_site()\nLookup Torrent Site IDs\n\n\nmedia_type_name()\nMedia Type Lookup Table\n\n\nnormalize_content_type()\nNormalize Content Type Input\n\n\nnormalize_plural()\nNormalize Plural/Singular Forms\n\n\nresolve_content_type()\nResolve Content Type to API ID\n\n\nsocial_media_name()\nSocial Media Platform Lookup Table\n\n\ntorrent_sites()\nTorrent Sites Lookup Table\n\n\ntorrent_sites_tbl()\nTorrent Sites Lookup Table (Legacy)\n\n\nunnest_flixpatrol_response()\nUnnest a FlixPatrol API Response\n\n\nvalidate_date_format()\nValidate Date Format\n\n\nvalidate_date_range()\nValidate Date Ranges for API Compatibility"
+  },
+  {
+    "objectID": "_qrtdown/citation.html",
+    "href": "_qrtdown/citation.html",
+    "title": "Citation",
+    "section": "",
+    "text": "To cite this package in publications, use:\n\nHagan A (2026). flixpatrol: R Client for the FlixPatrol Streaming Rankings API. R package version 0.2.0, https://codeberg.org/usrbinr/flixpatrol.\n\n\n\n@Manual{,\n  title = {flixpatrol: R Client for the FlixPatrol Streaming Rankings API},\n  author = {Alejandro Hagan},\n  year = {2026},\n  note = {R package version 0.2.0},\n  url = {https://codeberg.org/usrbinr/flixpatrol},\n}"
+  },
+  {
+    "objectID": "_qrtdown/citation.html#bibtex-entry",
+    "href": "_qrtdown/citation.html#bibtex-entry",
+    "title": "Citation",
+    "section": "",
+    "text": "@Manual{,\n  title = {flixpatrol: R Client for the FlixPatrol Streaming Rankings API},\n  author = {Alejandro Hagan},\n  year = {2026},\n  note = {R package version 0.2.0},\n  url = {https://codeberg.org/usrbinr/flixpatrol},\n}"
+  },
+  {
+    "objectID": "vignettes/articles/getting-started.html",
+    "href": "vignettes/articles/getting-started.html",
+    "title": "Getting Started with flixpatrol",
+    "section": "",
+    "text": "This article demonstrates how to use the flixpatrol package to retrieve streaming platform rankings and analytics from the FlixPatrol API."
+  },
+  {
+    "objectID": "vignettes/articles/getting-started.html#setup",
+    "href": "vignettes/articles/getting-started.html#setup",
+    "title": "Getting Started with flixpatrol",
+    "section": "Setup",
+    "text": "Setup\nFirst, load the package and set your API key:\n\nlibrary(flixpatrol)\n\n# Set your API key (do this once in your .Renviron)\nusethis::edit_r_environ()\n# Add: FLIX_PATROL=your_api_key_here\n\nTo suppress lookup messages globally:\n\noptions(flixpatrol.silent = TRUE)"
+  },
+  {
+    "objectID": "vignettes/articles/getting-started.html#looking-up-ids",
+    "href": "vignettes/articles/getting-started.html#looking-up-ids",
+    "title": "Getting Started with flixpatrol",
+    "section": "Looking Up IDs",
+    "text": "Looking Up IDs\nBefore fetching data, you often need to translate human-readable names to FlixPatrol IDs.\n\nCountries and Platforms\n\n# Single lookup\nlookup_country(\"United States\")\n#&gt; [1] \"cnt_iMUHNbZvnNHK5YdhgwtOoP4u\"\n\nlookup_platform(\"Netflix\")\n#&gt; [1] \"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX\"\n\n# Multiple at once (vectorized)\nlookup_country(c(\"United States\", \"Germany\", \"Japan\"))\nlookup_platform(c(\"Netflix\", \"Disney+\", \"HBO Max\"))\n\n\n\nTitles and Franchises\n\nlookup_title(\"Squid Game\")\n#&gt; [1] \"ttl_yPCJU2UzROTNVv5JZ7Hu4m8M\"\n\nlookup_franchise(\"Marvel\")\n#&gt; [1] \"frn_KGBes9dtvkV710raDBpXoKRc\"\n\n\n\nReverse Lookup (ID to Name)\n\n# Works with any ID type (cmp_, ttl_, frn_)\nget_title_name(\"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX\")\n#&gt; [1] \"Netflix\"\n\n# Vectorized - returns NA for failures\nget_title_name(c(\"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX\", \"ttl_invalid\"))\n#&gt; [1] \"Netflix\" NA"
+  },
+  {
+    "objectID": "vignettes/articles/getting-started.html#fetching-top-10-rankings",
+    "href": "vignettes/articles/getting-started.html#fetching-top-10-rankings",
+    "title": "Getting Started with flixpatrol",
+    "section": "Fetching Top 10 Rankings",
+    "text": "Fetching Top 10 Rankings\n\nDaily Top 10\n\n# Get a week of Top 10 data\ntop10 &lt;- get_top_ten(\n  platform_name = \"netflix\",\n  country_name  = \"United States\",\n  start_date    = \"2025-12-01\",\n  end_date      = \"2025-12-07\",\n  flix_type     = \"movies\"\n)\n\ntop10\n#&gt; # A tibble: 70 x 7\n#&gt;     rank title                  type_id days_total rank_last date       imdb_id\n#&gt;    &lt;int&gt; &lt;chr&gt;                    &lt;int&gt;      &lt;int&gt;     &lt;int&gt; &lt;chr&gt;        &lt;int&gt;\n#&gt;  1     1 Carry-On                     1         15         1 2025-12-01  123456\n#&gt;  2     2 The Six Triple Eight         1          8         2 2025-12-01  234567\n#&gt;  3     3 Our Little Secret            1         21         3 2025-12-01  345678\n#&gt; # i 67 more rows\n\n\n\nFiltering Results\n\nlibrary(dplyr)\n\n# Find #1 movies each day\ntop10 |&gt;\n  filter(rank == 1) |&gt;\n  select(date, title, days_total)\n\n# Titles that appeared multiple days\ntop10 |&gt;\n  count(title, sort = TRUE) |&gt;\n  filter(n &gt; 3)"
+  },
+  {
+    "objectID": "vignettes/articles/getting-started.html#viewing-hours-data",
+    "href": "vignettes/articles/getting-started.html#viewing-hours-data",
+    "title": "Getting Started with flixpatrol",
+    "section": "Viewing Hours Data",
+    "text": "Viewing Hours Data\nNetflix publishes weekly viewing hours. This requires a Monday-Sunday date range:\n\nhours &lt;- get_hours_viewed(\n  platform_name   = \"netflix\",\n  language_name   = \"english\",\n  media_type_name = \"movie\",\n  start_date      = \"2025-12-16\",\n  end_date        = \"2025-12-22\"\n)\n\nhours |&gt;\n  select(title, hours_viewed = data_value) |&gt;\n  arrange(desc(hours_viewed)) |&gt;\n  head(10)"
+  },
+  {
+    "objectID": "vignettes/articles/getting-started.html#premieres",
+    "href": "vignettes/articles/getting-started.html#premieres",
+    "title": "Getting Started with flixpatrol",
+    "section": "Premieres",
+    "text": "Premieres\nGet upcoming releases for a platform:\n\npremieres &lt;- get_premieres(\n  platform_name = \"netflix\",\n  start_date    = \"2025-12-01\",\n  end_date      = \"2025-12-31\"\n)\n\npremieres |&gt;\n  select(title = movie_data_title, premiere_date = data_premiere, type = data_type) |&gt;\n  arrange(premiere_date)"
+  },
+  {
+    "objectID": "vignettes/articles/getting-started.html#analytics-functions",
+    "href": "vignettes/articles/getting-started.html#analytics-functions",
+    "title": "Getting Started with flixpatrol",
+    "section": "Analytics Functions",
+    "text": "Analytics Functions\n\nCompare Across Platforms\nSee how a title performs on different streaming services:\n\ncompare_platforms_tbl(\n  title     = \"Stranger Things\",\n  date      = \"2025-12-01\",\n  platforms = c(\"netflix\", \"disney+\", \"hbo max\", \"amazon prime\"),\n  flix_type = \"tv_shows\"\n)\n#&gt; # A tibble: 4 x 4\n#&gt;   platform      rank title           date\n#&gt;   &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;           &lt;chr&gt;\n#&gt; 1 netflix          1 Stranger Things 2025-12-01\n#&gt; 2 disney+         NA Stranger Things 2025-12-01\n#&gt; 3 hbo max         NA Stranger Things 2025-12-01\n#&gt; 4 amazon prime    NA Stranger Things 2025-12-01\n\n\n\nTrack a Title Over Time\n\nhistory &lt;- get_title_history(\n  title         = \"Stranger Things\",\n  platform_name = \"netflix\",\n  country_name  = \"United States\",\n  start_date    = \"2025-12-01\",\n  end_date      = \"2025-12-07\",\n  flix_type     = \"tv_shows\"\n)\n\n\n\nWeekly Movers\nIdentify which titles gained or lost positions:\n\nmovers &lt;- get_weekly_movers(\n  platform_name = \"netflix\",\n  country_name  = \"United States\",\n  date_before   = \"2025-12-14\",\n  date_after    = \"2025-12-15\",\n  flix_type     = \"movies\"\n)\n\nmovers |&gt;\n  filter(status %in% c(\"gainer\", \"new_entry\")) |&gt;\n  arrange(desc(change))\n#&gt; # A tibble: 5 x 5\n#&gt;   title              rank_before rank_after change status\n#&gt;   &lt;chr&gt;                    &lt;int&gt;      &lt;int&gt;  &lt;int&gt; &lt;chr&gt;\n#&gt; 1 New Holiday Movie           NA          2     NA new_entry\n#&gt; 2 Rising Star                  8          3      5 gainer\n#&gt; 3 Comeback Film               10          7      3 gainer\n\n\n\nTop Titles Summary\nSummarize which titles dominated over a period:\n\nsummary_tbl &lt;- get_top_titles_summary(\n  platform_name = \"netflix\",\n  country_name  = \"United States\",\n  start_date    = \"2025-12-01\",\n  end_date      = \"2025-12-31\",\n  flix_type     = \"movies\",\n  n             = 10\n)\n\nsummary_tbl\n#&gt; # A tibble: 10 x 6\n#&gt;    title                days_on_chart best_rank avg_rank first_seen last_seen\n#&gt;    &lt;chr&gt;                        &lt;int&gt;     &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;\n#&gt;  1 Carry-On                        31         1      1.5 2025-12-01 2025-12-31\n#&gt;  2 Our Little Secret               28         1      2.3 2025-12-01 2025-12-28\n#&gt;  3 The Six Triple Eight            25         1      3.1 2025-12-01 2025-12-25\n\n\n\nGlobal Ranking\nSee how a title ranks in different countries:\n\nglobal &lt;- get_global_ranking(\n  title         = \"Stranger Things\",\n  platform_name = \"netflix\",\n  date          = \"2025-12-01\",\n  flix_type     = \"tv_shows\"\n)\n\nglobal |&gt;\n  filter(!is.na(rank)) |&gt;\n  arrange(rank)\n#&gt; # A tibble: 12 x 4\n#&gt;    country        rank title           date\n#&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;           &lt;chr&gt;\n#&gt;  1 United States     1 Stranger Things 2025-12-01\n#&gt;  2 Canada            2 Stranger Things 2025-12-01\n#&gt;  3 United Kingdom    3 Stranger Things 2025-12-01\n#&gt;  4 Germany           4 Stranger Things 2025-12-01\n\n\n\nFranchise Performance\nAggregate all titles in a franchise:\n\nmarvel &lt;- get_franchise_performance(\n  franchise_title = \"Marvel\",\n  platform_name   = \"netflix\",\n  country_name    = \"United States\",\n  start_date      = \"2025-12-01\",\n  end_date        = \"2025-12-31\",\n  flix_type       = \"movies\"\n)\n\nmarvel\n#&gt; # A tibble: 4 x 7\n#&gt;   title              days_on_chart best_rank avg_rank first_seen last_seen franchise\n#&gt;   &lt;chr&gt;                      &lt;int&gt;     &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;\n#&gt; 1 Black Panther                 12         3      5.2 2025-12-05 2025-12-16 Marvel\n#&gt; 2 Spider-Man: NWH                8         5      7.1 2025-12-10 2025-12-17 Marvel"
+  },
+  {
+    "objectID": "vignettes/articles/getting-started.html#lookup-tables",
+    "href": "vignettes/articles/getting-started.html#lookup-tables",
+    "title": "Getting Started with flixpatrol",
+    "section": "Lookup Tables",
+    "text": "Lookup Tables\nThe package includes pre-built reference tables to avoid API calls:\n\n# View available content types\nflixpatrol::flix_type_tbl\n#&gt; # A tibble: 13 x 2\n#&gt;    type_id type_label\n#&gt;      &lt;int&gt; &lt;chr&gt;\n#&gt;  1       1 movies\n#&gt;  2       2 tv\n#&gt;  3       3 anime\n#&gt;  4       4 kids\n#&gt;  ...\n\n# View date granularities\nflixpatrol::date_type_name\n#&gt; # A tibble: 7 x 2\n#&gt;   date_type_id date_type_name\n#&gt;          &lt;int&gt; &lt;chr&gt;\n#&gt;  1            1 day\n#&gt;  2            2 week\n#&gt;  3            3 month\n#&gt;  ...\n\n# View torrent sites\nflixpatrol::torrent_sites"
+  },
+  {
+    "objectID": "vignettes/articles/getting-started.html#next-steps",
+    "href": "vignettes/articles/getting-started.html#next-steps",
+    "title": "Getting Started with flixpatrol",
+    "section": "Next Steps",
+    "text": "Next Steps\n\nExplore the Function Reference for complete documentation\nCheck the FlixPatrol API docs for endpoint details\nReport issues at Codeberg"
   }
 ]
