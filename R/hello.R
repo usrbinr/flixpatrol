@@ -35,15 +35,22 @@ authenticate <- function(site="https://api.flixpatrol.com/v2/top10s",token="FLIX
 
     throttle_rate <- getOption("flixpatrol.throttle_rate", 10)
 
+    timeout_seconds <- getOption("flixpatrol.timeout", 120)
+
     req <- httr2::request(site) |>
-        httr2::req_auth_basic(username = access_token, password = "")
+        httr2::req_auth_basic(username = access_token, password = "") |>
+        httr2::req_timeout(seconds = timeout_seconds)
 
     # Apply throttling if rate is finite
     if (is.finite(throttle_rate) && throttle_rate > 0) {
         req <- req |> httr2::req_throttle(rate = throttle_rate / 60)
     }
 
-    req <- req |> httr2::req_retry(max_tries = 3)
+    req <- req |> httr2::req_retry(
+        max_tries = 5,
+        is_transient = \(resp) httr2::resp_status(resp) %in% c(429, 500, 502, 503, 504),
+        backoff = \(i) 2^i
+    )
 
     return(req)
 
