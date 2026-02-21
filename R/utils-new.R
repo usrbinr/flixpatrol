@@ -243,7 +243,7 @@ get_torrent_ranking <- function(
 #' @param media_type Character. Optional filter: "movie" or "tv".
 #' @param return_ids Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.
 #'
-#' @return A tibble with columns: title, premiere, type (movie/tv_show), season, episodes, platform.
+#' @return A tibble with columns: title, imdb_id, premiere, type (movie/tv_show), season, episodes, binge, platform.
 #'   If `return_ids = TRUE`, also includes title_id.
 #' @export
 #'
@@ -273,7 +273,7 @@ get_premieres <- function(platform_name = "netflix",
     )
 
     if (!is.null(media_type)) {
-        type_id <- resolve_content_type(media_type, "flix")
+        type_id <- resolve_content_type(media_type, "media")
         query_params[["type[eq]"]] <- type_id
     }
 
@@ -294,11 +294,13 @@ get_premieres <- function(platform_name = "netflix",
             tibble::tibble(
                 title_id  = purrr::pluck(d, "movie", "data", "id", .default = NA_character_),
                 title     = purrr::pluck(d, "movie", "data", "title", .default = NA_character_),
+                imdb_id   = as.character(purrr::pluck(d, "movie", "data", "imdbId", .default = NA)),
                 premiere  = purrr::pluck(d, "premiere", .default = NA_character_),
                 type      = ifelse(purrr::pluck(d, "type", .default = 1) == 1, "movie", "tv_show"),
                 season    = purrr::pluck(d, "season", .default = NA_integer_),
                 episodes  = purrr::pluck(d, "episodes", .default = NA_integer_),
-                platform  = purrr::pluck(d, "company", "data", "name", .default = NA_character_)
+                binge     = as.logical(purrr::pluck(d, "binge", .default = NA)),
+                platform  = platform_name
             )
         })
 
