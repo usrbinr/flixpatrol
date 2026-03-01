@@ -377,7 +377,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation">Documentation</a>
   <ul class="collapse">
   <li><a href="#roxygen2" id="toc-roxygen2" class="nav-link" data-scroll-target="#roxygen2">Roxygen2</a></li>
-  <li><a href="#quarto-website" id="toc-quarto-website" class="nav-link" data-scroll-target="#quarto-website">Quarto Website</a></li>
+  <li><a href="#qrtdown-website" id="toc-qrtdown-website" class="nav-link" data-scroll-target="#qrtdown-website">qrtdown Website</a></li>
   <li><a href="#rendering" id="toc-rendering" class="nav-link" data-scroll-target="#rendering">Rendering</a></li>
   </ul></li>
   <li><a href="#error-handling" id="toc-error-handling" class="nav-link" data-scroll-target="#error-handling">Error Handling</a></li>
@@ -423,7 +423,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="codebase-structure">Codebase Structure</h2>
 <pre><code>flixpatrol/
 ├── R/                      # Source code
-│   ├── hello.R             # Core functions (auth, lookups, data retrieval)
+│   ├── api.R               # Core functions (auth, lookups, data retrieval)
 │   ├── utils-api.R         # API utility functions
 │   └── utils-new.R         # Analytics and helper functions
 ├── data/                   # Pre-built lookup tables (.rda)
@@ -431,10 +431,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ├── man/                    # Roxygen2-generated documentation
 ├── tests/testthat/         # Unit tests
 ├── docs/                   # Rendered website (qrtdown output)
-├── reference/              # Quarto reference pages
-├── index.qmd               # Package homepage
-├── reference.qmd           # Function reference index
-└── CLAUDE.md               # AI assistant instructions</code></pre>
+├── vignettes/articles/     # Website-only articles (qrtdown builds these)
+├── _qrtdown.yml            # qrtdown configuration
+└── README.qmd              # Package homepage (becomes index.qmd)</code></pre>
 </section>
 <section id="function-naming-conventions" class="level2">
 <h2 class="anchored" data-anchor-id="function-naming-conventions">Function Naming Conventions</h2>
@@ -491,7 +490,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Reads the API key from <code>Sys.getenv("FLIX_PATROL")</code></li>
 <li>Uses httr2 basic auth</li>
 <li>Applies rate limiting (10 requests/minute)</li>
-<li>Enables automatic retry (3 attempts)</li>
+<li>Enables automatic retry (5 attempts with exponential backoff)</li>
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">authenticate</span>(<span class="at">site =</span> <span class="st">"https://api.flixpatrol.com/v2/endpoint"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -600,30 +599,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#' @export</span></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>lookup_something <span class="ot">&lt;-</span> <span class="cf">function</span>(name, <span class="at">silent =</span> <span class="fu">getOption</span>(<span class="st">"flixpatrol.silent"</span>, <span class="cn">FALSE</span>)) {</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    token <span class="ot">&lt;-</span> <span class="fu">Sys.getenv</span>(<span class="st">"FLIX_PATROL"</span>)</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    find_single_id <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        resp <span class="ot">&lt;-</span> <span class="fu">authenticate</span>(<span class="at">site =</span> <span class="st">"https://api.flixpatrol.com/v2/endpoint"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>            httr2<span class="sc">::</span><span class="fu">req_url_query</span>(<span class="st">`</span><span class="at">name[in]</span><span class="st">`</span> <span class="ot">=</span> n) <span class="sc">|&gt;</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>            httr2<span class="sc">::</span><span class="fu">req_perform</span>()</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    find_single_id <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        resp <span class="ot">&lt;-</span> <span class="fu">authenticate</span>(<span class="at">site =</span> <span class="st">"https://api.flixpatrol.com/v2/endpoint"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>            httr2<span class="sc">::</span><span class="fu">req_url_query</span>(<span class="st">`</span><span class="at">name[in]</span><span class="st">`</span> <span class="ot">=</span> n) <span class="sc">|&gt;</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>            httr2<span class="sc">::</span><span class="fu">req_perform</span>()</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        body <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(resp)</span>
 <span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        body <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(resp)</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="fu">length</span>(body<span class="sc">$</span>data) <span class="sc">==</span> <span class="dv">0</span>) {</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>            cli<span class="sc">::</span><span class="fu">cli_abort</span>(<span class="st">"Not found: {.val {n}}"</span>)</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="fu">length</span>(body<span class="sc">$</span>data) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>            cli<span class="sc">::</span><span class="fu">cli_abort</span>(<span class="st">"Not found: {.val {n}}"</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>        id <span class="ot">&lt;-</span> body<span class="sc">$</span>data[[<span class="dv">1</span>]]<span class="sc">$</span>data<span class="sc">$</span>id</span>
 <span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        id <span class="ot">&lt;-</span> body<span class="sc">$</span>data[[<span class="dv">1</span>]]<span class="sc">$</span>data<span class="sc">$</span>id</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="sc">!</span>silent) {</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>            cli<span class="sc">::</span><span class="fu">cli_alert_success</span>(<span class="st">"Found: {.val {n}} ({.val {id}})"</span>)</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        id</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    purrr<span class="sc">::</span><span class="fu">map_chr</span>(name, find_single_id)</span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="sc">!</span>silent) {</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>            cli<span class="sc">::</span><span class="fu">cli_alert_success</span>(<span class="st">"Found: {.val {n}} ({.val {id}})"</span>)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>        id</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    purrr<span class="sc">::</span><span class="fu">map_chr</span>(name, find_single_id)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
@@ -656,7 +653,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">flixpatrol.silent =</span> <span class="cn">TRUE</span>)  <span class="co"># Suppress lookup messages</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Add new options to <code>flixpatrol_options()</code> in <code>hello.R</code>.</p>
+<p>Add new options to <code>flixpatrol_options()</code> in <code>api.R</code>.</p>
 </section>
 <section id="testing" class="level2">
 <h2 class="anchored" data-anchor-id="testing">Testing</h2>
@@ -707,13 +704,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>@examples</code> - Wrapped in <code>\dontrun{}</code> for API calls</li>
 </ul>
 </section>
-<section id="quarto-website" class="level3">
-<h3 class="anchored" data-anchor-id="quarto-website">Quarto Website</h3>
-<ol type="1">
-<li>Update <code>index.qmd</code> for homepage content</li>
-<li>Update <code>reference.qmd</code> for function index</li>
-<li>Individual function pages go in <code>reference/</code></li>
-</ol>
+<section id="qrtdown-website" class="level3">
+<h3 class="anchored" data-anchor-id="qrtdown-website">qrtdown Website</h3>
+<p>The website is built using qrtdown. Key files:</p>
+<ul>
+<li><code>README.qmd</code> - Homepage content (converted to <code>index.qmd</code> during build)</li>
+<li><code>_qrtdown.yml</code> - Site configuration</li>
+<li><code>vignettes/articles/</code> - Website-only articles</li>
+</ul>
+<p>Reference pages are auto-generated from roxygen documentation.</p>
 </section>
 <section id="rendering" class="level3">
 <h3 class="anchored" data-anchor-id="rendering">Rendering</h3>

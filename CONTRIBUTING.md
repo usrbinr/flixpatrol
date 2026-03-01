@@ -11,23 +11,23 @@ flixpatrol is an R interface for the [FlixPatrol API V2](https://flixpatrol.com/
 ```
 flixpatrol/
 ├── R/                      # Source code
-│   ├── hello.R             # Core API functions: authenticate(), lookup_*(),
+│   ├── api.R             # Core API functions: authenticate(), lookup_*(),
 │   │                       #   get_top_ten(), get_hours_viewed(), get_official_ranking(),
 │   │                       #   get_fans_ranking(), validation helpers
 │   ├── utils-api.R         # ID-to-name resolution: get_company_name(), get_franchise_name(),
 │   │                       #   get_title_name(), lookup_franchise(), lookup_title()
 │   └── utils-new.R         # Analytics functions: compare_platforms(), get_title_history(),
 │                           #   get_weekly_movers(), get_global_ranking(), get_premieres(),
-│                           #   get_torrent_ranking(), get_top_titles_summary()
+│                           #   get_torrent_ranking(), get_top_titles_summary(),
+│                           #   get_franchise_performance(), get_title_details()
 ├── data/                   # Pre-built lookup tables (.rda)
 ├── data-raw/               # Scripts to regenerate lookup tables
 ├── man/                    # Roxygen2-generated documentation
 ├── tests/testthat/         # Unit tests
 ├── docs/                   # Rendered website (qrtdown output)
-├── reference/              # Quarto reference pages
-├── index.qmd               # Package homepage
-├── reference.qmd           # Function reference index
-└── CLAUDE.md               # AI assistant instructions
+├── vignettes/articles/     # Website-only articles (qrtdown builds these)
+├── _qrtdown.yml            # qrtdown configuration
+└── README.qmd              # Package homepage (becomes index.qmd)
 ```
 
 ## Function Naming Conventions
@@ -55,7 +55,7 @@ All API calls go through `authenticate()` which:
 - Reads the API key from `Sys.getenv("FLIX_PATROL")`
 - Uses httr2 basic auth
 - Applies rate limiting (10 requests/minute)
-- Enables automatic retry (3 attempts)
+- Enables automatic retry (5 attempts with exponential backoff)
 
 ```r
 authenticate(site = "https://api.flixpatrol.com/v2/endpoint")
@@ -138,8 +138,6 @@ get_something <- function(param1, param2) {
 #' @export
 lookup_something <- function(name, silent = getOption("flixpatrol.silent", FALSE)) {
 
-    token <- Sys.getenv("FLIX_PATROL")
-
     find_single_id <- function(n) {
         resp <- authenticate(site = "https://api.flixpatrol.com/v2/endpoint") |>
             httr2::req_url_query(`name[in]` = n) |>
@@ -193,7 +191,7 @@ Users can set global options:
 options(flixpatrol.silent = TRUE)  # Suppress lookup messages
 ```
 
-Add new options to `flixpatrol_options()` in `hello.R`.
+Add new options to `flixpatrol_options()` in `api.R`.
 
 ## Testing
 
@@ -239,21 +237,20 @@ All exported functions must have:
 - `@export` - To export the function
 - `@examples` - Wrapped in `\dontrun{}` for API calls
 
-### Quarto Website
+### qrtdown Website
 
-1. Update `index.qmd` for homepage content
-2. Update `reference.qmd` for function index
-3. Individual function pages go in `reference/`
+The website is built using qrtdown. Key files:
+
+- `README.qmd` - Homepage content (converted to `index.qmd` during build)
+- `_qrtdown.yml` - Site configuration
+- `vignettes/articles/` - Website-only articles
+
+Reference pages are auto-generated from roxygen documentation.
 
 ### Rendering
 
 ```r
-qrtdown::render_qrtdown()
-```
-
-Or from terminal:
-```bash
-quarto render
+qrtdown::build_site()
 ```
 
 ## Error Handling
@@ -315,5 +312,5 @@ Key endpoints:
 2. Run `devtools::check(remote = TRUE, manual = TRUE)`
 3. Run `devtools::test()`
 4. Update documentation: `devtools::document()`
-5. Render website: `qrtdown::render_qrtdown()`
+5. Render website: `qrtdown::build_site()`
 6. Commit and push to Codeberg

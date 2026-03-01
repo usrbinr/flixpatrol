@@ -44,7 +44,12 @@ lookup_platform("Netflix")
 
 # Multiple at once (vectorized)
 lookup_country(c("United States", "Germany", "Japan"))
+#> [1] "cnt_iMUHNbZvnNHK5YdhgwtOoP4u" "cnt_7KpRmXvZqL2nYwT9hJcF3sMd"
+#> [3] "cnt_8NqSmYwArM3oZxU0iKdG4tNe"
+
 lookup_platform(c("Netflix", "Disney+", "HBO Max"))
+#> [1] "cmp_IA6TdMqwf6kuyQvxo9bJ4nKX" "cmp_2BqTnOwZs7lPaRv1jLdH5uPf"
+#> [3] "cmp_3CrUoPxAt8mQbSw2kMeI6vQg"
 ```
 
 ### Titles and Franchises
@@ -86,7 +91,7 @@ top10 <- get_top_ten(
   country_name  = "United States",
   start_date    = "2025-12-01",
   end_date      = "2025-12-07",
-  flix_type     = "movies"
+  media_type    = "movie"
 )
 
 top10
@@ -110,11 +115,25 @@ library(dplyr)
 top10 |>
   filter(rank == 1) |>
   select(date, title, days_total)
+#> # A tibble: 7 x 3
+#>   date       title    days_total
+#>   <chr>      <chr>         <int>
+#> 1 2025-12-01 Carry-On         15
+#> 2 2025-12-02 Carry-On         16
+#> 3 2025-12-03 Carry-On         17
+#> # i 4 more rows
 
 # Titles that appeared multiple days
 top10 |>
   count(title, sort = TRUE) |>
   filter(n > 3)
+#> # A tibble: 8 x 2
+#>   title                    n
+#>   <chr>                <int>
+#> 1 Carry-On                 7
+#> 2 Our Little Secret        7
+#> 3 The Six Triple Eight     7
+#> # i 5 more rows
 ```
 
 ## Viewing Hours Data
@@ -127,7 +146,7 @@ Netflix publishes weekly viewing hours. This requires a Monday-Sunday date range
 hours <- get_hours_viewed(
   platform_name   = "netflix",
   language_name   = "english",
-  media_type_name = "movie",
+  media_type      = "movie",
   start_date      = "2025-12-16",
   end_date        = "2025-12-22"
 )
@@ -136,6 +155,13 @@ hours |>
   select(title, hours_viewed = data_value) |>
   arrange(desc(hours_viewed)) |>
   head(10)
+#> # A tibble: 10 x 2
+#>    title                hours_viewed
+#>    <chr>                       <dbl>
+#>  1 Carry-On                68500000
+#>  2 The Six Triple Eight    42300000
+#>  3 Our Little Secret       38100000
+#> # i 7 more rows
 ```
 
 ## Premieres
@@ -154,6 +180,13 @@ premieres <- get_premieres(
 premieres |>
   select(title = movie_data_title, premiere_date = data_premiere, type = data_type) |>
   arrange(premiere_date)
+#> # A tibble: 24 x 3
+#>    title                  premiere_date type
+#>    <chr>                  <chr>         <chr>
+#>  1 Holiday Action Film    2025-12-01    movie
+#>  2 Winter Romance         2025-12-05    movie
+#>  3 New Crime Series       2025-12-08    tv_show
+#> # i 21 more rows
 ```
 
 ## Analytics Functions
@@ -165,11 +198,11 @@ See how a title performs on different streaming services:
 ```{r}
 #| label: compare-platforms
 #| eval: false
-compare_platforms_tbl(
+compare_platforms(
   title     = "Stranger Things",
   date      = "2025-12-01",
   platforms = c("netflix", "disney+", "hbo max", "amazon prime"),
-  flix_type = "tv_shows"
+  media_type = "tv_show"
 )
 #> # A tibble: 4 x 4
 #>   platform      rank title           date
@@ -191,9 +224,17 @@ history <- get_title_history(
   country_name  = "United States",
   start_date    = "2025-12-01",
   end_date      = "2025-12-07",
-  flix_type     = "tv_shows"
+  media_type    = "tv_show"
 )
 
+history
+#> # A tibble: 7 x 4
+#>   date       title           rank platform
+#>   <chr>      <chr>          <int> <chr>
+#> 1 2025-12-01 Stranger Things    1 netflix
+#> 2 2025-12-02 Stranger Things    1 netflix
+#> 3 2025-12-03 Stranger Things    2 netflix
+#> # i 4 more rows
 ```
 
 ### Weekly Movers
@@ -208,7 +249,7 @@ movers <- get_weekly_movers(
   country_name  = "United States",
   date_before   = "2025-12-14",
   date_after    = "2025-12-15",
-  flix_type     = "movies"
+  media_type    = "movie"
 )
 
 movers |>
@@ -234,7 +275,7 @@ summary_tbl <- get_top_titles_summary(
   country_name  = "United States",
   start_date    = "2025-12-01",
   end_date      = "2025-12-31",
-  flix_type     = "movies",
+  media_type    = "movie",
   n             = 10
 )
 
@@ -258,7 +299,7 @@ global <- get_global_ranking(
   title         = "Stranger Things",
   platform_name = "netflix",
   date          = "2025-12-01",
-  flix_type     = "tv_shows"
+  media_type    = "tv_show"
 )
 
 global |>
@@ -286,7 +327,7 @@ marvel <- get_franchise_performance(
   country_name    = "United States",
   start_date      = "2025-12-01",
   end_date        = "2025-12-31",
-  flix_type       = "movies"
+  media_type      = "movie"
 )
 
 marvel
@@ -327,6 +368,13 @@ flixpatrol::date_type_name
 
 # View torrent sites
 flixpatrol::torrent_sites
+#> # A tibble: 5 x 2
+#>   torrent_site_id torrent_site_name
+#>   <chr>           <chr>
+#> 1 trs_1337x       1337x
+#> 2 trs_eztv        eztv
+#> 3 trs_piratebay   PirateBay
+#> # i 2 more rows
 ```
 
 ## Next Steps

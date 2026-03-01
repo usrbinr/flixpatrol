@@ -16,6 +16,6 @@
 
 * Initial release.
 * Core lookup functions: `lookup_country()`, `lookup_platform()`, `lookup_franchise()`, `lookup_title()`.
-* Data retrieval: `get_top_ten()`, `get_hours_viewed()`, `get_official_ranking()`, `get_fans_ranking()`, `get_torrent_ranking()`, `get_premieres()`.
+* Data retrieval: `get_top_ten()`, `get_hours_viewed()`, `get_official_ranking()`, `get_fans_ranking()`, `get_torrent_ranking()`, `get_premieres()`, `get_title_details()`.
 * Analytics: `compare_platforms()`, `get_title_history()`, `get_weekly_movers()`, `get_top_titles_summary()`, `get_global_ranking()`, `get_franchise_performance()`.
 * Package utilities: `flixpatrol_options()`, `flixpatrol_sitrep()`, `get_quota()`.
