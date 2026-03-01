@@ -1,7 +1,7 @@
 Package: flixpatrol
 Type: Package
 Title: R Client for the 'FlixPatrol' Streaming Rankings API
-Version: 0.2.0
+Version: 1.0.0
 Authors@R: c(
     person(
       "Alejandro", "Hagan",

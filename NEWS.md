@@ -1,3 +1,7 @@
+# flixpatrol 1.0.0
+* updated documentation 
+* updated syntax and harmonized input fields
+
 # flixpatrol 0.2.0
 
 ## Breaking Changes
