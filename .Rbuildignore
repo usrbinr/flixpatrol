@@ -30,3 +30,5 @@
 ^_qrtdown-styles\.css$
 ^_qrtdown$
 ^README\.qmd$
+^CRAN-SUBMISSION$
+^cran-comments\.md$

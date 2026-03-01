@@ -8,6 +8,14 @@
 \description{
 Provides a programmatic interface to the 'FlixPatrol' API (V2) for accessing streaming platform rankings, viewing hours, official charts, torrent data, and social media fan metrics. Includes lookup helpers for countries, platforms, franchises, and titles.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://codeberg.org/usrbinr/flixpatrol}
+  \item Report bugs at \url{https://codeberg.org/usrbinr/flixpatrol/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Alejandro Hagan \email{alejandro.hagan@outlook.com}
 

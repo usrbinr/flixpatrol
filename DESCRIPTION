@@ -14,6 +14,8 @@ Description: Provides a programmatic interface to the 'FlixPatrol' API (V2) for
     torrent data, and social media fan metrics. Includes lookup helpers for
     countries, platforms, franchises, and titles.
 License: MIT + file LICENSE
+URL: https://codeberg.org/usrbinr/flixpatrol
+BugReports: https://codeberg.org/usrbinr/flixpatrol/issues
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.3
