@@ -7,7 +7,7 @@
 resolve_content_type(content_type, target = c("flix", "media"))
 }
 \arguments{
-\item{content_type}{Character. Content type (e.g., "movie", "tv_show", "anime").}
+\item{content_type}{Character. Content type (e.g., "movie", "tvshow", "anime").}
 
 \item{target}{Character. Either "flix" or "media" to determine which ID mapping to use.}
 }

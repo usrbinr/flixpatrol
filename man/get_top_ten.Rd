@@ -26,14 +26,14 @@ Default from `getOption("flixpatrol.start_date")`.}
 \item{end_date}{Character. End of the range in yyyy-mm-dd format.
 Default from `getOption("flixpatrol.end_date")`.}
 
-\item{media_type}{Character. Content type (e.g., "movie", "movies", "tv", "tv_show").
+\item{media_type}{Character. Content type (e.g., "movie", "movies", "tv", "tvshow").
 Default from `getOption("flixpatrol.media_type")`.}
 
 \item{return_ids}{Logical. Include ID columns in output.
 Default from `getOption("flixpatrol.return_ids", FALSE)`.}
 }
 \value{
-A tibble with columns: rank, title, type (movie/tv_show), days_total, rank_last, date, imdb_id.
+A tibble with columns: rank, title, type (movie/tvshow), days_total, rank_last, date, imdb_id.
   If `return_ids = TRUE`, also includes title_id and type_id.
 }
 \description{
@@ -44,6 +44,15 @@ over a specified date range.
 The `/top10s` endpoint supports date range queries but limits results to
 300 records per call. This function automatically chunks large date ranges
 into 30-day periods and combines the results.
+
+## Global
+
+`country_name = "Global"` makes separate requests for each of about 45
+countries, one at a time, so a call can take many minutes at the default
+throttle of 10 requests per minute and uses far more of your API quota than
+one country. A message at the start gives the minimum time. Countries that
+fail or return no rows are left out of the result and listed in a warning.
+Change the rate with `options(flixpatrol.throttle_rate = ...)`.
 
 ## Global Options
 

@@ -7,6 +7,8 @@ describe("fp_enrich()", {
     )
 
     # resolve_id uses possibly(), so it will return NAs rather than error
+    # calls the live API with a fake key; slow and depends on the network
+    skip_on_cran()
     withr::local_envvar(FLIX_PATROL = "fake_key")
     result <- fp_enrich(test_tbl)
     expect_true("name" %in% names(result))
@@ -33,6 +35,8 @@ describe("fp_enrich()", {
       other = c("no_prefix")
     )
 
+    # calls the live API with a fake key; slow and depends on the network
+    skip_on_cran()
     withr::local_envvar(FLIX_PATROL = "fake_key")
     result <- fp_enrich(test_tbl, id_col = fp_id)
     expect_true("name" %in% names(result))
@@ -44,6 +48,8 @@ describe("fp_enrich()", {
       fp_id = c("cmp_abc123")
     )
 
+    # calls the live API with a fake key; slow and depends on the network
+    skip_on_cran()
     withr::local_envvar(FLIX_PATROL = "fake_key")
     result <- fp_enrich(test_tbl, id_col = fp_id, name_col = "resolved")
     expect_true("resolved" %in% names(result))

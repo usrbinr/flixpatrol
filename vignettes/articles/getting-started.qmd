@@ -2,7 +2,7 @@
 title: "Getting Started with flixpatrol"
 ---
 
-This article demonstrates how to use the flixpatrol package to retrieve streaming platform rankings and analytics from the FlixPatrol API.
+This article demonstrates how to use the flixpatrol package to retrieve streaming platform rankings and analytics from the FlixPatrol API. The code here is not run when the site is built. The `#>` lines show results where they are fixed, such as IDs, and otherwise list the columns you get back.
 
 ## Setup
 
@@ -36,20 +36,15 @@ Before fetching data, you often need to translate human-readable names to FlixPa
 #| label: lookup-country-platform
 #| eval: false
 # Single lookup
-lookup_country("United States")
-#> [1] "cnt_iMUHNbZvnNHK5YdhgwtOoP4u"
-
 lookup_platform("Netflix")
 #> [1] "cmp_IA6TdMqwf6kuyQvxo9bJ4nKX"
 
 # Multiple at once (vectorized)
-lookup_country(c("United States", "Germany", "Japan"))
-#> [1] "cnt_iMUHNbZvnNHK5YdhgwtOoP4u" "cnt_7KpRmXvZqL2nYwT9hJcF3sMd"
-#> [3] "cnt_8NqSmYwArM3oZxU0iKdG4tNe"
-
 lookup_platform(c("Netflix", "Disney+", "HBO Max"))
-#> [1] "cmp_IA6TdMqwf6kuyQvxo9bJ4nKX" "cmp_2BqTnOwZs7lPaRv1jLdH5uPf"
-#> [3] "cmp_3CrUoPxAt8mQbSw2kMeI6vQg"
+#> [1] "cmp_IA6TdMqwf6kuyQvxo9bJ4nKX" "cmp_oGtsgdpOrjIu3XzTEnWPt87Y"
+#> [3] "cmp_6UhCvnTeRkgZUtcNGslX9bJL"
+
+lookup_country(c("United States", "Germany", "Japan"))
 ```
 
 ### Titles and Franchises
@@ -58,10 +53,10 @@ lookup_platform(c("Netflix", "Disney+", "HBO Max"))
 #| label: lookup-title-franchise
 #| eval: false
 lookup_title("Squid Game")
-#> [1] "ttl_yPCJU2UzROTNVv5JZ7Hu4m8M"
+#> [1] "ttl_c0MNOjICD0BkFTWeZEXR41y5"
 
-lookup_franchise("Marvel")
-#> [1] "frn_KGBes9dtvkV710raDBpXoKRc"
+lookup_franchise("Indiana Jones")
+#> [1] "frn_STNa2GEw54ahWxJsXNgBMmt0"
 ```
 
 ### Reverse Lookup (ID to Name)
@@ -94,14 +89,25 @@ top10 <- get_top_ten(
   media_type    = "movie"
 )
 
-top10
-#> # A tibble: 70 x 7
-#>     rank title                  type_id days_total rank_last date       imdb_id
-#>    <int> <chr>                    <int>      <int>     <int> <chr>        <int>
-#>  1     1 Carry-On                     1         15         1 2025-12-01  123456
-#>  2     2 The Six Triple Eight         1          8         2 2025-12-01  234567
-#>  3     3 Our Little Secret            1         21         3 2025-12-01  345678
-#> # i 67 more rows
+names(top10)
+#> [1] "rank"       "title"      "type"       "days_total" "rank_last"
+#> [6] "date"       "imdb_id"
+```
+
+### All Countries
+
+`country_name = "Global"` covers about 45 countries and adds a `country` column. Each country is requested separately, so a call takes at least 14 minutes at the default throttle of 10 requests per minute and uses far more API quota. A warning lists any country that failed or returned no rows. `get_official_ranking()` accepts it too.
+
+```{r}
+#| label: get-top-ten-global
+#| eval: false
+get_top_ten(
+  platform_name = "netflix",
+  country_name  = "Global",
+  start_date    = "2025-12-15",
+  end_date      = "2025-12-15",
+  media_type    = "movie"
+)
 ```
 
 ### Filtering Results
@@ -115,30 +121,16 @@ library(dplyr)
 top10 |>
   filter(rank == 1) |>
   select(date, title, days_total)
-#> # A tibble: 7 x 3
-#>   date       title    days_total
-#>   <chr>      <chr>         <int>
-#> 1 2025-12-01 Carry-On         15
-#> 2 2025-12-02 Carry-On         16
-#> 3 2025-12-03 Carry-On         17
-#> # i 4 more rows
 
 # Titles that appeared multiple days
 top10 |>
   count(title, sort = TRUE) |>
   filter(n > 3)
-#> # A tibble: 8 x 2
-#>   title                    n
-#>   <chr>                <int>
-#> 1 Carry-On                 7
-#> 2 Our Little Secret        7
-#> 3 The Six Triple Eight     7
-#> # i 5 more rows
 ```
 
 ## Viewing Hours Data
 
-Netflix publishes weekly viewing hours. This requires a Monday-Sunday date range:
+Netflix publishes weekly viewing hours, Monday to Sunday. A `start_date` that is not a Monday moves forward to the next Monday:
 
 ```{r}
 #| label: get-hours-viewed
@@ -147,21 +139,17 @@ hours <- get_hours_viewed(
   platform_name   = "netflix",
   language_name   = "english",
   media_type      = "movie",
-  start_date      = "2025-12-16",
-  end_date        = "2025-12-22"
+  start_date      = "2025-12-15",
+  end_date        = "2025-12-21"
 )
 
+names(hours)
+#> [1] "rank"      "title"     "hours"     "views"     "runtime"   "streak"
+#> [7] "date_from" "date_to"
+
 hours |>
-  select(title, hours_viewed = data_value) |>
-  arrange(desc(hours_viewed)) |>
-  head(10)
-#> # A tibble: 10 x 2
-#>    title                hours_viewed
-#>    <chr>                       <dbl>
-#>  1 Carry-On                68500000
-#>  2 The Six Triple Eight    42300000
-#>  3 Our Little Secret       38100000
-#> # i 7 more rows
+  select(title, hours) |>
+  arrange(desc(hours))
 ```
 
 ## Premieres
@@ -177,16 +165,13 @@ premieres <- get_premieres(
   end_date      = "2025-12-31"
 )
 
+names(premieres)
+#> [1] "title"    "imdb_id"  "premiere" "type"     "season"   "episodes"
+#> [7] "binge"    "platform"
+
 premieres |>
-  select(title = movie_data_title, premiere_date = data_premiere, type = data_type) |>
-  arrange(premiere_date)
-#> # A tibble: 24 x 3
-#>    title                  premiere_date type
-#>    <chr>                  <chr>         <chr>
-#>  1 Holiday Action Film    2025-12-01    movie
-#>  2 Winter Romance         2025-12-05    movie
-#>  3 New Crime Series       2025-12-08    tv_show
-#> # i 21 more rows
+  select(title, premiere, type) |>
+  arrange(premiere)
 ```
 
 ## Analytics Functions
@@ -199,18 +184,13 @@ See how a title performs on different streaming services:
 #| label: compare-platforms
 #| eval: false
 compare_platforms(
-  title     = "Stranger Things",
-  date      = "2025-12-01",
-  platforms = c("netflix", "disney+", "hbo max", "amazon prime"),
-  media_type = "tv_show"
+  title      = "Stranger Things",
+  date       = "2025-12-01",
+  platforms  = c("netflix", "disney+", "hbo max", "amazon prime"),
+  media_type = "tvshow"
 )
-#> # A tibble: 4 x 4
-#>   platform      rank title           date
-#>   <chr>        <int> <chr>           <chr>
-#> 1 netflix          1 Stranger Things 2025-12-01
-#> 2 disney+         NA Stranger Things 2025-12-01
-#> 3 hbo max         NA Stranger Things 2025-12-01
-#> 4 amazon prime    NA Stranger Things 2025-12-01
+# One row per platform, with an NA rank where the title is not in the Top 10.
+# Columns: platform, rank, title, type, days_total, rank_last, date, imdb_id
 ```
 
 ### Track a Title Over Time
@@ -224,17 +204,12 @@ history <- get_title_history(
   country_name  = "United States",
   start_date    = "2025-12-01",
   end_date      = "2025-12-07",
-  media_type    = "tv_show"
+  media_type    = "tvshow"
 )
 
-history
-#> # A tibble: 7 x 4
-#>   date       title           rank platform
-#>   <chr>      <chr>          <int> <chr>
-#> 1 2025-12-01 Stranger Things    1 netflix
-#> 2 2025-12-02 Stranger Things    1 netflix
-#> 3 2025-12-03 Stranger Things    2 netflix
-#> # i 4 more rows
+names(history)
+#> [1] "rank"       "title"      "type"       "days_total" "rank_last"
+#> [6] "date"       "imdb_id"
 ```
 
 ### Weekly Movers
@@ -252,15 +227,13 @@ movers <- get_weekly_movers(
   media_type    = "movie"
 )
 
+names(movers)
+#> [1] "title"       "rank_before" "rank_after"  "change"      "status"
+
+# status is one of: new_entry, exit, gainer, loser, unchanged
 movers |>
   filter(status %in% c("gainer", "new_entry")) |>
   arrange(desc(change))
-#> # A tibble: 5 x 5
-#>   title              rank_before rank_after change status
-#>   <chr>                    <int>      <int>  <int> <chr>
-#> 1 New Holiday Movie           NA          2     NA new_entry
-#> 2 Rising Star                  8          3      5 gainer
-#> 3 Comeback Film               10          7      3 gainer
 ```
 
 ### Top Titles Summary
@@ -279,13 +252,9 @@ summary_tbl <- get_top_titles_summary(
   n             = 10
 )
 
-summary_tbl
-#> # A tibble: 10 x 6
-#>    title                days_on_chart best_rank avg_rank first_seen last_seen
-#>    <chr>                        <int>     <int>    <dbl> <chr>      <chr>
-#>  1 Carry-On                        31         1      1.5 2025-12-01 2025-12-31
-#>  2 Our Little Secret               28         1      2.3 2025-12-01 2025-12-28
-#>  3 The Six Triple Eight            25         1      3.1 2025-12-01 2025-12-25
+names(summary_tbl)
+#> [1] "title"         "days_on_chart" "best_rank"     "avg_rank"
+#> [5] "first_seen"    "last_seen"
 ```
 
 ### Global Ranking
@@ -299,43 +268,16 @@ global <- get_global_ranking(
   title         = "Stranger Things",
   platform_name = "netflix",
   date          = "2025-12-01",
-  media_type    = "tv_show"
+  media_type    = "tvshow"
 )
+
+names(global)
+#> [1] "country"    "rank"       "title"      "type"       "days_total"
+#> [6] "rank_last"  "date"       "imdb_id"
 
 global |>
   filter(!is.na(rank)) |>
   arrange(rank)
-#> # A tibble: 12 x 4
-#>    country        rank title           date
-#>    <chr>         <int> <chr>           <chr>
-#>  1 United States     1 Stranger Things 2025-12-01
-#>  2 Canada            2 Stranger Things 2025-12-01
-#>  3 United Kingdom    3 Stranger Things 2025-12-01
-#>  4 Germany           4 Stranger Things 2025-12-01
-```
-
-### Franchise Performance
-
-Aggregate all titles in a franchise:
-
-```{r}
-#| label: franchise-performance
-#| eval: false
-marvel <- get_franchise_performance(
-  franchise_title = "Marvel",
-  platform_name   = "netflix",
-  country_name    = "United States",
-  start_date      = "2025-12-01",
-  end_date        = "2025-12-31",
-  media_type      = "movie"
-)
-
-marvel
-#> # A tibble: 4 x 7
-#>   title              days_on_chart best_rank avg_rank first_seen last_seen franchise
-#>   <chr>                      <int>     <int>    <dbl> <chr>      <chr>     <chr>
-#> 1 Black Panther                 12         3      5.2 2025-12-05 2025-12-16 Marvel
-#> 2 Spider-Man: NWH                8         5      7.1 2025-12-10 2025-12-17 Marvel
 ```
 
 ## Lookup Tables
@@ -345,40 +287,18 @@ The package includes pre-built reference tables to avoid API calls:
 ```{r}
 #| label: lookup-tables
 #| eval: false
-# View available content types
+# Content types: type_id, type_label (13 rows)
 flixpatrol::flix_type_tbl
-#> # A tibble: 13 x 2
-#>    type_id type_label
-#>      <int> <chr>
-#>  1       1 movies
-#>  2       2 tv
-#>  3       3 anime
-#>  4       4 kids
-#>  ...
 
-# View date granularities
+# Date granularities: date_type_name, date_type_id (7 rows)
 flixpatrol::date_type_name
-#> # A tibble: 7 x 2
-#>   date_type_id date_type_name
-#>          <int> <chr>
-#>  1            1 day
-#>  2            2 week
-#>  3            3 month
-#>  ...
 
-# View torrent sites
+# Torrent sites: torrent_site_name, torrent_site_id (8 rows)
 flixpatrol::torrent_sites
-#> # A tibble: 5 x 2
-#>   torrent_site_id torrent_site_name
-#>   <chr>           <chr>
-#> 1 trs_1337x       1337x
-#> 2 trs_eztv        eztv
-#> 3 trs_piratebay   PirateBay
-#> # i 2 more rows
 ```
 
 ## Next Steps
 
-- Explore the [Function Reference](../../_qrtdown/reference.qmd) for complete documentation
+- Explore the [Function Reference](../reference/index.qmd) for complete documentation
 - Check the [FlixPatrol API docs](https://flixpatrol.com/api2/) for endpoint details
 - Report issues at [Codeberg](https://codeberg.org/usrbinr/flixpatrol/issues)

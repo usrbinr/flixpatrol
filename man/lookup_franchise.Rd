@@ -18,7 +18,7 @@ lookup_franchise(
 A named character vector of franchise IDs.
 }
 \description{
-Translates human-readable franchise titles (e.g., "Indiana Jones", "Marvel")
+Translates human-readable franchise titles (e.g., "Indiana Jones")
 into FlixPatrol internal franchise IDs.
 }
 \details{

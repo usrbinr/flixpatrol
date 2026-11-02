@@ -1,0 +1,8 @@
+pandoc: 3.1.3
+qrtdown: 1.3.0
+articles:
+  developers-guide: developers-guide.html
+  getting-started: getting-started.html
+urls:
+  reference: https://codeberg.org/usrbinr/flixpatrol/reference
+  article: https://codeberg.org/usrbinr/flixpatrol/articles

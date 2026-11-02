@@ -10,10 +10,10 @@ normalize_content_type(x)
 \item{x}{Character. Content type input.}
 }
 \value{
-Character. Normalized content type ("movie" or "tv_show").
+Character. Normalized content type ("movie" or "tvshow").
 }
 \description{
 Normalizes various content type inputs to canonical forms.
-Handles: "tv", "tvshow", "tv_show", "tv_shows", "movie", "movies", etc.
+Handles: "tv", "tv show", "tv_show", "tv_shows", "tvshow", "tvshows", "movie", "movies", etc.
 }
 \keyword{internal}

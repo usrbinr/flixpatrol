@@ -1,3 +1,34 @@
+# flixpatrol 1.1.0
+
+## Breaking changes
+* TV content is now labelled `"tvshow"` instead of `"tv_show"` in the `type`
+  column of every function's output. Inputs still accept `"tv"`, `"tv show"`,
+  `"tv_show"`, `"tvshow"` and their plurals.
+* `validate_date_format()` is no longer exported.
+* Removed `get_franchise_performance()`. The API's franchise response does not
+  list a franchise's titles, so the function could only return an empty result.
+
+## New features
+* `country_name = "Global"` covers about 45 countries in `lookup_country()`,
+  `get_top_ten()` and `get_official_ranking()`. Both add a `country` column.
+  Each country is a separate set of requests, so a run can take many minutes:
+  a message at the start gives the minimum time, and a warning at the end lists
+  any country that failed or returned no rows, with the reason.
+
+## Bug fixes
+* `"TV Show"` and `"tv shows"` (with a space) were not recognised as TV content.
+* `get_top_ten()` now warns when a request fails, instead of stopping with an
+  unrelated error.
+* `get_torrent_ranking()` filters `media_type` after the request, because the
+  API does not support filtering torrents by type.
+
+## Other changes
+* The title is now "Client for the 'FlixPatrol' Streaming Rankings API", and
+  the Description links to the API documentation.
+* Tests that call the API are skipped on CRAN, so CRAN checks make no network
+  requests.
+* `:=` is imported from 'rlang'.
+
 # flixpatrol 1.0.0
 * updated documentation 
 * updated syntax and harmonized input fields

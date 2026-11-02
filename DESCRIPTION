@@ -1,7 +1,7 @@
 Package: flixpatrol
 Type: Package
-Title: R Client for the 'FlixPatrol' Streaming Rankings API
-Version: 1.0.0
+Title: Client for the 'FlixPatrol' Streaming Rankings API
+Version: 1.1.0
 Authors@R: c(
     person(
       "Alejandro", "Hagan",
@@ -9,16 +9,16 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: Provides a programmatic interface to the 'FlixPatrol' API (V2) for
-    accessing streaming platform rankings, viewing hours, official charts,
-    torrent data, and social media fan metrics. Includes lookup helpers for
-    countries, platforms, franchises, and titles.
+Description: Provides a programmatic interface to the 'FlixPatrol' API (V2)
+    <https://flixpatrol.com/api2/> for accessing streaming platform rankings,
+    viewing hours, official charts, torrent data, and social media fan
+    metrics. Includes lookup helpers for countries, platforms, franchises, and
+    titles. Requires a 'FlixPatrol' API key.
 License: MIT + file LICENSE
 URL: https://codeberg.org/usrbinr/flixpatrol
 BugReports: https://codeberg.org/usrbinr/flixpatrol/issues
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.3
 Depends:
     R (>= 4.2.0)
 Imports:
@@ -35,3 +35,4 @@ Suggests:
     testthat (>= 3.0.0),
     withr
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.1

@@ -1,6 +1,8 @@
 describe("get_global_ranking()", {
 
   it("returns a tibble with expected columns even when API fails", {
+    # calls the live API with a fake key; slow and depends on the network
+    skip_on_cran()
     withr::local_envvar(FLIX_PATROL = "fake_key")
     result <- get_global_ranking(
       title     = "Test Movie",
@@ -15,6 +17,8 @@ describe("get_global_ranking()", {
   })
 
   it("returns one row per country", {
+    # calls the live API with a fake key; slow and depends on the network
+    skip_on_cran()
     withr::local_envvar(FLIX_PATROL = "fake_key")
     countries <- c("United States", "France", "Germany")
     result <- get_global_ranking(
@@ -26,6 +30,8 @@ describe("get_global_ranking()", {
   })
 
   it("defaults to 15 countries when none specified", {
+    # calls the live API with a fake key; slow and depends on the network
+    skip_on_cran()
     withr::local_envvar(FLIX_PATROL = "fake_key")
     result <- get_global_ranking(
       title = "Test",

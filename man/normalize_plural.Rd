@@ -14,7 +14,7 @@ Character vector with normalized forms.
 }
 \description{
 Converts input to a canonical singular form for matching.
-Handles common patterns like "movies" -> "movie", "tv_shows" -> "tv_show",
+Handles common patterns like "movies" -> "movie", "tvshows" -> "tvshow",
 "documentaries" -> "documentary".
 }
 \keyword{internal}

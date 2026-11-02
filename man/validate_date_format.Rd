@@ -15,3 +15,4 @@ The validated date string (invisibly). Aborts if invalid.
 \description{
 Ensures that a date string is in the expected yyyy-mm-dd format.
 }
+\keyword{internal}

@@ -3,11 +3,14 @@ template:
   theme: cosmo
   code_overflow: wrap
 navbar:
-  title: flixpatrol 1.0.0
+  title: flixpatrol 1.1.0
   left:
-  - text: Reference
-    href: _qrtdown/reference.qmd
   - text: Articles
+    href: articles.qmd
+  - text: Reference
+    href: reference.qmd
+  - text: Changelog
+    href: NEWS.md
   right:
   - icon: code-square
     href: https://codeberg.org/usrbinr/flixpatrol

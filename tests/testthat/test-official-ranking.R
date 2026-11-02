@@ -27,6 +27,8 @@ describe("get_official_ranking()", {
   })
 
   it("does not error for netflix (case-insensitive)", {
+    # calls the live API with a fake key; slow and depends on the network
+    skip_on_cran()
     # It will eventually error on the API call (no real key),
     # but should NOT error on the platform validation
     withr::local_envvar(FLIX_PATROL = "fake_key")

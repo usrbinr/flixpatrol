@@ -4,13 +4,13 @@ describe("lookup_media_type()", {
     expect_equal(lookup_media_type("movie"), 1)
   })
 
-  it("returns 2 for 'tv_show'", {
-    expect_equal(lookup_media_type("tv_show"), 2)
+  it("returns 2 for 'tvshow'", {
+    expect_equal(lookup_media_type("tvshow"), 2)
   })
 
   it("is case-insensitive", {
     expect_equal(lookup_media_type("Movie"), 1)
-    expect_equal(lookup_media_type("TV_SHOW"), 2)
+    expect_equal(lookup_media_type("TVSHOW"), 2)
   })
 
   it("returns all IDs for wildcard '*'", {

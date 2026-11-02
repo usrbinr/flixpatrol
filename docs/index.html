@@ -1,18 +1,22 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
-
+<meta name="generator" content="quarto-1.10.18">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-
 <title>flixpatrol</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -56,30 +60,15 @@ div.sourceCode
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
-
-
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-5acddea9ec7addd5e9532e878e20728d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-e3345c6ef29c45a7958e8df45469d16f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-5acddea9ec7addd5e9532e878e20728d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-c85bf800f77521da5fb58a3d41a41409.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-95b7c47c30a34e4c5c1b5ad6043067cf.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-c85bf800f77521da5fb58a3d41a41409.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script><script src="site_libs/quarto-nav/headroom.min.js"></script><script src="site_libs/clipboard/clipboard.min.js"></script><script src="site_libs/quarto-search/autocomplete.umd.js"></script><script src="site_libs/quarto-search/fuse.min.js"></script><script src="site_libs/quarto-search/quarto-search.js"></script><meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script><script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script><script src="site_libs/quarto-html/popper.min.js"></script><script src="site_libs/quarto-html/tippy.umd.min.js"></script><script src="site_libs/quarto-html/anchor.min.js"></script><link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-9b13294eb98a7ccc9837366643235be5.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-ad7a70ee837950f74c3137b2b7f1bb4b.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-9b13294eb98a7ccc9837366643235be5.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script><link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-ba65e179c372ab0ad923dd8256d1e903.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-e88222ba7634d963ea3bd0cd043d76cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-ba65e179c372ab0ad923dd8256d1e903.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -106,13 +95,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-
-
-<link rel="stylesheet" href="_qrtdown-styles.css">
+}</script><link rel="stylesheet" href="_qrtdown-styles.css">
 </head>
-
-<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed quarto-light">
+<script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -274,17 +260,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     } else {
       toggleColorMode(false);
     }
-  </script>
-
-<div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
+  </script><div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    </a>
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">flixpatrol 0.2.0</span>
+    <span class="navbar-title">flixpatrol 1.1.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -293,27 +273,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="./vignettes/articles/getting-started.html"> 
+<li class="nav-item">
+    <a class="nav-link" href="./articles/getting-started.html"> 
 <span class="menu-text">Get started</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./_qrtdown/reference.html"> 
-<span class="menu-text">Reference</span></a>
   </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-articles" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Articles</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-articles">    
-        <li>
-    <a class="dropdown-item" href="./vignettes/articles/developers-guide.html">
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-articles">
+<li>
+    <a class="dropdown-item" href="./articles/developers-guide.html">
  <span class="dropdown-text">Developer’s Guide</span></a>
   </li>  
     </ul>
-  </li>
+</li>
   <li class="nav-item">
-    <a class="nav-link" href="./_qrtdown/citation.html"> 
+    <a class="nav-link" href="./reference/index.html"> 
+<span class="menu-text">Reference</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./citation.html"> 
 <span class="menu-text">Citation</span></a>
   </li>  
   <li class="nav-item">
@@ -321,32 +301,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Changelog</span></a>
   </li>  
 </ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item compact">
+<ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item compact">
     <a class="nav-link" href="https://codeberg.org/usrbinr/flixpatrol"> <i class="bi bi-code-square" role="img" aria-label="Source code">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-          </div> <!-- /navcollapse -->
+</div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
-    </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+    </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title">flixpatrol</h1>
 </div>
 
@@ -361,95 +334,76 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header>
-
-
-
-<div class="no-row-height column-margin column-container"><div class="">
-<section id="license" class="level3">
-<h3 class="anchored" data-anchor-id="license">License</h3>
+</header><div class="no-row-height column-margin column-container"><div class="">
+<section id="links" class="level3"><h3 class="anchored" data-anchor-id="links">Links</h3>
+<ul>
+<li><a href="https://codeberg.org/usrbinr/flixpatrol">Source Code</a></li>
+<li><a href="https://codeberg.org/usrbinr/flixpatrol/issues">Report a Bug</a></li>
+</ul></section><section id="license" class="level3"><h3 class="anchored" data-anchor-id="license">License</h3>
 <p>MIT + file LICENSE</p>
-</section>
-<section id="citation" class="level3">
-<h3 class="anchored" data-anchor-id="citation">Citation</h3>
-<p><a href="./_qrtdown/citation.html">Citing this package</a></p>
-</section>
-<section id="authors" class="level3">
-<h3 class="anchored" data-anchor-id="authors">Authors</h3>
+</section><section id="citation" class="level3"><h3 class="anchored" data-anchor-id="citation">Citation</h3>
+<p><a href="./citation.html">Citing this package</a></p>
+</section><section id="authors" class="level3"><h3 class="anchored" data-anchor-id="authors">Authors</h3>
 <ul>
 <li>Alejandro Hagan (author, maintainer)</li>
-</ul>
-</section>
-</div><div class="">
-<section id="license-1" class="level3">
-<h3 class="anchored" data-anchor-id="license-1">License</h3>
-<p>MIT + file LICENSE</p>
-</section>
-<section id="citation-1" class="level3">
-<h3 class="anchored" data-anchor-id="citation-1">Citation</h3>
-<p><a href="./_qrtdown/citation.html">Citing this package</a></p>
-</section>
-<section id="authors-1" class="level3">
-<h3 class="anchored" data-anchor-id="authors-1">Authors</h3>
-<ul>
-<li>Alejandro Hagan (author, maintainer)</li>
-</ul>
-</section>
+</ul></section>
 </div></div>
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="https://lifecycle.r-lib.org/articles/stages.html"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" class="img-fluid figure-img"></a></p>
-<figcaption>Lifecycle: experimental</figcaption>
-</figure>
+<figure class="figure"><p><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" class="img-fluid figure-img"></a></p>
+<figcaption>Lifecycle: experimental</figcaption></figure>
 </div>
-<p>The <code>flixpatrol</code> package is an R interface for the <a href="https://flixpatrol.com/api2/">FlixPatrol API V2</a>. It allows for the programmatic retrieval of VOD rankings, streaming Top 10 lists, official viewing hour statistics, torrent charts, social media fan metrics, and premiere schedules across major global platforms.</p>
-<section id="features" class="level2">
-<h2 class="anchored" data-anchor-id="features">Features</h2>
+<p>The <code>flixpatrol</code> package is an R interface for the <a href="https://flixpatrol.com/api2/" class="external-link">FlixPatrol API V2</a>. It allows for the programmatic retrieval of VOD rankings, streaming Top 10 lists, official viewing hour statistics, torrent charts, social media fan metrics, and premiere schedules across major global platforms.</p>
+<section id="features" class="level2"><h2 class="anchored" data-anchor-id="features">Features</h2>
 <ul>
-<li><strong>Metadata Lookup</strong>: Resolve country, platform, franchise, and title names into internal FlixPatrol IDs.</li>
-<li><strong>Historical Data Retrieval</strong>: Fetch daily Top 10 charts over custom date ranges.</li>
-<li><strong>Official Metrics</strong>: Access “Hours Viewed” and “Official Ranking” tables as analysis-ready tibbles.</li>
-<li><strong>Torrent Rankings</strong>: Pull torrent chart data by site and date range.</li>
-<li><strong>Social Media Fans</strong>: Retrieve fan count rankings from Instagram, Facebook, and Twitter.</li>
-<li><strong>Premieres</strong>: Get upcoming premiere schedules by platform and country.</li>
-<li><strong>Title Details</strong>: Retrieve full metadata for any title.</li>
-<li><strong>Vectorized ID Resolution</strong>: Resolve FlixPatrol IDs back to human-readable names in bulk.</li>
-<li><strong>Robust Validation</strong>: Built-in checks for date ranges and API-specific weekday requirements (e.g., weekly charts starting on Mondays).</li>
-<li><strong>Rate Limiting &amp; Retry</strong>: All API calls are throttled (10 req/min) with automatic retry on transient failures.</li>
+<li>
+<strong>Metadata Lookup</strong>: Resolve country, platform, franchise, and title names into internal FlixPatrol IDs.</li>
+<li>
+<strong>Historical Data Retrieval</strong>: Fetch daily Top 10 charts over custom date ranges.</li>
+<li>
+<strong>Official Metrics</strong>: Access “Hours Viewed” and “Official Ranking” tables as analysis-ready tibbles.</li>
+<li>
+<strong>Torrent Rankings</strong>: Pull torrent chart data by site and date range.</li>
+<li>
+<strong>Social Media Fans</strong>: Retrieve fan count rankings from Instagram, Facebook, and Twitter.</li>
+<li>
+<strong>Premieres</strong>: Get upcoming premiere schedules by platform and country.</li>
+<li>
+<strong>Title Details</strong>: Retrieve full metadata for any title.</li>
+<li>
+<strong>Vectorized ID Resolution</strong>: Resolve FlixPatrol IDs back to human-readable names in bulk.</li>
+<li>
+<strong>Robust Validation</strong>: Built-in checks for date ranges and API-specific weekday requirements (e.g., weekly charts starting on Mondays).</li>
+<li>
+<strong>Rate Limiting &amp; Retry</strong>: All API calls are throttled (10 req/min) with automatic retry on transient failures.</li>
 </ul>
-<hr>
-</section>
-<section id="installation" class="level2">
-<h2 class="anchored" data-anchor-id="installation">Installation</h2>
+<hr></section><section id="installation" class="level2"><h2 class="anchored" data-anchor-id="installation">Installation</h2>
 <p>You can install the development version of <code>flixpatrol</code> from Codeberg:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("pak")</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"git::https://codeberg.org/usrbinr/flixpatrol"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
-</section>
-<section id="authentication" class="level2">
-<h2 class="anchored" data-anchor-id="authentication">Authentication</h2>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("remotes")</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_git</span>(<span class="st">"https://codeberg.org/usrbinr/flixpatrol"</span>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+<hr></section><section id="authentication" class="level2"><h2 class="anchored" data-anchor-id="authentication">Authentication</h2>
 <p>The package uses basic authentication via an API key stored in your R environment. Set it once:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">edit_r_environ</span>()</span>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">edit_r_environ</span>()</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Add this line to the file that opens:</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># FLIX_PATROL=your_api_key_here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># FLIX_PATROL=your_api_key_here</span></span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
 <p>Restart R after saving. All functions default to reading the <code>FLIX_PATROL</code> environment variable.</p>
-<hr>
-</section>
-<section id="package-options" class="level2">
-<h2 class="anchored" data-anchor-id="package-options">Package Options</h2>
+<hr></section><section id="package-options" class="level2"><h2 class="anchored" data-anchor-id="package-options">Package Options</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
 <col style="width: 33%">
 <col style="width: 33%">
 </colgroup>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th>Option</th>
 <th>Default</th>
 <th>Description</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
 <td><code>flixpatrol.silent</code></td>
@@ -469,12 +423,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td><code>flixpatrol.show_quota</code></td>
 <td><code>TRUE</code></td>
-<td>Show API quota in <code>flixpatrol_sitrep()</code></td>
+<td>Show API quota in <a href="reference/flixpatrol_sitrep.html"><code>flixpatrol_sitrep()</code></a>
+</td>
 </tr>
 </tbody>
 </table>
-<section id="query-default-options" class="level3">
-<h3 class="anchored" data-anchor-id="query-default-options">Query Default Options</h3>
+<section id="query-default-options" class="level3"><h3 class="anchored" data-anchor-id="query-default-options">Query Default Options</h3>
 <p>Set these to avoid passing arguments on every call:</p>
 <table class="caption-top table">
 <colgroup>
@@ -482,13 +436,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <col style="width: 33%">
 <col style="width: 33%">
 </colgroup>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th>Option</th>
 <th>Default</th>
 <th>Description</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
 <td><code>flixpatrol.platform_name</code></td>
@@ -513,7 +465,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td><code>flixpatrol.media_type</code></td>
 <td><code>NULL</code></td>
-<td>Default content type (“movie” or “tv_show”)</td>
+<td>Default content type (“movie” or “tvshow”)</td>
 </tr>
 <tr class="even">
 <td><code>flixpatrol.language</code></td>
@@ -533,25 +485,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>Set options globally:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(</span>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a> <span class="at">flixpatrol.silent =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a> <span class="at">flixpatrol.return_ids =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a> <span class="at">flixpatrol.throttle_rate =</span> <span class="dv">15</span>,</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a> <span class="at">flixpatrol.show_quota =</span> <span class="cn">FALSE</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
 <p>View current option values:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flixpatrol_options</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flixpatrol_options</span>()</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
 <p>Check package status and API quota:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flixpatrol_sitrep</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
-</section>
-</section>
-<section id="usage" class="level2">
-<h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<section id="lookup-functions" class="level3">
-<h3 class="anchored" data-anchor-id="lookup-functions">Lookup Functions</h3>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flixpatrol_sitrep</span>()</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+<hr></section></section><section id="usage" class="level2"><h2 class="anchored" data-anchor-id="usage">Usage</h2>
+<section id="lookup-functions" class="level3"><h3 class="anchored" data-anchor-id="lookup-functions">Lookup Functions</h3>
 <p>Translate human-readable names into FlixPatrol internal IDs:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(flixpatrol)</span>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(flixpatrol)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lookup_country</span>(<span class="st">"United States"</span>)</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lookup_platform</span>(<span class="st">"Netflix"</span>)</span>
@@ -559,145 +516,160 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lookup_title</span>(<span class="st">"Squid Game"</span>)</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Vectorized</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">lookup_country</span>(<span class="fu">c</span>(<span class="st">"United States"</span>, <span class="st">"Germany"</span>, <span class="st">"Japan"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="reverse-lookups-id-to-name" class="level3">
-<h3 class="anchored" data-anchor-id="reverse-lookups-id-to-name">Reverse Lookups (ID to Name)</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_title_name</span>(<span class="st">"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX"</span>)  <span class="co"># company</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">lookup_country</span>(<span class="fu">c</span>(<span class="st">"United States"</span>, <span class="st">"Germany"</span>, <span class="st">"Japan"</span>))</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+</section><section id="reverse-lookups-id-to-name" class="level3"><h3 class="anchored" data-anchor-id="reverse-lookups-id-to-name">Reverse Lookups (ID to Name)</h3>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_title_name</span>(<span class="st">"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX"</span>)  <span class="co"># company</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">get_title_name</span>(<span class="st">"ttl_yPCJU2UzROTNVv5JZ7Hu4m8M"</span>)  <span class="co"># title</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Vectorized - returns NA for failures</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">get_title_name</span>(<span class="fu">c</span>(<span class="st">"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX"</span>, <span class="st">"ttl_invalid"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="daily-top-10" class="level3">
-<h3 class="anchored" data-anchor-id="daily-top-10">Daily Top 10</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_top_ten</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">get_title_name</span>(<span class="fu">c</span>(<span class="st">"cmp_IA6TdMqwf6kuyQvxo9bJ4nKX"</span>, <span class="st">"ttl_invalid"</span>))</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+</section><section id="daily-top-10" class="level3"><h3 class="anchored" data-anchor-id="daily-top-10">Daily Top 10</h3>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_top_ten</span>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">platform_name =</span> <span class="st">"netflix"</span>,</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">country_name  =</span> <span class="st">"United States"</span>,</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date    =</span> <span class="st">"2025-12-01"</span>,</span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date      =</span> <span class="st">"2025-12-07"</span>,</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">media_type    =</span> <span class="st">"movie"</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="hours-viewed" class="level3">
-<h3 class="anchored" data-anchor-id="hours-viewed">Hours Viewed</h3>
-<p>Requires a 7-day range starting on a Monday:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_hours_viewed</span>(</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+</section><section id="hours-viewed" class="level3"><h3 class="anchored" data-anchor-id="hours-viewed">Hours Viewed</h3>
+<p>Weekly data, Monday to Sunday. A <code>start_date</code> that is not a Monday moves forward to the next Monday:</p>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_hours_viewed</span>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">platform_name =</span> <span class="st">"netflix"</span>,</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">media_type    =</span> <span class="st">"movie"</span>,</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">language_name =</span> <span class="st">"english"</span>,</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date    =</span> <span class="st">"2025-12-15"</span>,</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date      =</span> <span class="st">"2025-12-21"</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="official-rankings-netflix-only" class="level3">
-<h3 class="anchored" data-anchor-id="official-rankings-netflix-only">Official Rankings (Netflix Only)</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_official_ranking</span>(</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">country_name =</span> <span class="st">"United States"</span>,</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date   =</span> <span class="st">"2025-12-15"</span>,</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date     =</span> <span class="st">"2025-12-21"</span>,</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">media_type   =</span> <span class="st">"movie"</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="torrent-rankings" class="level3">
-<h3 class="anchored" data-anchor-id="torrent-rankings">Torrent Rankings</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_torrent_ranking</span>(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">torrent_site =</span> <span class="st">"1337x"</span>,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date   =</span> <span class="st">"2025-12-01"</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date     =</span> <span class="st">"2025-12-01"</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="social-media-fans" class="level3">
-<h3 class="anchored" data-anchor-id="social-media-fans">Social Media Fans</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_fans_ranking</span>(</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">social_platform =</span> <span class="st">"Instagram"</span>,</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date      =</span> <span class="st">"2025-12-15"</span>,</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date        =</span> <span class="st">"2025-12-21"</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="premieres" class="level3">
-<h3 class="anchored" data-anchor-id="premieres">Premieres</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_premieres</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">platform_name =</span> <span class="st">"netflix"</span>,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date    =</span> <span class="st">"2025-12-15"</span>,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date      =</span> <span class="st">"2025-12-31"</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="title-details" class="level3">
-<h3 class="anchored" data-anchor-id="title-details">Title Details</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_title_details</span>(<span class="st">"ttl_yPCJU2UzROTNVv5JZ7Hu4m8M"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="compare-platforms" class="level3">
-<h3 class="anchored" data-anchor-id="compare-platforms">Compare Platforms</h3>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+</section><section id="all-countries" class="level3"><h3 class="anchored" data-anchor-id="all-countries">All Countries</h3>
+<p>Pass <code>country_name = "Global"</code> to <a href="reference/get_top_ten.html"><code>get_top_ten()</code></a> or <a href="reference/get_official_ranking.html"><code>get_official_ranking()</code></a> to cover about 45 countries and add a <code>country</code> column. Each country is requested separately, so this takes at least 14 minutes at the default throttle and uses far more API quota. A warning lists any country that failed or returned no rows.</p>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_top_ten</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">platform_name =</span> <span class="st">"netflix"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">country_name  =</span> <span class="st">"Global"</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date    =</span> <span class="st">"2025-12-15"</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date      =</span> <span class="st">"2025-12-15"</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">media_type    =</span> <span class="st">"movie"</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+</section><section id="official-rankings-netflix-only" class="level3"><h3 class="anchored" data-anchor-id="official-rankings-netflix-only">Official Rankings (Netflix Only)</h3>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_official_ranking</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">country_name =</span> <span class="st">"United States"</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date   =</span> <span class="st">"2025-12-15"</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date     =</span> <span class="st">"2025-12-21"</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">media_type   =</span> <span class="st">"movie"</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+</section><section id="torrent-rankings" class="level3"><h3 class="anchored" data-anchor-id="torrent-rankings">Torrent Rankings</h3>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_torrent_ranking</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">torrent_site =</span> <span class="st">"PirateBay"</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date   =</span> <span class="st">"2025-12-01"</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date     =</span> <span class="st">"2025-12-01"</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+</section><section id="social-media-fans" class="level3"><h3 class="anchored" data-anchor-id="social-media-fans">Social Media Fans</h3>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_fans_ranking</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">social_platform =</span> <span class="st">"Instagram"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date      =</span> <span class="st">"2025-12-15"</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date        =</span> <span class="st">"2025-12-21"</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+</section><section id="premieres" class="level3"><h3 class="anchored" data-anchor-id="premieres">Premieres</h3>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_premieres</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">platform_name =</span> <span class="st">"netflix"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date    =</span> <span class="st">"2025-12-15"</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date      =</span> <span class="st">"2025-12-31"</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+</section><section id="title-details" class="level3"><h3 class="anchored" data-anchor-id="title-details">Title Details</h3>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_title_details</span>(<span class="st">"ttl_yPCJU2UzROTNVv5JZ7Hu4m8M"</span>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+</section><section id="compare-platforms" class="level3"><h3 class="anchored" data-anchor-id="compare-platforms">Compare Platforms</h3>
 <p>See how a title ranks across multiple platforms on the same day:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">compare_platforms</span>(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Squid Game"</span>,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">date  =</span> <span class="st">"2025-12-15"</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="title-history" class="level3">
-<h3 class="anchored" data-anchor-id="title-history">Title History</h3>
-<p>Track a single title’s rank over time:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_title_history</span>(</span>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">compare_platforms</span>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">title      =</span> <span class="st">"Squid Game"</span>,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> <span class="st">"2025-12-01"</span>,</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date   =</span> <span class="st">"2025-12-14"</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="weekly-movers" class="level3">
-<h3 class="anchored" data-anchor-id="weekly-movers">Weekly Movers</h3>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">date       =</span> <span class="st">"2025-12-15"</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">media_type =</span> <span class="st">"tvshow"</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+</section><section id="title-history" class="level3"><h3 class="anchored" data-anchor-id="title-history">Title History</h3>
+<p>Track a single title’s rank over time:</p>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_title_history</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">title      =</span> <span class="st">"Squid Game"</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> <span class="st">"2025-12-01"</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date   =</span> <span class="st">"2025-12-14"</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">media_type =</span> <span class="st">"tvshow"</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+</section><section id="weekly-movers" class="level3"><h3 class="anchored" data-anchor-id="weekly-movers">Weekly Movers</h3>
 <p>Identify gainers, losers, new entries, and exits between two chart dates:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_weekly_movers</span>(</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_before =</span> <span class="st">"2025-12-14"</span>,</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_after  =</span> <span class="st">"2025-12-15"</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="top-titles-summary" class="level3">
-<h3 class="anchored" data-anchor-id="top-titles-summary">Top Titles Summary</h3>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_weekly_movers</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_before =</span> <span class="st">"2025-12-14"</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_after  =</span> <span class="st">"2025-12-15"</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+</section><section id="top-titles-summary" class="level3"><h3 class="anchored" data-anchor-id="top-titles-summary">Top Titles Summary</h3>
 <p>Most frequent Top 10 titles over a date range with best/average rank:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_top_titles_summary</span>(</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> <span class="st">"2025-12-01"</span>,</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date   =</span> <span class="st">"2025-12-14"</span>,</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n          =</span> <span class="dv">10</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="global-ranking" class="level3">
-<h3 class="anchored" data-anchor-id="global-ranking">Global Ranking</h3>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_top_titles_summary</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> <span class="st">"2025-12-01"</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date   =</span> <span class="st">"2025-12-14"</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n          =</span> <span class="dv">10</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+</section><section id="global-ranking" class="level3"><h3 class="anchored" data-anchor-id="global-ranking">Global Ranking</h3>
 <p>See where a title ranks across 15 countries:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_global_ranking</span>(</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Squid Game"</span>,</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">date  =</span> <span class="st">"2025-12-15"</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="franchise-performance" class="level3">
-<h3 class="anchored" data-anchor-id="franchise-performance">Franchise Performance</h3>
-<p>Aggregate all titles in a franchise over a date range:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_franchise_performance</span>(</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">franchise_title =</span> <span class="st">"Marvel"</span>,</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date      =</span> <span class="st">"2025-12-01"</span>,</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date        =</span> <span class="st">"2025-12-14"</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
-</section>
-</section>
-<section id="lookup-tables" class="level2">
-<h2 class="anchored" data-anchor-id="lookup-tables">Lookup Tables</h2>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_global_ranking</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">title      =</span> <span class="st">"Squid Game"</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">date       =</span> <span class="st">"2025-12-15"</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">media_type =</span> <span class="st">"tvshow"</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
+<hr></section></section><section id="lookup-tables" class="level2"><h2 class="anchored" data-anchor-id="lookup-tables">Lookup Tables</h2>
 <p>The package ships with pre-built reference tables to avoid unnecessary API calls:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
 <col style="width: 50%">
 </colgroup>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th>Table</th>
 <th>Contents</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
 <td><code>flix_type_tbl</code></td>
-<td>Content types (movie, tv, anime, kids, docs, etc.)</td>
+<td>Content types (overall, movies, tv_shows, anime, documentaries, etc.)</td>
 </tr>
 <tr class="even">
 <td><code>language_name</code></td>
@@ -705,11 +677,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><code>media_type_name</code></td>
-<td>Media categories (movie, tv_show)</td>
+<td>Media categories (movie, tvshow)</td>
 </tr>
 <tr class="even">
 <td><code>date_type_name</code></td>
-<td>Date granularities (day, week, month, quarter, half_year, year)</td>
+<td>Date granularities (day, week, month, quarter, half_year, year, first_month)</td>
 </tr>
 <tr class="odd">
 <td><code>social_media_name</code></td>
@@ -721,223 +693,200 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<hr>
-</section>
-<section id="function-reference" class="level2">
-<h2 class="anchored" data-anchor-id="function-reference">Function Reference</h2>
-<section id="lookup-name-to-id" class="level3">
-<h3 class="anchored" data-anchor-id="lookup-name-to-id">Lookup (Name to ID)</h3>
+<hr></section><section id="function-reference" class="level2"><h2 class="anchored" data-anchor-id="function-reference">Function Reference</h2>
+<section id="lookup-name-to-id" class="level3"><h3 class="anchored" data-anchor-id="lookup-name-to-id">Lookup (Name to ID)</h3>
 <table class="caption-top table">
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th>Function</th>
 <th>Source</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>lookup_country()</code></td>
-<td>API <code>/countries</code></td>
+<td><a href="reference/lookup_country.html"><code>lookup_country()</code></a></td>
+<td>API <code>/countries</code>
+</td>
 </tr>
 <tr class="even">
-<td><code>lookup_platform()</code></td>
-<td>API <code>/companies</code></td>
+<td><a href="reference/lookup_platform.html"><code>lookup_platform()</code></a></td>
+<td>API <code>/companies</code>
+</td>
 </tr>
 <tr class="odd">
-<td><code>lookup_franchise()</code></td>
-<td>API <code>/franchises</code></td>
+<td><a href="reference/lookup_franchise.html"><code>lookup_franchise()</code></a></td>
+<td>API <code>/franchises</code>
+</td>
 </tr>
 <tr class="even">
-<td><code>lookup_title()</code></td>
-<td>API <code>/titles</code></td>
+<td><a href="reference/lookup_title.html"><code>lookup_title()</code></a></td>
+<td>API <code>/titles</code>
+</td>
 </tr>
 <tr class="odd">
-<td><code>lookup_flix_type()</code></td>
+<td><a href="reference/lookup_flix_type.html"><code>lookup_flix_type()</code></a></td>
 <td>Local table</td>
 </tr>
 <tr class="even">
-<td><code>lookup_language()</code></td>
+<td><a href="reference/lookup_language.html"><code>lookup_language()</code></a></td>
 <td>Local table</td>
 </tr>
 <tr class="odd">
-<td><code>lookup_media_type()</code></td>
+<td><a href="reference/lookup_media_type.html"><code>lookup_media_type()</code></a></td>
 <td>Local table</td>
 </tr>
 <tr class="even">
-<td><code>lookup_date_type()</code></td>
+<td><a href="reference/lookup_date_type.html"><code>lookup_date_type()</code></a></td>
 <td>Local table</td>
 </tr>
 <tr class="odd">
-<td><code>lookup_torrent_site()</code></td>
+<td><a href="reference/lookup_torrent_site.html"><code>lookup_torrent_site()</code></a></td>
+<td>Local table</td>
+</tr>
+<tr class="even">
+<td><a href="reference/lookup_social_platform.html"><code>lookup_social_platform()</code></a></td>
 <td>Local table</td>
 </tr>
 </tbody>
-</table>
-</section>
-<section id="reverse-lookup-id-to-name" class="level3">
-<h3 class="anchored" data-anchor-id="reverse-lookup-id-to-name">Reverse Lookup (ID to Name)</h3>
+</table></section><section id="reverse-lookup-id-to-name" class="level3"><h3 class="anchored" data-anchor-id="reverse-lookup-id-to-name">Reverse Lookup (ID to Name)</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
 <col style="width: 50%">
 </colgroup>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th>Function</th>
 <th>Description</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>get_title_name()</code></td>
+<td><a href="reference/get_title_name.html"><code>get_title_name()</code></a></td>
 <td>Auto-detects <code>cmp_</code>, <code>ttl_</code>, <code>frn_</code> prefixes. Vectorized, returns NA on failure.</td>
 </tr>
 <tr class="even">
-<td><code>get_company_name()</code></td>
+<td><a href="reference/get_company_name.html"><code>get_company_name()</code></a></td>
 <td>Company ID to name</td>
 </tr>
 <tr class="odd">
-<td><code>get_franchise_name()</code></td>
+<td><a href="reference/get_franchise_name.html"><code>get_franchise_name()</code></a></td>
 <td>Franchise ID to name</td>
 </tr>
 </tbody>
-</table>
-</section>
-<section id="data-retrieval" class="level3">
-<h3 class="anchored" data-anchor-id="data-retrieval">Data Retrieval</h3>
+</table></section><section id="data-retrieval" class="level3"><h3 class="anchored" data-anchor-id="data-retrieval">Data Retrieval</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
 <col style="width: 33%">
 <col style="width: 33%">
 </colgroup>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th>Function</th>
 <th>Endpoint</th>
 <th>Description</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>get_top_ten()</code></td>
+<td><a href="reference/get_top_ten.html"><code>get_top_ten()</code></a></td>
 <td><code>/top10s</code></td>
 <td>Top 10 over a date range</td>
 </tr>
 <tr class="even">
-<td><code>get_hours_viewed()</code></td>
+<td><a href="reference/get_hours_viewed.html"><code>get_hours_viewed()</code></a></td>
 <td><code>/hoursviewed</code></td>
 <td>Weekly viewing hours</td>
 </tr>
 <tr class="odd">
-<td><code>get_official_ranking()</code></td>
+<td><a href="reference/get_official_ranking.html"><code>get_official_ranking()</code></a></td>
 <td><code>/rankingsofficial</code></td>
 <td>Official Netflix rankings</td>
 </tr>
 <tr class="even">
-<td><code>get_fans_ranking()</code></td>
+<td><a href="reference/get_fans_ranking.html"><code>get_fans_ranking()</code></a></td>
 <td><code>/fans</code></td>
 <td>Social media fan counts</td>
 </tr>
 <tr class="odd">
-<td><code>get_torrent_ranking()</code></td>
+<td><a href="reference/get_torrent_ranking.html"><code>get_torrent_ranking()</code></a></td>
 <td><code>/torrents</code></td>
 <td>Torrent chart rankings</td>
 </tr>
 <tr class="even">
-<td><code>get_premieres()</code></td>
+<td><a href="reference/get_premieres.html"><code>get_premieres()</code></a></td>
 <td><code>/premieres</code></td>
 <td>Upcoming premiere dates</td>
 </tr>
 <tr class="odd">
-<td><code>get_title_details()</code></td>
+<td><a href="reference/get_title_details.html"><code>get_title_details()</code></a></td>
 <td><code>/titles/:id</code></td>
 <td>Full title metadata</td>
 </tr>
 </tbody>
-</table>
-</section>
-<section id="analytics-comparison" class="level3">
-<h3 class="anchored" data-anchor-id="analytics-comparison">Analytics &amp; Comparison</h3>
+</table></section><section id="analytics-comparison" class="level3"><h3 class="anchored" data-anchor-id="analytics-comparison">Analytics &amp; Comparison</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
 <col style="width: 50%">
 </colgroup>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th>Function</th>
 <th>Description</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>compare_platforms()</code></td>
+<td><a href="reference/compare_platforms.html"><code>compare_platforms()</code></a></td>
 <td>Compare a title’s rank across multiple platforms on the same day</td>
 </tr>
 <tr class="even">
-<td><code>get_title_history()</code></td>
+<td><a href="reference/get_title_history.html"><code>get_title_history()</code></a></td>
 <td>Track a single title’s rank over a date range</td>
 </tr>
 <tr class="odd">
-<td><code>get_weekly_movers()</code></td>
+<td><a href="reference/get_weekly_movers.html"><code>get_weekly_movers()</code></a></td>
 <td>Gainers, losers, new entries, and exits between two chart dates</td>
 </tr>
 <tr class="even">
-<td><code>get_top_titles_summary()</code></td>
+<td><a href="reference/get_top_titles_summary.html"><code>get_top_titles_summary()</code></a></td>
 <td>Most frequent Top 10 titles with best/avg rank over a period</td>
 </tr>
 <tr class="odd">
-<td><code>get_global_ranking()</code></td>
+<td><a href="reference/get_global_ranking.html"><code>get_global_ranking()</code></a></td>
 <td>A title’s rank across 15+ countries on a single date</td>
 </tr>
-<tr class="even">
-<td><code>get_franchise_performance()</code></td>
-<td>Aggregate chart performance for all titles in a franchise</td>
-</tr>
 </tbody>
-</table>
-</section>
-<section id="validation" class="level3">
-<h3 class="anchored" data-anchor-id="validation">Validation</h3>
+</table></section><section id="validation-and-status" class="level3"><h3 class="anchored" data-anchor-id="validation-and-status">Validation and Status</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
 <col style="width: 50%">
 </colgroup>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th>Function</th>
 <th>Purpose</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>validate_date_range()</code></td>
+<td><a href="reference/validate_date_range.html"><code>validate_date_range()</code></a></td>
 <td>Enforces weekday and range-length constraints</td>
 </tr>
 <tr class="even">
-<td><code>flixpatrol_options()</code></td>
+<td><a href="reference/flixpatrol_options.html"><code>flixpatrol_options()</code></a></td>
 <td>List available package options</td>
+</tr>
+<tr class="odd">
+<td><a href="reference/flixpatrol_sitrep.html"><code>flixpatrol_sitrep()</code></a></td>
+<td>Check the API key, options, and quota</td>
+</tr>
+<tr class="even">
+<td><a href="reference/get_quota.html"><code>get_quota()</code></a></td>
+<td>Current API quota usage</td>
 </tr>
 </tbody>
 </table>
-<hr>
-</section>
-</section>
-<section id="contributing" class="level2">
-<h2 class="anchored" data-anchor-id="contributing">Contributing</h2>
-<p>See <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> for developer documentation.</p>
-</section>
-<section id="license-2" class="level2">
-<h2 class="anchored" data-anchor-id="license-2">License</h2>
+<hr></section></section><section id="contributing" class="level2"><h2 class="anchored" data-anchor-id="contributing">Contributing</h2>
+<p>See <a href="https://codeberg.org/usrbinr/flixpatrol/src/branch/main/CONTRIBUTING.md">CONTRIBUTING.md</a> for developer documentation.</p>
+</section><section id="license-1" class="level2"><h2 class="anchored" data-anchor-id="license-1">License</h2>
 <p>MIT</p>
 
 
-</section>
-
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -1351,21 +1300,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   });
   </script>
 </div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
+<footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
-<p>Built with <a href="https://quarto.org/">Quarto</a> and <a href="https://codeberg.org/usrbinr/qrtdown">qrtdown</a></p>
+<p>Built with <a href="https://quarto.org/" class="external-link">Quarto</a> and <a href="https://codeberg.org/usrbinr/qrtdown" class="external-link">qrtdown</a></p>
 </div>   
     <div class="nav-footer-center">
-      &nbsp;
+       
     </div>
     <div class="nav-footer-right">
-<p>flixpatrol 0.2.0</p>
+<p>flixpatrol 1.1.0</p>
 </div>
   </div>
 </footer>
-
-
-
-
-</body></html>
+</body>
+</html>

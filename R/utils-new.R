@@ -6,17 +6,9 @@
 #' @param date Character. The date string to validate.
 #'
 #' @return The validated date string (invisibly). Aborts if invalid.
-#' @export
+#' @keywords internal
 validate_date_format <- function(date) {
   arg_name <- deparse(substitute(date))
-
-  if (!is.character(date) || length(date) != 1) {
-    cli::cli_abort("{.arg {arg_name}} must be a single character string in {.val yyyy-mm-dd} format.")
-  }
-
-  if (!grepl("^\\d{4}-\\d{2}-\\d{2}$", date)) {
-    cli::cli_abort("{.arg {arg_name}} must be in {.val yyyy-mm-dd} format, not {.val {date}}.")
-  }
 
   parsed <- tryCatch(as.Date(date), error = function(e) NA)
 
@@ -34,7 +26,7 @@ validate_date_format <- function(date) {
 #' Fetches torrent chart rankings for a given site and date range.
 #'
 #' @details
-#' Title types (movie/tv_show) are resolved via batch API lookup from the
+#' Title types (movie/tvshow) are resolved via batch API lookup from the
 #' `/titles` endpoint. Available torrent sites include: PirateBay, 1337x, eztv, etc.
 #'
 #' ## Global Options
@@ -52,11 +44,11 @@ validate_date_format <- function(date) {
 #' @param end_date Character. End of the date range (yyyy-mm-dd format).
 #'   Default from `getOption("flixpatrol.end_date")`.
 #' @param date_type Character. Date granularity (default `"day"`).
-#' @param media_type Character. Optional filter: "movie" or "tv_show". Default NULL (no filter).
+#' @param media_type Character. Optional filter: "movie" or "tvshow". Default NULL (no filter).
 #' @param return_ids Logical. Include ID columns in output.
 #'   Default from `getOption("flixpatrol.return_ids", FALSE)`.
 #'
-#' @return A tibble with columns: rank, title, type (movie/tv_show), seeders, leechers, source, date.
+#' @return A tibble with columns: rank, title, type (movie/tvshow), seeders, leechers, source, date.
 #'   If `return_ids = TRUE`, also includes title_id.
 #' @export
 #'
@@ -121,11 +113,6 @@ get_torrent_ranking <- function(
         `date[from][gte]` = as.character(chunk_start),
         `date[from][lte]` = as.character(chunk_end)
       )
-
-      if (!is.null(media_type)) {
-        media_type_id <- lookup_media_type(media_type)
-        query_params[["type[eq]"]] <- media_type_id
-      }
 
       resp <- authenticate(site = "https://api.flixpatrol.com/v2/torrents") |>
         httr2::req_url_query(!!!query_params) |>
@@ -203,7 +190,7 @@ get_torrent_ranking <- function(
           type = dplyr::case_match(
             .data[["type_int"]],
             1 ~ "movie",
-            2 ~ "tv_show",
+            2 ~ "tvshow",
             .default = NA_character_
           )
         ) |>
@@ -218,6 +205,12 @@ get_torrent_ranking <- function(
     out <- out |>
       dplyr::mutate(type = NA_character_) |>
       dplyr::relocate("type", .after = "title")
+  }
+
+  # Filter by media_type client-side (API does not support type filter)
+  if (!is.null(media_type) && "type" %in% names(out)) {
+    media_type_normalized <- normalize_plural(media_type)
+    out <- out |> dplyr::filter(.data[["type"]] == media_type_normalized)
   }
 
   # Remove title_id unless return_ids is TRUE
@@ -243,7 +236,7 @@ get_torrent_ranking <- function(
 #' @param media_type Character. Optional filter: "movie" or "tv".
 #' @param return_ids Logical. Include ID columns in output. Default from `getOption("flixpatrol.return_ids", FALSE)`.
 #'
-#' @return A tibble with columns: title, imdb_id, premiere, type (movie/tv_show), season, episodes, binge, platform.
+#' @return A tibble with columns: title, imdb_id, premiere, type (movie/tvshow), season, episodes, binge, platform.
 #'   If `return_ids = TRUE`, also includes title_id.
 #' @export
 #'
@@ -296,7 +289,7 @@ get_premieres <- function(platform_name = "netflix",
                 title     = purrr::pluck(d, "movie", "data", "title", .default = NA_character_),
                 imdb_id   = as.character(purrr::pluck(d, "movie", "data", "imdbId", .default = NA)),
                 premiere  = purrr::pluck(d, "premiere", .default = NA_character_),
-                type      = ifelse(purrr::pluck(d, "type", .default = 1) == 1, "movie", "tv_show"),
+                type      = ifelse(purrr::pluck(d, "type", .default = 1) == 1, "movie", "tvshow"),
                 season    = purrr::pluck(d, "season", .default = NA_integer_),
                 episodes  = purrr::pluck(d, "episodes", .default = NA_integer_),
                 binge     = as.logical(purrr::pluck(d, "binge", .default = NA)),
@@ -615,93 +608,6 @@ get_global_ranking <- function(title,
   }) |>
     purrr::list_rbind() |>
     dplyr::arrange(.data$rank)
-
-  return(out)
-}
-
-
-#' Franchise Performance Rollup
-#'
-#' @description
-#' Looks up all titles in a franchise, then aggregates their Top 10 appearances
-#' across a date range into a single summary table.
-#'
-#' @param franchise_title Character. The franchise name (e.g., "Marvel", "Star Wars").
-#' @param platform_name Character. Platform name.
-#' @param country_name Character. Country name.
-#' @param start_date Date/Character. Start of the range.
-#' @param end_date Date/Character. End of the range.
-#' @param media_type Character. Content type (default `"movie"`).
-#'
-#' @return A tibble with columns `title`, `days_on_chart`, `best_rank`, `avg_rank`,
-#'   plus a `franchise` column.
-#' @export
-get_franchise_performance <- function(franchise_title,
-                                             platform_name = "netflix",
-                                             country_name = "United States",
-                                             start_date,
-                                             end_date,
-                                             media_type = "movie") {
-
-  # Look up the franchise to get its ID
-  franchise_id <- lookup_franchise(franchise_title, silent = TRUE)
-
-  # Get the franchise details to find associated title names
-  endpoint_url <- paste0("https://api.flixpatrol.com/v2/franchises/", franchise_id)
-  resp <- authenticate(site = endpoint_url) |>
-    httr2::req_perform()
-  body <- httr2::resp_body_json(resp)
-
-  # Extract titles from the franchise response
-  titles_data <- purrr::pluck(body, "data", "titles", .default = NULL)
-
-  if (is.null(titles_data) || length(titles_data) == 0) {
-    cli::cli_alert_warning("No titles found for franchise {.val {franchise_title}}.")
-    return(tibble::tibble())
-  }
-
-  franchise_titles <- purrr::map_chr(titles_data, \(x) purrr::pluck(x, "data", "title", .default = NA_character_))
-  franchise_titles <- franchise_titles[!is.na(franchise_titles)]
-
-  if (length(franchise_titles) == 0) {
-    cli::cli_alert_warning("Could not extract title names from franchise {.val {franchise_title}}.")
-    return(tibble::tibble())
-  }
-
-  cli::cli_alert_info("Found {length(franchise_titles)} title{?s} in {.val {franchise_title}}: {.val {franchise_titles}}")
-
-  # Fetch the full chart for the date range
-  full_chart <- get_top_ten(
-    platform_name = platform_name,
-    country_name  = country_name,
-    start_date    = start_date,
-    end_date      = end_date,
-    media_type    = media_type
-  )
-
-  if (nrow(full_chart) == 0) {
-    cli::cli_alert_warning("No chart data returned.")
-    return(tibble::tibble())
-  }
-
-  # Filter to franchise titles and summarise
-  out <- full_chart |>
-    dplyr::filter(tolower(.data$title) %in% tolower(franchise_titles)) |>
-    dplyr::group_by(.data$title) |>
-    dplyr::summarise(
-      days_on_chart = dplyr::n(),
-      best_rank     = min(.data$rank, na.rm = TRUE),
-      avg_rank      = round(mean(.data$rank, na.rm = TRUE), 1),
-      first_seen    = min(.data$date, na.rm = TRUE),
-      last_seen     = max(.data$date, na.rm = TRUE),
-      .groups = "drop"
-    ) |>
-    dplyr::mutate(franchise = franchise_title) |>
-    dplyr::arrange(.data$best_rank)
-
-  if (nrow(out) == 0) {
-    cli::cli_alert_warning("No titles from {.val {franchise_title}} appeared in the Top 10 during this period.")
-  }
 
   return(out)
 }

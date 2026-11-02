@@ -6,6 +6,8 @@ describe("fp_cache_ids()", {
   })
 
   it("attempts to resolve country names and handles failures gracefully", {
+    # calls the live API with a fake key; slow and depends on the network
+    skip_on_cran()
     withr::local_envvar(FLIX_PATROL = "fake_key")
     tmp_dir <- withr::local_tempdir()
     dir.create(file.path(tmp_dir, "data"), showWarnings = FALSE)
@@ -22,6 +24,8 @@ describe("fp_cache_ids()", {
   })
 
   it("attempts to resolve platform names and handles failures gracefully", {
+    # calls the live API with a fake key; slow and depends on the network
+    skip_on_cran()
     withr::local_envvar(FLIX_PATROL = "fake_key")
     tmp_dir <- withr::local_tempdir()
     dir.create(file.path(tmp_dir, "data"), showWarnings = FALSE)

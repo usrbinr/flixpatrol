@@ -19,7 +19,7 @@ flixpatrol/
 │   └── utils-new.R         # Analytics functions: compare_platforms(), get_title_history(),
 │                           #   get_weekly_movers(), get_global_ranking(), get_premieres(),
 │                           #   get_torrent_ranking(), get_top_titles_summary(),
-│                           #   get_franchise_performance(), get_title_details()
+│                           #   get_title_details()
 ├── data/                   # Pre-built lookup tables (.rda)
 ├── data-raw/               # Scripts to regenerate lookup tables
 ├── man/                    # Roxygen2-generated documentation

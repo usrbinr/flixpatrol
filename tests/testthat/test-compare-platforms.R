@@ -1,6 +1,8 @@
 describe("compare_platforms()", {
 
   it("returns a tibble with expected columns even when API fails", {
+    # calls the live API with a fake key; slow and depends on the network
+    skip_on_cran()
     withr::local_envvar(FLIX_PATROL = "fake_key")
     # purrr::possibly wraps the API failures, so this should return NA ranks
     result <- compare_platforms(
@@ -17,6 +19,8 @@ describe("compare_platforms()", {
   })
 
   it("returns one row per platform", {
+    # calls the live API with a fake key; slow and depends on the network
+    skip_on_cran()
     withr::local_envvar(FLIX_PATROL = "fake_key")
     platforms <- c("netflix", "disney+", "hbo max")
     result <- compare_platforms(
@@ -28,6 +32,8 @@ describe("compare_platforms()", {
   })
 
   it("fills NA ranks when API is unreachable", {
+    # calls the live API with a fake key; slow and depends on the network
+    skip_on_cran()
     withr::local_envvar(FLIX_PATROL = "fake_key")
     result <- compare_platforms(
       title     = "Nonexistent Movie",

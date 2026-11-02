@@ -17,7 +17,7 @@ get_hours_viewed(
 \item{platform_name}{Character. Platform name.
 Default from `getOption("flixpatrol.platform_name", "netflix")`.}
 
-\item{media_type}{Character. Media type (e.g., "movie", "movies", "tv", "tv_show").
+\item{media_type}{Character. Media type (e.g., "movie", "movies", "tv", "tvshow").
 Default from `getOption("flixpatrol.media_type", "movie")`.}
 
 \item{language_name}{Character. Language (e.g., "english").

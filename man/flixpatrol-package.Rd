@@ -4,9 +4,9 @@
 \name{flixpatrol-package}
 \alias{flixpatrol}
 \alias{flixpatrol-package}
-\title{flixpatrol: R Client for the 'FlixPatrol' Streaming Rankings API}
+\title{flixpatrol: Client for the 'FlixPatrol' Streaming Rankings API}
 \description{
-Provides a programmatic interface to the 'FlixPatrol' API (V2) for accessing streaming platform rankings, viewing hours, official charts, torrent data, and social media fan metrics. Includes lookup helpers for countries, platforms, franchises, and titles.
+Provides a programmatic interface to the 'FlixPatrol' API (V2) \url{https://flixpatrol.com/api2/} for accessing streaming platform rankings, viewing hours, official charts, torrent data, and social media fan metrics. Includes lookup helpers for countries, platforms, franchises, and titles. Requires a 'FlixPatrol' API key.
 }
 \seealso{
 Useful links:
@@ -18,6 +18,11 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Alejandro Hagan \email{alejandro.hagan@outlook.com}
+
+Authors:
+\itemize{
+  \item Alejandro Hagan \email{alejandro.hagan@outlook.com}
+}
 
 }
 \keyword{internal}

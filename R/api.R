@@ -117,7 +117,7 @@ flixpatrol_options <- function() {
             "Default country (e.g., 'United States')",
             "Default start date (yyyy-mm-dd format)",
             "Default end date (yyyy-mm-dd format)",
-            "Default content type ('movie', 'movies', 'tv', 'tv_show', etc.)",
+            "Default content type ('movie', 'movies', 'tv', 'tvshow', etc.)",
             "Default language (e.g., 'english')",
             "Default social platform ('instagram', 'twitter', 'facebook')",
             "Default torrent site (e.g., 'PirateBay', '1337x')"
@@ -346,7 +346,31 @@ flixpatrol_sitrep <- function(test_api = TRUE,
 #' @export
 lookup_country <- function(country_name, silent = getOption("flixpatrol.silent", FALSE)) {
 
-    token <- Sys.getenv("FLIX_PATROL")
+    # "Global" expands to all known countries in a single API call
+    if (length(country_name) == 1 && tolower(country_name) == "global") {
+        all_countries <- global_countries()
+
+        # Single API call with all names comma-separated via name[in]
+        name_string <- paste(all_countries, collapse = ",")
+        req <- authenticate(site = "https://api.flixpatrol.com/v2/countries") |>
+            httr2::req_url_query(`name[in]` = name_string)
+
+        resp <- req |> httr2::req_perform()
+        body_lst <- resp |> httr2::resp_body_json()
+
+        if (length(body_lst$data) == 0) {
+            cli::cli_abort("No countries found for Global lookup.")
+        }
+
+        ids <- purrr::map_chr(body_lst$data, \(x) x$data$id)
+        names <- purrr::map_chr(body_lst$data, \(x) x$data$name)
+
+        if (!silent) {
+            cli::cli_alert_success("Global: found {length(ids)} countries")
+        }
+
+        return(ids)
+    }
 
     # Internal helper to find a single ID
     find_single_id <- function(name) {
@@ -464,18 +488,25 @@ lookup_flix_type <- function(flix_type){
 get_single_top_ten <- function(platform_name, country_name, date, media_type) {
 
     company_string   <- lookup_platform(platform_name = platform_name, silent = TRUE)
-    country_string   <- lookup_country(country_name = country_name, silent = TRUE)
-    flix_type_string <- resolve_content_type(media_type, "flix")
+    country_ids      <- lookup_country(country_name = country_name, silent = TRUE)
+    flix_type_string  <- resolve_content_type(media_type, "flix")
 
-    resp <- authenticate() |>
+    req <- authenticate() |>
         httr2::req_url_query(
             `company[eq]`    = company_string,
-            `country[eq]`    = country_string,
             `type[eq]`       = flix_type_string,
             `date[type][eq]` = 1,
             `date[from][eq]` = as.character(date),
             `date[to][eq]`   = as.character(date)
-        ) |>
+        )
+
+    if (length(country_ids) > 1) {
+        req <- httr2::req_url_query(req, `country[in]` = paste(country_ids, collapse = ","))
+    } else {
+        req <- httr2::req_url_query(req, `country[eq]` = country_ids)
+    }
+
+    resp <- req |>
         httr2::req_perform() |>
         httr2::resp_body_json()
 
@@ -489,7 +520,7 @@ get_single_top_ten <- function(platform_name, country_name, date, media_type) {
             type_id <- purrr::pluck(d, "type", .default = NA_integer_)
             type_name <- dplyr::case_when(
                 type_id == 2 ~ "movie",
-                type_id == 3 ~ "tv_show",
+                type_id == 3 ~ "tvshow",
                 TRUE ~ NA_character_
             )
 
@@ -517,6 +548,15 @@ get_single_top_ten <- function(platform_name, country_name, date, media_type) {
 #' 300 records per call. This function automatically chunks large date ranges
 #' into 30-day periods and combines the results.
 #'
+#' ## Global
+#'
+#' `country_name = "Global"` makes separate requests for each of about 45
+#' countries, one at a time, so a call can take many minutes at the default
+#' throttle of 10 requests per minute and uses far more of your API quota than
+#' one country. A message at the start gives the minimum time. Countries that
+#' fail or return no rows are left out of the result and listed in a warning.
+#' Change the rate with `options(flixpatrol.throttle_rate = ...)`.
+#'
 #' ## Global Options
 #'
 #' Parameters can be set globally using options:
@@ -535,12 +575,12 @@ get_single_top_ten <- function(platform_name, country_name, date, media_type) {
 #'   Default from `getOption("flixpatrol.start_date")`.
 #' @param end_date Character. End of the range in yyyy-mm-dd format.
 #'   Default from `getOption("flixpatrol.end_date")`.
-#' @param media_type Character. Content type (e.g., "movie", "movies", "tv", "tv_show").
+#' @param media_type Character. Content type (e.g., "movie", "movies", "tv", "tvshow").
 #'   Default from `getOption("flixpatrol.media_type")`.
 #' @param return_ids Logical. Include ID columns in output.
 #'   Default from `getOption("flixpatrol.return_ids", FALSE)`.
 #'
-#' @return A tibble with columns: rank, title, type (movie/tv_show), days_total, rank_last, date, imdb_id.
+#' @return A tibble with columns: rank, title, type (movie/tvshow), days_total, rank_last, date, imdb_id.
 #'   If `return_ids = TRUE`, also includes title_id and type_id.
 #' @export
 #'
@@ -568,6 +608,25 @@ get_top_ten <- function(platform_name = getOption("flixpatrol.platform_name"),
                         media_type = getOption("flixpatrol.media_type"),
                         return_ids = getOption("flixpatrol.return_ids", FALSE)) {
 
+    # "Global" -> map over all countries individually (API 300-record cap
+    # prevents querying all countries in a single call)
+    if (length(country_name) == 1 && tolower(country_name) == "global") {
+        n_chunks <- length(seq.Date(as.Date(start_date), as.Date(end_date), by = "30 days"))
+
+        return(fetch_global(
+            \(cn) get_top_ten(
+                platform_name = platform_name,
+                country_name = cn,
+                start_date = start_date,
+                end_date = end_date,
+                media_type = media_type,
+                return_ids = return_ids
+            ),
+            # platform and country lookups, then one request per 30-day chunk
+            requests_per_country = 2 + n_chunks
+        ))
+    }
+
     # Validate required parameters
     if (is.null(platform_name)) {
         cli::cli_abort("platform_name is required. Set it via argument or {.code options(flixpatrol.platform_name = \"...\")}.")
@@ -589,8 +648,17 @@ get_top_ten <- function(platform_name = getOption("flixpatrol.platform_name"),
     validate_date_format(end_date)
 
     company_string   <- lookup_platform(platform_name = platform_name, silent = TRUE)
-    country_string   <- lookup_country(country_name = country_name, silent = TRUE)
-    flix_type_string <- resolve_content_type(media_type, "flix")
+    country_ids      <- lookup_country(country_name = country_name, silent = TRUE)
+    flix_type_string  <- resolve_content_type(media_type, "flix")
+
+    # Use country[in] for multiple countries (Global), country[eq] for single
+    if (length(country_ids) > 1) {
+        country_query_name <- "country[in]"
+        country_query_value <- paste(country_ids, collapse = ",")
+    } else {
+        country_query_name <- "country[eq]"
+        country_query_value <- country_ids
+    }
 
     # API limits to 300 records (30 days), so chunk into 30-day periods
     start_dt <- as.Date(start_date)
@@ -602,32 +670,52 @@ get_top_ten <- function(platform_name = getOption("flixpatrol.platform_name"),
 
     cli::cli_alert_info("Fetching {length(chunk_starts)} chunk{?s} ({length(chunk_starts)} API call{?s})")
 
-    fetch_chunk <- function(chunk_start) {
+    # Build all requests upfront
+    reqs <- purrr::map(chunk_starts, \(chunk_start) {
         chunk_end <- min(chunk_start + chunk_size - 1, end_dt)
 
-        resp <- authenticate() |>
+        req <- authenticate() |>
             httr2::req_url_query(
                 `company[eq]`     = company_string,
-                `country[eq]`     = country_string,
                 `type[eq]`        = flix_type_string,
                 `date[type][eq]`  = 1,
                 `date[from][gte]` = as.character(chunk_start),
                 `date[to][lte]`   = as.character(chunk_end)
-            ) |>
-            httr2::req_perform() |>
-            httr2::resp_body_json()
+            )
+        # Add country filter dynamically (eq for single, in for multiple/Global)
+        req <- httr2::req_url_query(req, !!country_query_name := country_query_value)
+        req
+    })
 
-        if (length(resp$data) == 0) {
+    # Perform all requests in parallel (respects req_throttle from authenticate())
+    resps <- httr2::req_perform_parallel(reqs, on_error = "continue")
+
+    # With on_error = "continue", a failed request comes back as an error object
+    failed <- purrr::discard(resps, \(resp) inherits(resp, "httr2_response"))
+    if (length(failed) > 0) {
+        first_error <- conditionMessage(failed[[1]])
+        cli::cli_warn("Failed Top 10 requests: {length(failed)} of {length(resps)}. Those dates are missing. First error: {first_error}")
+    }
+
+    # Parse all responses
+    parse_top_ten_response <- function(resp) {
+        if (!inherits(resp, "httr2_response")) {
             return(tibble::tibble())
         }
 
-        resp$data |>
-            purrr::map_df(function(item) {
+        body <- httr2::resp_body_json(resp)
+
+        if (length(body$data) == 0) {
+            return(tibble::tibble())
+        }
+
+        body$data |>
+            purrr::map_df(\(item) {
                 d <- item$data
                 type_id <- purrr::pluck(d, "type", .default = NA_integer_)
                 type_name <- dplyr::case_when(
                     type_id == 2 ~ "movie",
-                    type_id == 3 ~ "tv_show",
+                    type_id == 3 ~ "tvshow",
                     TRUE ~ NA_character_
                 )
 
@@ -645,11 +733,7 @@ get_top_ten <- function(platform_name = getOption("flixpatrol.platform_name"),
             })
     }
 
-    results <- vector("list", length(chunk_starts))
-    for (i in cli::cli_progress_along(chunk_starts, "Fetching top 10")) {
-        results[[i]] <- fetch_chunk(chunk_starts[[i]])
-    }
-    out <- purrr::list_rbind(results)
+    out <- purrr::map(resps, parse_top_ten_response) |> purrr::list_rbind()
 
     if (nrow(out) == 0) {
         cli::cli_alert_warning("No Top 10 data returned for these parameters.")
@@ -669,7 +753,7 @@ get_top_ten <- function(platform_name = getOption("flixpatrol.platform_name"),
 #'
 #' @description
 #' Converts input to a canonical singular form for matching.
-#' Handles common patterns like "movies" -> "movie", "tv_shows" -> "tv_show",
+#' Handles common patterns like "movies" -> "movie", "tvshows" -> "tvshow",
 #' "documentaries" -> "documentary".
 #'
 #' @param x Character vector. Input to normalize.
@@ -678,6 +762,8 @@ get_top_ten <- function(platform_name = getOption("flixpatrol.platform_name"),
 #' @keywords internal
 normalize_plural <- function(x) {
   x <- tolower(x)
+  # Normalize tvshow/tvshows/tv show variants to tvshow
+  x <- gsub("^tv[_ ]?shows?$", "tvshow", x)
   # Handle compound words with underscores
   x <- gsub("_shows$", "_show", x)
   x <- gsub("_movies$", "_movie", x)
@@ -695,18 +781,18 @@ normalize_plural <- function(x) {
 #'
 #' @description
 #' Normalizes various content type inputs to canonical forms.
-#' Handles: "tv", "tvshow", "tv_show", "tv_shows", "movie", "movies", etc.
+#' Handles: "tv", "tv show", "tv_show", "tv_shows", "tvshow", "tvshows", "movie", "movies", etc.
 #'
 #' @param x Character. Content type input.
 #'
-#' @return Character. Normalized content type ("movie" or "tv_show").
+#' @return Character. Normalized content type ("movie" or "tvshow").
 #' @keywords internal
 normalize_content_type <- function(x) {
   x <- tolower(trimws(x))
-  # Handle TV variations: tv, tvshow, tvshows, tv show, tv shows, tv_show, tv_shows
-  x <- gsub("^tv[_\\s]?shows?$", "tv_show", x)
-  x <- gsub("^tvshows?$", "tv_show", x)
-  x <- gsub("^tv$", "tv_show", x)
+  # Handle TV variations: tv, tv show(s), tv_show(s), tvshow(s)
+  x <- gsub("^tv[_ ]?shows?$", "tvshow", x)
+  x <- gsub("^tvshows?$", "tvshow", x)
+  x <- gsub("^tv$", "tvshow", x)
   # Handle movie variations
   x <- gsub("^movies?$", "movie", x)
   x
@@ -719,7 +805,7 @@ normalize_content_type <- function(x) {
 #' Resolves a content type string to the appropriate API ID for either
 #' the flix_type (top10s) or media_type (rankingsofficial) endpoints.
 #'
-#' @param content_type Character. Content type (e.g., "movie", "tv_show", "anime").
+#' @param content_type Character. Content type (e.g., "movie", "tvshow", "anime").
 #' @param target Character. Either "flix" or "media" to determine which ID mapping to use.
 #'
 #' @return Integer. The API ID for the content type.
@@ -732,14 +818,14 @@ resolve_content_type <- function(content_type, target = c("flix", "media")) {
   normalized <- normalize_content_type(content_type)
 
   if (target == "media") {
-    # media_type only supports movie (1) and tv_show (2)
+    # media_type only supports movie (1) and tvshow (2)
     id <- dplyr::case_when(
       normalized == "movie" ~ 1L,
-      normalized == "tv_show" ~ 2L,
+      normalized == "tvshow" ~ 2L,
       TRUE ~ NA_integer_
     )
     if (is.na(id)) {
-      valid_types <- c("movie", "tv_show")
+      valid_types <- c("movie", "tvshow")
       cli::cli_abort(
         "For this endpoint, {.arg content_type} must be one of {.val {valid_types}}, not {.val {content_type}}."
       )
@@ -752,7 +838,7 @@ resolve_content_type <- function(content_type, target = c("flix", "media")) {
     # But first map normalized forms to flix_type_tbl labels
     flix_input <- dplyr::case_when(
       normalized == "movie" ~ "movies",
-      normalized == "tv_show" ~ "tv_shows",
+      normalized == "tvshow" ~ "tv_shows",
       TRUE ~ normalize_plural(content_type)
     )
     return(lookup_flix_type(flix_input))
@@ -1000,7 +1086,7 @@ unnest_flixpatrol_response <- function(data_lst) {
 #'
 #' @param platform_name Character. Platform name.
 #'   Default from `getOption("flixpatrol.platform_name", "netflix")`.
-#' @param media_type Character. Media type (e.g., "movie", "movies", "tv", "tv_show").
+#' @param media_type Character. Media type (e.g., "movie", "movies", "tv", "tvshow").
 #'   Default from `getOption("flixpatrol.media_type", "movie")`.
 #' @param language_name Character. Language (e.g., "english").
 #'   Default from `getOption("flixpatrol.language", "english")`.
@@ -1159,6 +1245,15 @@ get_hours_viewed <- function(
 #' - 2024-01-22 to 2024-01-28
 #' - 2024-01-29 to 2024-02-04
 #'
+#' ## Global
+#'
+#' `country_name = "Global"` makes separate requests for each of about 45
+#' countries, one at a time, so a call can take many minutes at the default
+#' throttle of 10 requests per minute and uses far more of your API quota than
+#' one country. A message at the start gives the minimum time. Countries that
+#' fail or return no rows are left out of the result and listed in a warning.
+#' Change the rate with `options(flixpatrol.throttle_rate = ...)`.
+#'
 #' ## Global Options
 #'
 #' Parameters can be set globally using options so you don't have to specify
@@ -1179,7 +1274,7 @@ get_hours_viewed <- function(
 #' @param end_date Character. Range end in yyyy-mm-dd format. The function will
 #'   include any week where the Monday falls on or before this date.
 #'   Default from `getOption("flixpatrol.end_date")`.
-#' @param media_type Character. Content type ("movie" or "tv_show").
+#' @param media_type Character. Content type ("movie" or "tvshow").
 #'   Default from `getOption("flixpatrol.media_type")`.
 #' @param date_type Character. Defaults to "week".
 #' @param language Character. Language for lookup (e.g., "english").
@@ -1222,7 +1317,7 @@ get_hours_viewed <- function(
 #' get_official_ranking()
 #'
 #' # Override specific options as needed
-#' get_official_ranking(media_type = "tv_show")
+#' get_official_ranking(media_type = "tvshow")
 #' get_official_ranking(country_name = "United Kingdom")
 #' }
 get_official_ranking <- function(
@@ -1239,6 +1334,29 @@ get_official_ranking <- function(
 
   if (!all(tolower(platform_name) %in% platform_valid_name)) {
     cli::cli_abort("Currently flixpatrol only supports Netflix for the official top ten list, you supplied {.val {platform_name}}.")
+  }
+
+  # "Global" -> map over all countries individually
+  if (length(country_name) == 1 && tolower(country_name) == "global") {
+    start_dt <- as.Date(start_date)
+    # weeks start on the first Monday on or after start_date
+    first_monday <- start_dt + (8 - as.integer(format(start_dt, "%u"))) %% 7
+    n_weeks <- max(0, as.integer(as.Date(end_date) - first_monday) %/% 7 + 1)
+
+    return(fetch_global(
+      \(cn) get_official_ranking(
+        platform_name = platform_name,
+        country_name = cn,
+        start_date = start_date,
+        end_date = end_date,
+        media_type = media_type,
+        date_type = date_type,
+        language = language,
+        return_ids = return_ids
+      ),
+      # platform and country lookups, then one request per week
+      requests_per_country = 2 + n_weeks
+    ))
   }
 
   # Validate required parameters
@@ -1260,9 +1378,18 @@ get_official_ranking <- function(
 
   platform_id   <- lookup_platform(platform_name = platform_name, silent = TRUE)
   media_type_id <- resolve_content_type(media_type, "media")
-  country_id    <- lookup_country(country_name = country_name, silent = TRUE)
+  country_ids   <- lookup_country(country_name = country_name, silent = TRUE)
   date_type_id  <- lookup_date_type(date_type)
   language_id   <- lookup_language(language)
+
+  # Use country[in] for multiple countries (Global), country[eq] for single
+  if (length(country_ids) > 1) {
+    country_query_name <- "country[in]"
+    country_query_value <- paste(country_ids, collapse = ",")
+  } else {
+    country_query_name <- "country[eq]"
+    country_query_value <- country_ids
+  }
 
   # Convert to Date objects
   start_dt <- as.Date(start_date)
@@ -1289,16 +1416,17 @@ get_official_ranking <- function(
   fetch_single_week <- function(monday_date) {
     sunday_date <- monday_date + 6
 
-    resp <- authenticate(site = "https://api.flixpatrol.com/v2/rankingsofficial") |>
+    req <- authenticate(site = "https://api.flixpatrol.com/v2/rankingsofficial") |>
       httr2::req_url_query(
-        `country[eq]`     = country_id,
         `company[eq]`     = platform_id,
         `language[eq]`    = language_id,
         `number[eq]`      = media_type_id,
         `date[type][eq]`  = date_type_id,
         `date[from][eq]`  = as.character(monday_date),
         `date[to][eq]`    = as.character(sunday_date)
-      ) |>
+      )
+    req <- httr2::req_url_query(req, !!country_query_name := country_query_value)
+    resp <- req |>
       httr2::req_perform() |>
       httr2::resp_body_json()
 
@@ -1354,7 +1482,7 @@ get_official_ranking <- function(
 #' The `social_platform` parameter filters by social media site
 #' (Instagram, Twitter, Facebook), not streaming platforms.
 #' Franchise IDs are automatically resolved to names via batch API lookup.
-#' Title types (movie/tv_show) are resolved via batch API lookup.
+#' Title types (movie/tvshow) are resolved via batch API lookup.
 #'
 #' ## Global Options
 #'
@@ -1373,7 +1501,7 @@ get_official_ranking <- function(
 #' @param return_ids Logical. Include ID columns in output.
 #'   Default from `getOption("flixpatrol.return_ids", FALSE)`.
 #'
-#' @return A tibble with columns: rank, title, type (movie/tv_show/franchise), value, value_total, source, date.
+#' @return A tibble with columns: rank, title, type (movie/tvshow/franchise), value, value_total, source, date.
 #'   If `return_ids = TRUE`, also includes title_id and franchise_id.
 #' @export
 #'
@@ -1485,7 +1613,7 @@ get_fans_ranking <- function(
             dplyr::select(-"franchise_name")
     }
 
-    # Resolve title types (movie/tv_show) via batch lookup
+    # Resolve title types (movie/tvshow) via batch lookup
     # Chunk IDs to avoid HTTP 414 URI Too Long errors
     unique_title_ids <- unique(out$title_id[!is.na(out$title_id)])
 
@@ -1523,7 +1651,7 @@ get_fans_ranking <- function(
                     type = dplyr::case_when(
                         !is.na(.data$franchise_id) ~ "franchise",
                         .data$type_int == 1 ~ "movie",
-                        .data$type_int == 2 ~ "tv_show",
+                        .data$type_int == 2 ~ "tvshow",
                         TRUE ~ NA_character_
                     )
                 ) |>
@@ -1541,4 +1669,93 @@ get_fans_ranking <- function(
     }
 
     return(out)
+}
+
+
+#' Countries Covered by `country_name = "Global"`
+#'
+#' @return Character vector of country names.
+#' @keywords internal
+#' @noRd
+global_countries <- function() {
+  c(
+    "United States", "United Kingdom", "Canada", "Australia",
+    "Germany", "France", "Brazil", "India", "Japan",
+    "South Korea", "Mexico", "Spain", "Italy", "Netherlands",
+    "Sweden", "Poland", "Turkey", "Argentina", "Colombia",
+    "Chile", "Peru", "Belgium", "Austria", "Switzerland",
+    "Norway", "Denmark", "Finland", "Ireland", "Portugal",
+    "Czech Republic", "Romania", "Hungary", "Greece",
+    "New Zealand", "South Africa", "Israel", "Egypt",
+    "Saudi Arabia", "United Arab Emirates", "Thailand",
+    "Indonesia", "Philippines", "Malaysia", "Singapore",
+    "Taiwan"
+  )
+}
+
+
+#' Fetch Every Global Country and Report the Gaps
+#'
+#' Runs `fetch_one()` once per country, adds a `country` column, warns up front
+#' about the minimum run time, and warns at the end about any country that
+#' failed, returned no rows, or came back incomplete.
+#'
+#' @param fetch_one Function taking one country name and returning a tibble.
+#' @param requests_per_country Number of API requests `fetch_one()` makes.
+#'
+#' @return A tibble of the combined rows.
+#' @keywords internal
+#' @noRd
+fetch_global <- function(fetch_one, requests_per_country) {
+  countries <- global_countries()
+  rate <- getOption("flixpatrol.throttle_rate", 10)
+
+  cli::cli_alert_info("Global: fetching {length(countries)} countries one at a time.")
+  if (is.finite(rate) && rate > 0) {
+    minutes <- ceiling(length(countries) * requests_per_country / rate)
+    cli::cli_alert_warning("At {rate} requests per minute this takes at least {minutes} minute{?s}. Change the rate with {.code options(flixpatrol.throttle_rate = ...)}.")
+  }
+
+  outcomes <- purrr::map(countries, \(cn) {
+    cli::cli_progress_step("Fetching {cn}")
+    problem <- NULL
+    rows <- tryCatch(
+      withCallingHandlers(fetch_one(cn), warning = \(w) {
+        problem <<- conditionMessage(w)
+        rlang::cnd_muffle(w)
+      }),
+      error = \(e) {
+        # purrr wraps errors from inside map(); report the original message
+        problem <<- conditionMessage(e$parent %||% e)
+        tibble::tibble()
+      }
+    )
+    if (nrow(rows) > 0) rows$country <- cn
+    if (nrow(rows) == 0 && is.null(problem)) problem <- "No rows returned"
+    list(rows = rows, problem = problem %||% NA_character_)
+  })
+
+  out <- outcomes |> purrr::map("rows") |> purrr::list_rbind()
+  gaps <- tibble::tibble(
+    country = countries,
+    problem = purrr::map_chr(outcomes, "problem")
+  ) |>
+    dplyr::filter(!is.na(.data$problem))
+
+  n_with_rows <- sum(purrr::map_int(outcomes, \(x) nrow(x$rows)) > 0)
+  cli::cli_alert_success("Global: {nrow(out)} rows from {n_with_rows} of {length(countries)} countries.")
+
+  if (nrow(gaps) > 0) {
+    # grouped by reason; braces are escaped so cli does not read them as code
+    bullets <- gaps |>
+      dplyr::summarise(names = paste(.data$country, collapse = ", "), .by = "problem") |>
+      purrr::pmap_chr(\(problem, names) paste0(names, ": ", problem))
+    bullets <- gsub("}", "}}", gsub("{", "{{", bullets, fixed = TRUE), fixed = TRUE)
+    cli::cli_warn(c(
+      "Global: {nrow(gaps)} of {length(countries)} countries are missing or incomplete.",
+      rlang::set_names(bullets, "x")
+    ))
+  }
+
+  out
 }

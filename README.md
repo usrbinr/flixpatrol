@@ -1,0 +1,377 @@
+# flixpatrol
+
+
+[![](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+
+The `flixpatrol` package is an R interface for the [FlixPatrol API
+V2](https://flixpatrol.com/api2/). It allows for the programmatic
+retrieval of VOD rankings, streaming Top 10 lists, official viewing hour
+statistics, torrent charts, social media fan metrics, and premiere
+schedules across major global platforms.
+
+## Features
+
+- **Metadata Lookup**: Resolve country, platform, franchise, and title
+  names into internal FlixPatrol IDs.
+- **Historical Data Retrieval**: Fetch daily Top 10 charts over custom
+  date ranges.
+- **Official Metrics**: Access “Hours Viewed” and “Official Ranking”
+  tables as analysis-ready tibbles.
+- **Torrent Rankings**: Pull torrent chart data by site and date range.
+- **Social Media Fans**: Retrieve fan count rankings from Instagram,
+  Facebook, and Twitter.
+- **Premieres**: Get upcoming premiere schedules by platform and
+  country.
+- **Title Details**: Retrieve full metadata for any title.
+- **Vectorized ID Resolution**: Resolve FlixPatrol IDs back to
+  human-readable names in bulk.
+- **Robust Validation**: Built-in checks for date ranges and
+  API-specific weekday requirements (e.g., weekly charts starting on
+  Mondays).
+- **Rate Limiting & Retry**: All API calls are throttled (10 req/min)
+  with automatic retry on transient failures.
+
+------------------------------------------------------------------------
+
+## Installation
+
+You can install the development version of `flixpatrol` from Codeberg:
+
+``` r
+# install.packages("remotes")
+remotes::install_git("https://codeberg.org/usrbinr/flixpatrol")
+```
+
+------------------------------------------------------------------------
+
+## Authentication
+
+The package uses basic authentication via an API key stored in your R
+environment. Set it once:
+
+``` r
+usethis::edit_r_environ()
+# Add this line to the file that opens:
+# FLIX_PATROL=your_api_key_here
+```
+
+Restart R after saving. All functions default to reading the
+`FLIX_PATROL` environment variable.
+
+------------------------------------------------------------------------
+
+## Package Options
+
+| Option                     | Default | Description                             |
+|----------------------------|---------|-----------------------------------------|
+| `flixpatrol.silent`        | `FALSE` | Suppress lookup success messages        |
+| `flixpatrol.return_ids`    | `FALSE` | Include ID columns in output tibbles    |
+| `flixpatrol.throttle_rate` | `10`    | API requests per minute (rate limiting) |
+| `flixpatrol.show_quota`    | `TRUE`  | Show API quota in `flixpatrol_sitrep()` |
+
+### Query Default Options
+
+Set these to avoid passing arguments on every call:
+
+| Option | Default | Description |
+|----|----|----|
+| `flixpatrol.platform_name` | `NULL` | Default platform (e.g., “netflix”, “disney+”) |
+| `flixpatrol.country_name` | `NULL` | Default country (e.g., “United States”) |
+| `flixpatrol.start_date` | `NULL` | Default start date (yyyy-mm-dd) |
+| `flixpatrol.end_date` | `NULL` | Default end date (yyyy-mm-dd) |
+| `flixpatrol.media_type` | `NULL` | Default content type (“movie” or “tvshow”) |
+| `flixpatrol.language` | `"english"` | Default language |
+| `flixpatrol.social_platform` | `"instagram"` | Default social platform |
+| `flixpatrol.torrent_site` | `NULL` | Default torrent site |
+
+Set options globally:
+
+``` r
+options(
+ flixpatrol.silent = TRUE,
+ flixpatrol.return_ids = TRUE,
+ flixpatrol.throttle_rate = 15,
+ flixpatrol.show_quota = FALSE
+)
+```
+
+View current option values:
+
+``` r
+flixpatrol_options()
+```
+
+Check package status and API quota:
+
+``` r
+flixpatrol_sitrep()
+```
+
+------------------------------------------------------------------------
+
+## Usage
+
+### Lookup Functions
+
+Translate human-readable names into FlixPatrol internal IDs:
+
+``` r
+library(flixpatrol)
+
+lookup_country("United States")
+lookup_platform("Netflix")
+lookup_franchise("Indiana Jones")
+lookup_title("Squid Game")
+
+# Vectorized
+lookup_country(c("United States", "Germany", "Japan"))
+```
+
+### Reverse Lookups (ID to Name)
+
+``` r
+get_title_name("cmp_IA6TdMqwf6kuyQvxo9bJ4nKX")  # company
+get_title_name("ttl_yPCJU2UzROTNVv5JZ7Hu4m8M")  # title
+
+# Vectorized - returns NA for failures
+get_title_name(c("cmp_IA6TdMqwf6kuyQvxo9bJ4nKX", "ttl_invalid"))
+```
+
+### Daily Top 10
+
+``` r
+get_top_ten(
+  platform_name = "netflix",
+  country_name  = "United States",
+  start_date    = "2025-12-01",
+  end_date      = "2025-12-07",
+  media_type    = "movie"
+)
+```
+
+### Hours Viewed
+
+Weekly data, Monday to Sunday. A `start_date` that is not a Monday moves
+forward to the next Monday:
+
+``` r
+get_hours_viewed(
+  platform_name = "netflix",
+  media_type    = "movie",
+  language_name = "english",
+  start_date    = "2025-12-15",
+  end_date      = "2025-12-21"
+)
+```
+
+### All Countries
+
+Pass `country_name = "Global"` to `get_top_ten()` or
+`get_official_ranking()` to cover about 45 countries and add a `country`
+column. Each country is requested separately, so this takes at least 14
+minutes at the default throttle and uses far more API quota. A warning
+lists any country that failed or returned no rows.
+
+``` r
+get_top_ten(
+  platform_name = "netflix",
+  country_name  = "Global",
+  start_date    = "2025-12-15",
+  end_date      = "2025-12-15",
+  media_type    = "movie"
+)
+```
+
+### Official Rankings (Netflix Only)
+
+``` r
+get_official_ranking(
+  country_name = "United States",
+  start_date   = "2025-12-15",
+  end_date     = "2025-12-21",
+  media_type   = "movie"
+)
+```
+
+### Torrent Rankings
+
+``` r
+get_torrent_ranking(
+  torrent_site = "PirateBay",
+  start_date   = "2025-12-01",
+  end_date     = "2025-12-01"
+)
+```
+
+### Social Media Fans
+
+``` r
+get_fans_ranking(
+  social_platform = "Instagram",
+  start_date      = "2025-12-15",
+  end_date        = "2025-12-21"
+)
+```
+
+### Premieres
+
+``` r
+get_premieres(
+  platform_name = "netflix",
+  start_date    = "2025-12-15",
+  end_date      = "2025-12-31"
+)
+```
+
+### Title Details
+
+``` r
+get_title_details("ttl_yPCJU2UzROTNVv5JZ7Hu4m8M")
+```
+
+### Compare Platforms
+
+See how a title ranks across multiple platforms on the same day:
+
+``` r
+compare_platforms(
+  title      = "Squid Game",
+  date       = "2025-12-15",
+  media_type = "tvshow"
+)
+```
+
+### Title History
+
+Track a single title’s rank over time:
+
+``` r
+get_title_history(
+  title      = "Squid Game",
+  start_date = "2025-12-01",
+  end_date   = "2025-12-14",
+  media_type = "tvshow"
+)
+```
+
+### Weekly Movers
+
+Identify gainers, losers, new entries, and exits between two chart
+dates:
+
+``` r
+get_weekly_movers(
+  date_before = "2025-12-14",
+  date_after  = "2025-12-15"
+)
+```
+
+### Top Titles Summary
+
+Most frequent Top 10 titles over a date range with best/average rank:
+
+``` r
+get_top_titles_summary(
+  start_date = "2025-12-01",
+  end_date   = "2025-12-14",
+  n          = 10
+)
+```
+
+### Global Ranking
+
+See where a title ranks across 15 countries:
+
+``` r
+get_global_ranking(
+  title      = "Squid Game",
+  date       = "2025-12-15",
+  media_type = "tvshow"
+)
+```
+
+------------------------------------------------------------------------
+
+## Lookup Tables
+
+The package ships with pre-built reference tables to avoid unnecessary
+API calls:
+
+| Table | Contents |
+|----|----|
+| `flix_type_tbl` | Content types (overall, movies, tv_shows, anime, documentaries, etc.) |
+| `language_name` | Language options (english, non_english) |
+| `media_type_name` | Media categories (movie, tvshow) |
+| `date_type_name` | Date granularities (day, week, month, quarter, half_year, year, first_month) |
+| `social_media_name` | Social platforms with company IDs |
+| `torrent_sites` | Torrent site name-to-ID mappings |
+
+------------------------------------------------------------------------
+
+## Function Reference
+
+### Lookup (Name to ID)
+
+| Function                   | Source            |
+|----------------------------|-------------------|
+| `lookup_country()`         | API `/countries`  |
+| `lookup_platform()`        | API `/companies`  |
+| `lookup_franchise()`       | API `/franchises` |
+| `lookup_title()`           | API `/titles`     |
+| `lookup_flix_type()`       | Local table       |
+| `lookup_language()`        | Local table       |
+| `lookup_media_type()`      | Local table       |
+| `lookup_date_type()`       | Local table       |
+| `lookup_torrent_site()`    | Local table       |
+| `lookup_social_platform()` | Local table       |
+
+### Reverse Lookup (ID to Name)
+
+| Function | Description |
+|----|----|
+| `get_title_name()` | Auto-detects `cmp_`, `ttl_`, `frn_` prefixes. Vectorized, returns NA on failure. |
+| `get_company_name()` | Company ID to name |
+| `get_franchise_name()` | Franchise ID to name |
+
+### Data Retrieval
+
+| Function                 | Endpoint            | Description               |
+|--------------------------|---------------------|---------------------------|
+| `get_top_ten()`          | `/top10s`           | Top 10 over a date range  |
+| `get_hours_viewed()`     | `/hoursviewed`      | Weekly viewing hours      |
+| `get_official_ranking()` | `/rankingsofficial` | Official Netflix rankings |
+| `get_fans_ranking()`     | `/fans`             | Social media fan counts   |
+| `get_torrent_ranking()`  | `/torrents`         | Torrent chart rankings    |
+| `get_premieres()`        | `/premieres`        | Upcoming premiere dates   |
+| `get_title_details()`    | `/titles/:id`       | Full title metadata       |
+
+### Analytics & Comparison
+
+| Function | Description |
+|----|----|
+| `compare_platforms()` | Compare a title’s rank across multiple platforms on the same day |
+| `get_title_history()` | Track a single title’s rank over a date range |
+| `get_weekly_movers()` | Gainers, losers, new entries, and exits between two chart dates |
+| `get_top_titles_summary()` | Most frequent Top 10 titles with best/avg rank over a period |
+| `get_global_ranking()` | A title’s rank across 15+ countries on a single date |
+
+### Validation and Status
+
+| Function                | Purpose                                       |
+|-------------------------|-----------------------------------------------|
+| `validate_date_range()` | Enforces weekday and range-length constraints |
+| `flixpatrol_options()`  | List available package options                |
+| `flixpatrol_sitrep()`   | Check the API key, options, and quota         |
+| `get_quota()`           | Current API quota usage                       |
+
+------------------------------------------------------------------------
+
+## Contributing
+
+See
+[CONTRIBUTING.md](https://codeberg.org/usrbinr/flixpatrol/src/branch/main/CONTRIBUTING.md)
+for developer documentation.
+
+## License
+
+MIT

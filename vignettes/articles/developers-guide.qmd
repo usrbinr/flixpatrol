@@ -85,6 +85,13 @@ unnest_flixpatrol_response(body$data)
 
 This helper conditionally unnests columns that exist, handling varying response structures.
 
+### Global Requests
+
+`country_name = "Global"` goes through `fetch_global()`, which requests each
+country in `global_countries()` separately. It adds the `country` column, states
+the minimum run time from the throttle, and warns about any country that failed,
+returned no rows, or came back incomplete.
+
 ## Adding New Functions
 
 ### API Data Retrieval Function
@@ -209,8 +216,10 @@ devtools::test()
 ### Test Structure
 
 - Tests use `testthat` edition 3
-- API tests use `skip_if_no_api_key()` to skip when no key is set
-- Use `withr::local_envvar()` to mock environment variables
+- Tests that make HTTP requests call `skip_on_cran()`, so CRAN checks make no network requests
+- Tests that need a real key also skip when `FLIX_PATROL` is not set. `skip_if_no_api_key()` is defined in `test-lookup-api.R`, so a new test file needs its own copy
+- Use `withr::local_envvar()` to set environment variables
+- Use `httr2::local_mocked_responses()` and `local_mocked_bindings()` to test without the network, as in `test-global-countries.R`
 
 ### Writing Tests
 
@@ -219,12 +228,14 @@ devtools::test()
 describe("get_something()", {
 
     it("returns a tibble for valid input", {
+        skip_on_cran()
         skip_if_no_api_key()
         result <- get_something("value")
         expect_s3_class(result, "tbl_df")
     })
 
     it("handles empty results gracefully", {
+        skip_on_cran()
         skip_if_no_api_key()
         result <- get_something("nonexistent")
         expect_equal(nrow(result), 0)

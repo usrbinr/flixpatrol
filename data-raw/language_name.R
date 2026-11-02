@@ -16,7 +16,7 @@ usethis::use_data(language_name, overwrite = TRUE)
 media_type_name <- tribble(
     ~media_type_name, ~media_type_id,
     "movie",1,
-    "tv_show",2
+    "tvshow",2
 )
 
 

@@ -25,7 +25,7 @@ Default from `getOption("flixpatrol.end_date")`.}
 Default from `getOption("flixpatrol.return_ids", FALSE)`.}
 }
 \value{
-A tibble with columns: rank, title, type (movie/tv_show/franchise), value, value_total, source, date.
+A tibble with columns: rank, title, type (movie/tvshow/franchise), value, value_total, source, date.
   If `return_ids = TRUE`, also includes title_id and franchise_id.
 }
 \description{
@@ -37,7 +37,7 @@ The `/fans` endpoint tracks title popularity on social networks.
 The `social_platform` parameter filters by social media site
 (Instagram, Twitter, Facebook), not streaming platforms.
 Franchise IDs are automatically resolved to names via batch API lookup.
-Title types (movie/tv_show) are resolved via batch API lookup.
+Title types (movie/tvshow) are resolved via batch API lookup.
 
 ## Global Options
 

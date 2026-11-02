@@ -2,6 +2,8 @@ describe("get_top_ten()", {
 
   it("coerces character dates to Date objects without error", {
     # Will fail on API call, but should not fail on date coercion
+    # calls the live API with a fake key; slow and depends on the network
+    skip_on_cran()
     withr::local_envvar(FLIX_PATROL = "fake_key")
     expect_error(
       get_top_ten(

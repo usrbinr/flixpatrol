@@ -25,20 +25,20 @@ Default from `getOption("flixpatrol.end_date")`.}
 
 \item{date_type}{Character. Date granularity (default `"day"`).}
 
-\item{media_type}{Character. Optional filter: "movie" or "tv_show". Default NULL (no filter).}
+\item{media_type}{Character. Optional filter: "movie" or "tvshow". Default NULL (no filter).}
 
 \item{return_ids}{Logical. Include ID columns in output.
 Default from `getOption("flixpatrol.return_ids", FALSE)`.}
 }
 \value{
-A tibble with columns: rank, title, type (movie/tv_show), seeders, leechers, source, date.
+A tibble with columns: rank, title, type (movie/tvshow), seeders, leechers, source, date.
   If `return_ids = TRUE`, also includes title_id.
 }
 \description{
 Fetches torrent chart rankings for a given site and date range.
 }
 \details{
-Title types (movie/tv_show) are resolved via batch API lookup from the
+Title types (movie/tvshow) are resolved via batch API lookup from the
 `/titles` endpoint. Available torrent sites include: PirateBay, 1337x, eztv, etc.
 
 ## Global Options

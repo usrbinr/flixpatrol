@@ -17,3 +17,13 @@ CLAUDE.md
 _qrtdown-styles.css
 _qrtdown/
 index.qmd
+
+# qrtdown
+/_quarto.yml
+/_qrtdown-styles.css
+/_qrtdown/
+/index.qmd
+/reference/
+/articles/
+/citation.qmd
+/_freeze/

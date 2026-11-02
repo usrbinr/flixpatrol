@@ -29,7 +29,7 @@ Default from `getOption("flixpatrol.start_date")`.}
 include any week where the Monday falls on or before this date.
 Default from `getOption("flixpatrol.end_date")`.}
 
-\item{media_type}{Character. Content type ("movie" or "tv_show").
+\item{media_type}{Character. Content type ("movie" or "tvshow").
 Default from `getOption("flixpatrol.media_type")`.}
 
 \item{date_type}{Character. Defaults to "week".}
@@ -73,6 +73,15 @@ For example, if you provide `start_date = "2024-01-01"` and
 - 2024-01-22 to 2024-01-28
 - 2024-01-29 to 2024-02-04
 
+## Global
+
+`country_name = "Global"` makes separate requests for each of about 45
+countries, one at a time, so a call can take many minutes at the default
+throttle of 10 requests per minute and uses far more of your API quota than
+one country. A message at the start gives the minimum time. Countries that
+fail or return no rows are left out of the result and listed in a warning.
+Change the rate with `options(flixpatrol.throttle_rate = ...)`.
+
 ## Global Options
 
 Parameters can be set globally using options so you don't have to specify
@@ -114,7 +123,7 @@ options(
 get_official_ranking()
 
 # Override specific options as needed
-get_official_ranking(media_type = "tv_show")
+get_official_ranking(media_type = "tvshow")
 get_official_ranking(country_name = "United Kingdom")
 }
 }

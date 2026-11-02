@@ -53,7 +53,7 @@ get_company_name <- function(company_id) {
 #' Lookup Franchise IDs
 #'
 #' @description
-#' Translates human-readable franchise titles (e.g., "Indiana Jones", "Marvel")
+#' Translates human-readable franchise titles (e.g., "Indiana Jones")
 #' into FlixPatrol internal franchise IDs.
 #'
 #' @details
